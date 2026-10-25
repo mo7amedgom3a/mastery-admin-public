@@ -1,0 +1,26 @@
+/* Consultations management: availability calendar and slot chips. Tokens only. */
+.ma-cal { display: grid; gap: var(--space-3); }
+.ma-cal__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.ma-cal__title { font-weight: 700; margin: 0; }
+.ma-cal__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; }
+.ma-cal__dow { background: var(--surface-alt); padding: var(--space-2); font-size: 12px; color: var(--text-muted); text-align: center; }
+.ma-cal__day { background: var(--surface); min-height: 72px; padding: var(--space-2); display: flex; flex-direction: column; gap: var(--space-1); text-align: start; border: 0; cursor: pointer; font: inherit; color: inherit; }
+.ma-cal__day[disabled] { cursor: default; opacity: .45; }
+.ma-cal__day--out { background: var(--surface-alt); }
+.ma-cal__day[aria-pressed="true"] { outline: 2px solid var(--coral); outline-offset: -2px; }
+.ma-cal__num { font-size: 12px; color: var(--text-muted); }
+.ma-cal__counts { display: flex; flex-wrap: wrap; gap: 4px; }
+.ma-cal__dot { font-size: 11px; padding: 0 6px; border-radius: var(--radius-full); border: 1px solid var(--line-strong); }
+.ma-cal__dot--free { border-color: var(--success); color: var(--success); }
+.ma-cal__dot--held { border-color: var(--warning); color: var(--warning); }
+.ma-cal__dot--booked { border-color: var(--ink); color: var(--ink); }
+.ma-slotlist { display: grid; gap: var(--space-2); }
+.ma-slotrow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-control); }
+.ma-slotpick { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ma-slotpick button { border: 1px solid var(--line-strong); background: var(--surface); border-radius: var(--radius-control); padding: var(--space-2) var(--space-3); cursor: pointer; font: inherit; color: inherit; }
+.ma-slotpick button[aria-pressed="true"] { border-color: var(--coral); outline: 2px solid var(--coral); outline-offset: -2px; }
+.ma-timeline { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+.ma-timeline li { display: grid; gap: 2px; padding-inline-start: var(--space-3); border-inline-start: 2px solid var(--line-strong); }
+.ma-assets { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-3); }
+.ma-assets img { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-alt); }
+.ma-video { width: 100%; max-height: 420px; border-radius: var(--radius-card); background: var(--ink); }

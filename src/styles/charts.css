@@ -1,0 +1,154 @@
+/* shadcn/recharts charts, dressed on the Mastery tokens. No shadows, 1px rules, role tokens only.
+   Series colours resolve from `--color-<key>` set by <ChartContainer>'s ChartStyle. */
+
+.ma-chart-scope {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 220px;
+  font-size: 11px;
+}
+
+.ma-chart-scope .recharts-cartesian-axis-tick-value,
+.ma-chart-scope .recharts-text {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
+.ma-chart-scope .recharts-cartesian-grid line {
+  stroke: var(--line);
+}
+
+.ma-chart-scope .recharts-cartesian-axis line {
+  stroke: var(--line);
+}
+
+.ma-chart-scope .recharts-tooltip-cursor {
+  stroke: var(--line);
+  stroke-dasharray: 3 3;
+}
+
+.ma-chart-scope .recharts-surface {
+  overflow: visible;
+}
+
+/* Tooltip */
+.ma-chart-tip {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 8rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.ma-chart-tip__label {
+  font-weight: 700;
+}
+
+.ma-chart-tip__rows {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.ma-chart-tip__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ma-chart-tip__dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--c);
+}
+
+.ma-chart-tip__dot.line,
+.ma-chart-tip__dot.dashed {
+  width: 12px;
+  height: 3px;
+  border-radius: 0;
+}
+
+.ma-chart-tip__dot.dashed {
+  background: repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 7px);
+}
+
+.ma-chart-tip__name {
+  color: var(--text-muted);
+}
+
+.ma-chart-tip__value {
+  margin-inline-start: auto;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Legend */
+.ma-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  padding-block-start: var(--space-3);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.ma-chart-legend.is-top {
+  padding-block: 0 var(--space-3);
+}
+
+.ma-chart-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ma-chart-legend__swatch {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: var(--radius-tag);
+  background: var(--c);
+}
+
+/* Categorical series for part-to-whole charts (product insights donut). Fixed slot order, stepped per
+   theme and validated (lightness band, CVD separation, normal-vision floor) against each surface;
+   light-mode slots 3-5 sit under 3:1, so every segment is also listed with its value in the legend. */
+:root {
+  --series-1: #6250d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #2a78d6;
+  --series-other: #b4b2ab;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --series-1: #9085e9;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #3987e5;
+    --series-other: #5c5b57;
+  }
+}
+
+[data-theme="dark"] {
+  --series-1: #9085e9;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #3987e5;
+  --series-other: #5c5b57;
+}

@@ -1,0 +1,50 @@
+import {
+  Award,
+  BookOpen,
+  Bot,
+  Brain,
+  Briefcase,
+  Calendar,
+  Download,
+  Gift,
+  GraduationCap,
+  Headset,
+  Infinity as InfinityIcon,
+  Layers,
+  Library,
+  MessageCircle,
+  Rocket,
+  ShieldCheck,
+  Sparkles,
+  Trophy,
+  Users,
+  Video,
+  type LucideIcon,
+} from "lucide-react";
+
+/**
+ * Icons a subscription feature may use. Stored by lucide name; the customer site
+ * (`mastery-front/src/features/subscriptions/feature-icons.tsx`) maps the same names.
+ */
+export const FEATURE_ICONS: Record<string, LucideIcon> = {
+  sparkles: Sparkles,
+  bot: Bot,
+  brain: Brain,
+  video: Video,
+  layers: Layers,
+  library: Library,
+  award: Award,
+  users: Users,
+  headset: Headset,
+  "book-open": BookOpen,
+  "graduation-cap": GraduationCap,
+  calendar: Calendar,
+  infinity: InfinityIcon,
+  gift: Gift,
+  rocket: Rocket,
+  "shield-check": ShieldCheck,
+  download: Download,
+  "message-circle": MessageCircle,
+  trophy: Trophy,
+  briefcase: Briefcase,
+};

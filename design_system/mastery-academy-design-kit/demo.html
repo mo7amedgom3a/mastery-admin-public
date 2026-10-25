@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Mastery Academy UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Oswald:wght@600;700&display=swap">
+<style>
+/* Mastery Academy — design tokens (generated from tokens.json). Light is the default theme.
+   Theme switch: set data-theme="light" | "dark" on <html> (or on any container to scope it).
+   With no attribute, the OS preference decides. */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --coral: #ff6555;
+  --ink: #17161b;
+  --yellow: #ffcd4c;
+  --purple: #8a64ff;
+  --sky: #49d4ff;
+  --pink: #fd4b7d;
+  --teal: #13e5cc;
+  --lilac: #e89cff;
+  --green: #1fed8b;
+  --cream: #fffeeb;
+  --white: #ffffff;
+  --black: #000000;
+  --surface: #ffffff;
+  --surface-alt: #fffeeb;
+  --text: #17161b;
+  --text-muted: rgba(23,22,27,0.64);
+  --line: rgba(23,22,27,0.16);
+  --line-strong: #17161b;
+  --accent: var(--coral);
+  --on-accent: var(--ink);
+  --focus: var(--purple);
+  --success: var(--green);
+  --warning: var(--yellow);
+  --danger: var(--pink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #17161b;
+    --surface-alt: #000000;
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.64);
+    --line: rgba(255,255,255,0.16);
+    --line-strong: #ffffff;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #17161b;
+  --surface-alt: #000000;
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.64);
+  --line: rgba(255,255,255,0.16);
+  --line-strong: #ffffff;
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-none: 0px;
+  --radius-tag: 6px;
+  --radius-control: 10px;
+  --radius-soft: 12px;
+  --radius-card: 16px;
+  --radius-full: 9999px;
+  --rule-hairline: 1px;
+  --rule-accent: 3px;
+  --font-sans: "Neue Montreal", "Helvetica Neue", Arial, sans-serif;
+  --font-arabic: "Swissra", "IBM Plex Sans Arabic", "Helvetica Neue LT Arabic", Tahoma, sans-serif;
+  --font-condensed: "Kaneda Gothic", "Arial Narrow", sans-serif-condensed, sans-serif;
+  --font-raleway: "Raleway", "Helvetica Neue", Arial, sans-serif;
+  --font-plex: "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  --font-serif: "Margaret", Georgia, serif;
+}
+
+/* Neutral soft fills (translucent text colour) for borderless buttons and tags on any background.
+   Redeclared on every [data-theme] scope so a locally forced theme mixes its own --text. */
+:root, [data-theme] {
+  --fill-soft: color-mix(in srgb, var(--text) 7%, transparent);
+  --fill-soft-hover: color-mix(in srgb, var(--text) 14%, transparent);
+  --fill-soft-active: color-mix(in srgb, var(--text) 20%, transparent);
+}
+
+/* Type styles — one class per style. */
+.t-display { font-family: var(--font-sans); font-size: 64px; line-height: 64px; font-weight: 700; letter-spacing: -0.02em; }
+.t-h1 { font-family: var(--font-sans); font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: -0.01em; }
+.t-h2 { font-family: var(--font-sans); font-size: 32px; line-height: 38px; font-weight: 700; }
+.t-h3 { font-family: var(--font-sans); font-size: 24px; line-height: 30px; font-weight: 500; }
+.t-h4 { font-family: var(--font-sans); font-size: 20px; line-height: 26px; font-weight: 500; }
+.t-body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.t-caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 400; }
+.t-ar-display { font-family: var(--font-arabic); font-size: 64px; line-height: 80px; font-weight: 700; }
+.t-ar-h1 { font-family: var(--font-arabic); font-size: 40px; line-height: 56px; font-weight: 700; }
+.t-ar-h2 { font-family: var(--font-arabic); font-size: 28px; line-height: 40px; font-weight: 500; }
+.t-ar-body { font-family: var(--font-arabic); font-size: 17px; line-height: 28px; font-weight: 400; }
+.t-ar-caption { font-family: var(--font-arabic); font-size: 13px; line-height: 20px; font-weight: 400; }
+.t-poster { font-family: var(--font-condensed); font-size: 72px; line-height: 68px; font-weight: 700; }
+.t-poster { text-transform: uppercase; }
+/* Preview stand-ins while the licensed faces are not installed: Oswald for Kaneda Gothic. */
+:root { --font-condensed: "Kaneda Gothic", "Oswald", "Arial Narrow", sans-serif; }
+/* Mastery Academy — component styles.
+   Requires tokens.css (and fonts.css). Framework-agnostic: plain class names, BEM-style modifiers.
+   Rules baked in: soft rounded corners (radius-control / radius-card / radius-tag), borderless buttons,
+   flat fills, 1px rules, no shadows,
+   logical properties so every component works in RTL (Arabic) and LTR (English). */
+
+/* ---------- Base ---------- */
+:root {
+  --container: 1200px;
+  --header-h: 72px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --dur: .15s;
+}
+.ma-page {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.ma-page[dir="rtl"], [dir="rtl"] .ma-page, .ma-ar { font-family: var(--font-arabic); font-size: 17px; line-height: 28px; }
+.is-focus, :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ---------- Layout ---------- */
+.ma-container { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-4); box-sizing: content-box; }
+@media (min-width: 600px) { .ma-container { padding-inline: var(--space-6); } }
+/* Viewport-aware rhythm: sections tighten on short screens so each one fits a single viewport. */
+.ma-section { padding-block: clamp(var(--space-8), 6svh, var(--space-12)); }
+@media (min-width: 900px) { .ma-section { padding-block: clamp(var(--space-12), 7svh, var(--space-16)); } }
+.ma-band { background: var(--surface-alt); }
+.ma-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.ma-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.ma-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.ma-rule { border: 0; border-block-start: 1px solid var(--line); margin: 0; }
+
+/* ---------- Navbar ---------- */
+.ma-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--surface); border-block-end: 1px solid var(--line); }
+.ma-nav__inner { display: flex; align-items: center; gap: var(--space-6); min-height: var(--header-h); }
+.ma-nav__links { display: flex; gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
+.ma-nav__links a { color: var(--text-muted); text-decoration: none; font-weight: 500; padding-block: var(--space-2); border-block-end: 3px solid transparent; }
+.ma-nav__links a:hover, .ma-nav__links a[aria-current="page"] { color: var(--text); border-block-end-color: var(--accent); }
+.ma-nav__actions { display: flex; gap: var(--space-3); margin-inline-start: auto; }
+@media (max-width: 899px) { .ma-nav__links { display: none; } }
+@media (max-width: 599px) { .ma-nav__actions .ma-btn--ghost { display: none; } .ma-nav__inner { gap: var(--space-3); } }
+
+/* ---------- Button (CTA) ---------- */
+.ma-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-6); min-height: 48px; box-sizing: border-box;
+  border: 0; border-radius: var(--radius-control);
+  font: inherit; font-weight: 500; font-size: 16px; line-height: 24px; white-space: nowrap;
+  text-decoration: none; cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.ma-btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+[dir="rtl"] .ma-btn .ma-icon-dir { transform: scaleX(-1); }
+.ma-btn--sm { min-height: 36px; padding: var(--space-2) var(--space-4); font-size: 14px; line-height: 20px; }
+.ma-btn--lg { min-height: 56px; padding: var(--space-4) var(--space-8); font-size: 18px; }
+.ma-btn--block { display: flex; width: 100%; }
+.ma-btn--icon { padding: 0; width: 48px; }
+
+/* Primary — the one coral action per view */
+.ma-btn--primary { background: var(--accent); color: var(--on-accent); }
+.ma-btn--primary:hover, .ma-btn--primary.is-hover { background: var(--text); color: var(--surface); }
+.ma-btn--primary:active, .ma-btn--primary.is-active { background: var(--accent); color: var(--on-accent); }
+
+/* Secondary — solid ink (light) / white (dark) */
+.ma-btn--secondary { background: var(--text); color: var(--surface); }
+.ma-btn--secondary:hover, .ma-btn--secondary.is-hover { background: var(--accent); color: var(--on-accent); }
+.ma-btn--secondary:active, .ma-btn--secondary.is-active { background: var(--text); color: var(--surface); }
+
+/* Soft — neutral translucent fill, no border (replaces the old 1px outline button).
+   Hover only deepens the fill; the text colour never changes, so counts, prices and muted parts
+   inside the button stay readable, and there is no light-on-light frame mid-transition. */
+.ma-btn--soft { background: var(--fill-soft); color: var(--text); }
+.ma-btn--soft:hover, .ma-btn--soft.is-hover { background: var(--fill-soft-hover); }
+.ma-btn--soft:active, .ma-btn--soft.is-active { background: var(--fill-soft-active); }
+
+/* Ghost — text-weight action; a soft fill appears on hover */
+.ma-btn--ghost { background: transparent; color: var(--text); padding-inline: var(--space-3); }
+.ma-btn--ghost:hover, .ma-btn--ghost.is-hover { background: var(--fill-soft); }
+
+/* Bare — icon tools (search, cart, wishlist, theme, menu): just the icon, a circular soft fill on hover */
+.ma-btn--bare { background: transparent; color: var(--text); border-radius: var(--radius-full); }
+.ma-btn--bare:hover, .ma-btn--bare.is-hover { background: var(--fill-soft); }
+.ma-btn--bare:active, .ma-btn--bare.is-active { background: var(--fill-soft-active); }
+
+/* On-colour — for CTAs placed on a brand colour field (poster, band). Always ink. */
+.ma-btn--on-color { background: var(--ink); color: var(--white); }
+.ma-btn--on-color:hover, .ma-btn--on-color.is-hover { background: var(--white); color: var(--ink); }
+
+/* States — .is-hover / .is-active / .is-focus mirror the pseudo-classes for documentation only. */
+.ma-btn--ghost:active, .ma-btn--ghost.is-active { background: var(--fill-soft-active); }
+.ma-btn--on-color:active, .ma-btn--on-color.is-active { background: var(--ink); color: var(--white); }
+.ma-btn:disabled, .ma-btn[aria-disabled="true"] { background: var(--fill-soft); color: var(--text-muted); cursor: not-allowed; }
+.ma-btn--bare:disabled, .ma-btn--bare[aria-disabled="true"], .ma-btn--ghost:disabled, .ma-btn--ghost[aria-disabled="true"] { background: transparent; }
+.ma-btn.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.ma-btn.is-loading::after {
+  content: ""; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  border-radius: 2px; background: var(--on-accent); animation: ma-spin .8s linear infinite;
+}
+.ma-btn--secondary.is-loading::after { background: var(--surface); }
+.ma-btn--soft.is-loading::after, .ma-btn--ghost.is-loading::after, .ma-btn--bare.is-loading::after { background: var(--text); }
+.ma-btn--on-color.is-loading::after { background: var(--white); }
+@keyframes ma-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Link ---------- */
+.ma-link { color: var(--text); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 500; }
+.ma-link:hover { text-decoration-thickness: 4px; }
+
+/* ---------- Tag ---------- */
+.ma-tag { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--surface-alt); border-radius: var(--radius-tag); }
+[dir="rtl"] .ma-tag { letter-spacing: 0; text-transform: none; font-size: 13px; }
+.ma-tag--soft { background: var(--fill-soft); color: var(--text); }
+.ma-tag--coral { background: var(--coral); } .ma-tag--yellow { background: var(--yellow); } .ma-tag--purple { background: var(--purple); }
+.ma-tag--sky { background: var(--sky); } .ma-tag--pink { background: var(--pink); } .ma-tag--teal { background: var(--teal); }
+.ma-tag--lilac { background: var(--lilac); } .ma-tag--green { background: var(--green); } .ma-tag--cream { background: var(--cream); }
+.ma-tag--ink { background: var(--ink); color: var(--white); }
+
+/* ---------- Form fields ---------- */
+.ma-field { display: flex; flex-direction: column; gap: var(--space-2); }
+.ma-label { font-weight: 500; font-size: 14px; line-height: 20px; }
+.ma-input, .ma-select {
+  min-height: 48px; box-sizing: border-box; width: 100%;
+  padding: var(--space-3) var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-control);
+  background: var(--surface); color: var(--text); font: inherit;
+}
+.ma-input::placeholder { color: var(--text-muted); }
+.ma-input:focus-visible, .ma-select:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.ma-help { font-size: 13px; line-height: 20px; color: var(--text-muted); }
+.ma-field.is-error .ma-input { border-color: var(--danger); box-shadow: inset 4px 0 0 var(--danger); }
+.ma-field.is-error .ma-help { color: var(--text); }
+.ma-check { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; }
+.ma-check input { appearance: none; width: 20px; height: 20px; margin: 0; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); display: grid; place-content: center; }
+.ma-check input:checked { background: var(--accent); border-color: var(--accent); }
+.ma-check input:checked::after { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--ink); }
+
+/* ---------- Section header ---------- */
+.ma-sechead__run { display: flex; justify-content: space-between; gap: var(--space-4); padding-block-start: var(--space-2); border-block-start: 1px solid var(--line-strong); font-size: 12px; line-height: 16px; color: var(--text-muted); }
+.ma-sechead__title { margin: var(--space-8) 0 0; font-size: 32px; line-height: 38px; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+[dir="rtl"] .ma-sechead__title { line-height: 48px; letter-spacing: 0; }
+.ma-sechead__title::after { content: ""; display: block; width: 54px; height: var(--rule-accent); margin-block-start: var(--space-3); background: var(--accent); }
+.ma-sechead__lead { margin: var(--space-4) 0 0; max-width: 36em; color: var(--text-muted); }
+
+/* ---------- Poster (colour field) ---------- */
+.ma-poster { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-6); min-height: 320px; padding: var(--space-6); box-sizing: border-box; border-radius: var(--radius-card); color: var(--ink); }
+.ma-poster--coral { background: var(--coral); } .ma-poster--yellow { background: var(--yellow); } .ma-poster--purple { background: var(--purple); }
+.ma-poster--sky { background: var(--sky); } .ma-poster--pink { background: var(--pink); } .ma-poster--teal { background: var(--teal); }
+.ma-poster--lilac { background: var(--lilac); } .ma-poster--green { background: var(--green); } .ma-poster--cream { background: var(--cream); }
+.ma-poster--ink { background: var(--ink); color: var(--white); --logo-mark: var(--coral); }
+.ma-poster__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); font-size: 13px; line-height: 20px; font-weight: 500; }
+.ma-poster__title { margin: 0; font-size: clamp(36px, 6vw, 56px); line-height: 1.2; font-weight: 700; text-wrap: balance; }
+.ma-poster__title--latin { font-family: var(--font-condensed); text-transform: uppercase; line-height: .95; }
+
+/* ---------- Course card ---------- */
+.ma-card { display: flex; flex-direction: column; overflow: hidden; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-card); text-decoration: none; transition: border-color var(--dur) var(--ease); }
+.ma-card:hover { border-color: var(--line-strong); }
+.ma-card__media { aspect-ratio: 16 / 10; max-width: 100%; display: flex; align-items: flex-end; padding: var(--space-4); color: var(--ink); }
+.ma-card__body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-6); flex: 1; }
+.ma-card__title { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; }
+.ma-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: 13px; line-height: 20px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ma-card__meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ma-card__meta svg { width: 14px; height: 14px; fill: currentColor; }
+.ma-card__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4); border-block-start: 1px solid var(--line); margin-block-start: auto; }
+
+/* ---------- Avatar ---------- */
+.ma-avatar { display: inline-grid; place-content: center; width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--yellow); color: var(--ink); font-weight: 700; font-size: 15px; flex: none; }
+.ma-person { display: flex; align-items: center; gap: var(--space-3); }
+.ma-person__name { font-weight: 500; font-size: 14px; line-height: 20px; }
+.ma-person__role { font-size: 12px; line-height: 16px; color: var(--text-muted); }
+
+/* ---------- Progress ---------- */
+.ma-progress { display: flex; flex-direction: column; gap: var(--space-2); }
+.ma-progress__row { display: flex; justify-content: space-between; font-size: 13px; line-height: 20px; font-variant-numeric: tabular-nums; }
+.ma-progress__track { height: 8px; overflow: hidden; border-radius: var(--radius-full); background: var(--line); }
+.ma-progress__bar { height: 100%; border-radius: var(--radius-full); background: var(--accent); }
+
+/* ---------- Alert ---------- */
+.ma-alert { display: flex; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius-card); color: var(--ink); }
+.ma-alert svg { width: 20px; height: 20px; fill: currentColor; flex: none; margin-block-start: 2px; }
+.ma-alert__title { margin: 0; font-weight: 700; }
+.ma-alert__text { margin: 0; font-size: 14px; line-height: 22px; }
+.ma-alert--success { background: var(--success); } .ma-alert--warning { background: var(--warning); }
+.ma-alert--danger { background: var(--danger); } .ma-alert--info { background: var(--sky); }
+
+/* ---------- Tabs ---------- */
+.ma-tabs { display: flex; gap: var(--space-6); border-block-end: 1px solid var(--line); overflow-x: auto; }
+.ma-tabs button { appearance: none; background: none; border: 0; padding: var(--space-3) 0; font: inherit; font-weight: 500; color: var(--text-muted); cursor: pointer; border-block-end: 3px solid transparent; margin-block-end: -1px; white-space: nowrap; }
+.ma-tabs button[aria-selected="true"] { color: var(--text); border-block-end-color: var(--accent); }
+.ma-tabs button:hover { color: var(--text); }
+
+/* ---------- Footer ---------- */
+.ma-footer { background: var(--ink); color: var(--white); --logo-mark: var(--coral); padding-block: var(--space-12); }
+.ma-footer a { color: rgba(255,255,255,.72); text-decoration: none; }
+.ma-footer a:hover { color: var(--white); }
+.ma-footer__small { color: rgba(255,255,255,.64); font-size: 13px; line-height: 20px; }
+
+/* ---------- Logo (inline SVG via <use href="#ma-logo"> / "#ma-mark") ---------- */
+.ma-logo { display: inline-block; vertical-align: middle; color: var(--text); --logo-mark: var(--coral); }
+
+/* ---------- Documentation chrome (not part of the kit) ---------- */
+html { background: var(--surface); }
+body { background: var(--surface); color: var(--text); }
+.doc-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60; background: var(--surface); border-block-end: 1px solid var(--line); }
+.doc-bar__inner { display: flex; align-items: center; gap: var(--space-4); min-height: 64px; flex-wrap: wrap; padding-block: var(--space-2); }
+.doc-bar__title { font-size: 13px; line-height: 16px; color: var(--text-muted); border-inline-start: 1px solid var(--line); padding-inline-start: var(--space-4); }
+.doc-toc { display: flex; gap: var(--space-4); flex-wrap: wrap; margin-inline-start: auto; font-size: 14px; }
+.doc-toc a { color: var(--text-muted); text-decoration: none; }
+.doc-toc a:hover { color: var(--text); }
+.seg { display: inline-flex; border: 1px solid var(--line-strong); }
+.seg button { appearance: none; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 13px; font-weight: 500; padding: 6px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--text); color: var(--surface); }
+@media (max-width: 899px) { .doc-toc { display: none; } .seg { margin-inline-start: auto; } }
+
+.doc-hero { padding-block: var(--space-12) var(--space-8); display: grid; gap: var(--space-8); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .doc-hero { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: end; } }
+.doc-hero h1 { margin: 0; font-size: clamp(44px, 7vw, 80px); line-height: .95; letter-spacing: -.03em; font-weight: 700; text-wrap: balance; }
+.doc-hero p { margin: var(--space-4) 0 0; max-width: 34em; color: var(--text-muted); font-size: 18px; line-height: 28px; }
+.doc-blocks { display: grid; grid-template-columns: 2fr 1fr 1.4fr; grid-template-rows: 88px 88px; gap: var(--space-2); }
+.doc-blocks div:nth-child(1) { grid-row: span 2; background: var(--coral); }
+.doc-blocks div:nth-child(2) { background: var(--purple); }
+.doc-blocks div:nth-child(3) { background: var(--text); grid-row: span 2; display: flex; align-items: flex-end; padding: var(--space-3); color: var(--surface); --logo-mark: var(--coral); }
+.doc-blocks div:nth-child(4) { background: var(--yellow); }
+
+.doc-section { padding-block: var(--space-12); border-block-start: 1px solid var(--line); }
+.doc-sub { margin: var(--space-12) 0 var(--space-4); font-size: 20px; line-height: 26px; font-weight: 500; }
+.doc-note { margin: 0 0 var(--space-6); max-width: 42em; color: var(--text-muted); }
+.doc-note code, .doc code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .88em; background: var(--surface-alt); padding: 1px 4px; }
+.doc-mono { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums; }
+
+/* colour */
+.sw-primary { display: grid; gap: var(--space-2); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.sw-secondary { display: grid; gap: var(--space-2); grid-template-columns: repeat(6, minmax(0, 1fr)); margin-block-start: var(--space-2); }
+@media (max-width: 700px) { .sw-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sw-secondary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.sw { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-4); padding: var(--space-3); color: var(--ink); min-height: 120px; box-sizing: border-box; }
+.sw-primary .sw { min-height: 180px; }
+.sw b { font-size: 15px; line-height: 20px; }
+.sw--ink { color: var(--white); } .sw--cream { box-shadow: inset 0 0 0 1px var(--line); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table.tbl { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; line-height: 20px; }
+.tbl th, .tbl td { text-align: start; padding: var(--space-3) var(--space-4); border-block-end: 1px solid var(--line); vertical-align: middle; }
+.tbl th { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; background: var(--surface-alt); }
+.tbl tr:last-child td { border-block-end: 0; }
+.chip { display: inline-flex; align-items: center; gap: var(--space-2); }
+.chip i { width: 20px; height: 20px; display: inline-block; box-shadow: inset 0 0 0 1px rgba(128,128,128,.4); }
+
+/* type */
+.spec { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: var(--space-4); align-items: baseline; padding-block: var(--space-4); border-block-end: 1px solid var(--line); }
+@media (max-width: 600px) { .spec { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); } }
+.spec > div:last-child { overflow-wrap: anywhere; }
+.spec .doc-mono { color: var(--text-muted); }
+.kashida { font-family: var(--font-arabic); font-weight: 700; font-size: clamp(40px, 7vw, 72px); line-height: 1.3; }
+
+/* space & shape */
+.scale { display: grid; gap: var(--space-2); }
+.scale div { display: grid; grid-template-columns: 90px 50px minmax(0, 1fr); gap: var(--space-3); align-items: center; }
+.scale span.bar { height: 16px; background: var(--coral); }
+.shapes { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }
+.shape { display: flex; flex-direction: column; gap: var(--space-2); font-size: 14px; }
+.shape div { height: 96px; background: var(--yellow); }
+
+/* logos */
+.logos { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+.logos > div { min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-4); padding: var(--space-4); box-sizing: border-box; }
+.logos small { font-size: 12px; line-height: 16px; }
+
+/* CTA matrix */
+.matrix-wrap { overflow-x: auto; border: 1px solid var(--line); }
+.matrix { display: grid; grid-template-columns: 120px repeat(6, minmax(140px, 1fr)); min-width: 980px; }
+.matrix > div { padding: var(--space-4); border-block-end: 1px solid var(--line); display: flex; align-items: center; }
+.matrix .mh { font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); background: var(--surface-alt); }
+.matrix .rh { font-weight: 500; font-size: 14px; }
+.grounds { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.ground { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+.ground--coral { background: var(--coral); color: var(--ink); border-color: transparent; }
+.ground--purple { background: var(--purple); color: var(--ink); border-color: transparent; }
+.ground small { font-size: 12px; line-height: 16px; font-weight: 500; }
+.dodont { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.dodont > div { border-block-start: 3px solid var(--text); padding-block-start: var(--space-3); }
+.dodont > div.dont { border-block-start-color: var(--danger); }
+.dodont h4 { margin: 0 0 var(--space-2); font-size: 16px; }
+.dodont ul { margin: 0; padding-inline-start: 1.1em; color: var(--text-muted); font-size: 15px; }
+
+/* component rows */
+.comp { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); padding-block: var(--space-8); border-block-end: 1px solid var(--line); }
+@media (min-width: 1000px) { .comp { grid-template-columns: 300px minmax(0, 1fr); } }
+.comp h3 { margin: 0 0 var(--space-2); font-size: 20px; line-height: 26px; }
+.comp h3 code { font-size: 13px; font-weight: 400; color: var(--text-muted); background: none; padding: 0; display: block; margin-block-start: var(--space-1); }
+.comp p { margin: 0 0 var(--space-3); color: var(--text-muted); font-size: 15px; line-height: 24px; }
+.comp ul { margin: 0; padding-inline-start: 1.1em; color: var(--text-muted); font-size: 14px; line-height: 22px; }
+.stage { padding: var(--space-6); background: var(--surface-alt); overflow: hidden; }
+.stage.plain { background: var(--surface); border: 1px solid var(--line); }
+details.code { margin-block-start: var(--space-2); border: 1px solid var(--line); }
+details.code summary { cursor: pointer; padding: var(--space-2) var(--space-4); font-size: 13px; font-weight: 500; color: var(--text-muted); }
+details.code pre { margin: 0; padding: var(--space-4); overflow-x: auto; background: var(--surface-alt); border-block-start: 1px solid var(--line); font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; line-height: 18px; white-space: pre; }
+
+/* product frames */
+.frames { display: grid; gap: var(--space-8); grid-template-columns: minmax(0, 1fr); }
+.frames > div { min-width: 0; }
+.frame-label { display: flex; align-items: center; gap: var(--space-3); margin-block-end: var(--space-3); font-weight: 500; }
+.frame { border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); overflow: hidden; }
+.frame .ma-nav { position: static; }
+.p-hero { display: grid; gap: var(--space-8); grid-template-columns: minmax(0, 1fr); padding-block: var(--space-12); }
+@media (min-width: 900px) { .p-hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; } }
+.p-hero h1 { margin: 0; font-size: clamp(40px, 6vw, 68px); line-height: 1.25; font-weight: 700; text-wrap: balance; }
+.p-hero p { margin: var(--space-4) 0 var(--space-8); color: var(--text-muted); max-width: 32em; }
+.p-art { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 150px 110px; gap: var(--space-2); }
+.p-art > div { padding: var(--space-4); display: flex; flex-direction: column; justify-content: space-between; }
+.p-art .a1 { grid-row: span 2; background: var(--coral); color: var(--ink); }
+.p-art .a2 { background: var(--text); color: var(--surface); --logo-mark: var(--coral); }
+.p-art .a3 { background: var(--yellow); color: var(--ink); }
+.p-art strong { font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+.p-continue { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); align-items: center; padding: var(--space-6); border: 1px solid var(--line); background: var(--surface); }
+@media (min-width: 800px) { .p-continue { grid-template-columns: minmax(0, 1fr) 280px auto; } }
+.p-cta { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); align-items: end; padding: var(--space-8); background: var(--coral); color: var(--ink); }
+@media (min-width: 800px) { .p-cta { grid-template-columns: minmax(0, 1fr) auto; } }
+.p-cta h2 { margin: 0; font-size: clamp(32px, 5vw, 48px); line-height: 1.3; }
+.p-foot { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.p-foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: 14px; }
+.p-foot h4 { margin: 0 0 var(--space-3); font-size: 14px; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="ma-mark" viewBox="594.56 246.95 140.90 58.71"><g style="fill:var(--logo-mark, currentColor)"><path d="M 665.007812 246.945312 L 665.007812 277.980469 C 671.410156 277.980469 677.214844 280.539062 681.449219 284.699219 C 681.566406 284.800781 681.675781 284.90625 681.773438 285.023438 L 695.539062 298.789062 C 699.75 303 705.554688 305.617188 711.972656 305.660156 L 711.972656 274.628906 C 705.554688 274.585938 699.75 271.96875 695.539062 267.757812 L 694.488281 266.714844 L 681.390625 253.617188 C 677.164062 249.480469 671.386719 246.945312 665.007812 246.945312 "/><path d="M 618.042969 246.945312 L 618.042969 277.980469 C 624.445312 277.980469 630.246094 280.539062 634.484375 284.699219 C 634.601562 284.800781 634.710938 284.90625 634.808594 285.023438 L 648.574219 298.789062 C 652.785156 303 658.589844 305.617188 665.007812 305.660156 L 665.007812 274.628906 C 658.589844 274.585938 652.785156 271.96875 648.574219 267.757812 L 647.523438 266.714844 L 634.425781 253.617188 C 630.199219 249.480469 624.421875 246.945312 618.042969 246.945312 "/><path d="M 594.558594 302.308594 L 618.039062 302.308594 L 618.039062 274.628906 L 594.558594 274.628906 Z M 594.558594 302.308594 "/><path d="M 711.972656 277.980469 L 735.457031 277.980469 L 735.457031 250.296875 L 711.972656 250.296875 Z M 711.972656 277.980469 "/></g></symbol><symbol id="ma-logo" viewBox="514.83 512.81 300.36 34.08"><g style="fill:var(--logo-mark, currentColor)"><path d="M 552.066406 512.808594 L 552.066406 529.210938 C 555.449219 529.210938 558.519531 530.5625 560.757812 532.761719 C 560.820312 532.816406 560.875 532.871094 560.929688 532.933594 L 568.203125 540.210938 C 570.429688 542.4375 573.5 543.820312 576.890625 543.84375 L 576.890625 527.4375 C 573.5 527.417969 570.429688 526.03125 568.203125 523.808594 L 567.648438 523.257812 L 560.957031 516.5625 L 560.726562 516.332031 C 558.492188 514.148438 555.4375 512.808594 552.066406 512.808594 "/><path d="M 527.238281 512.808594 L 527.238281 529.210938 C 530.625 529.210938 533.691406 530.5625 535.929688 532.761719 C 535.992188 532.816406 536.050781 532.871094 536.101562 532.933594 L 543.378906 540.210938 C 545.605469 542.4375 548.671875 543.820312 552.066406 543.84375 L 552.066406 527.4375 C 548.671875 527.417969 545.605469 526.03125 543.378906 523.808594 L 542.824219 523.257812 L 535.898438 516.332031 C 533.664062 514.148438 530.613281 512.808594 527.238281 512.808594 "/><path d="M 514.828125 542.070312 L 527.238281 542.070312 L 527.238281 527.441406 L 514.828125 527.441406 Z M 514.828125 542.070312 "/><path d="M 576.894531 529.210938 L 589.304688 529.210938 L 589.304688 514.578125 L 576.894531 514.578125 Z M 576.894531 529.210938 "/></g><g fill="currentColor"><path d="M 611.824219 536.625 L 606.398438 521.699219 L 601.71875 521.699219 L 601.71875 542.050781 L 605.410156 542.050781 L 605.410156 527.949219 L 610.324219 542.050781 L 613.296875 542.050781 L 618.214844 527.949219 L 618.214844 542.050781 L 621.902344 542.050781 L 621.902344 521.699219 L 617.226562 521.699219 Z M 611.824219 536.625 "/><path d="M 629.675781 539.695312 C 628.242188 539.695312 627.542969 539.105469 627.542969 537.894531 C 627.542969 536.640625 628.4375 535.976562 630.835938 535.453125 C 631.726562 535.269531 632.84375 535 633.53125 534.675781 L 633.53125 536.421875 C 633.53125 538.472656 632.089844 539.695312 629.675781 539.695312 M 637.171875 539.988281 C 636.992188 539.828125 636.917969 539.515625 636.917969 538.953125 L 636.917969 532.195312 C 636.917969 528.738281 634.996094 526.984375 631.207031 526.984375 C 625.859375 526.984375 624.894531 530.171875 624.800781 532.070312 L 624.785156 532.3125 L 628.082031 532.3125 L 628.097656 532.101562 C 628.230469 530.347656 629.015625 529.753906 631.207031 529.753906 C 633.292969 529.753906 633.53125 530.65625 633.53125 531.332031 C 633.53125 532.476562 632.449219 532.734375 630.1875 533.164062 C 627.125 533.761719 624.132812 534.640625 624.132812 538.175781 C 624.132812 540.742188 626.101562 542.46875 629.035156 542.46875 C 631.003906 542.46875 632.632812 541.800781 633.671875 540.585938 C 634.035156 541.78125 634.859375 542.300781 636.351562 542.300781 C 636.921875 542.300781 637.417969 542.246094 638.128906 541.980469 L 638.28125 541.921875 L 638.28125 540.117188 L 638.027344 540.140625 C 637.609375 540.183594 637.328125 540.132812 637.171875 539.988281 "/><path d="M 646.226562 533.039062 L 646.046875 532.996094 C 645.769531 532.933594 645.5 532.875 645.238281 532.820312 C 643.496094 532.449219 642.585938 532.210938 642.585938 531.191406 C 642.585938 530.292969 643.507812 529.753906 645.050781 529.753906 C 647.203125 529.753906 647.675781 530.796875 647.855469 531.816406 L 647.886719 532.007812 L 651.171875 532.007812 L 651.152344 531.757812 C 650.875 528.238281 647.804688 526.984375 645.023438 526.984375 C 641.523438 526.984375 639.171875 528.765625 639.171875 531.414062 C 639.171875 534.597656 641.945312 535.226562 644.175781 535.730469 L 644.664062 535.839844 C 644.914062 535.902344 645.15625 535.957031 645.394531 536.007812 C 647.28125 536.433594 648.269531 536.714844 648.269531 538.035156 C 648.269531 538.835938 647.433594 539.695312 645.605469 539.695312 C 642.671875 539.695312 642.152344 538.433594 642.027344 537.070312 L 642.007812 536.859375 L 638.714844 536.859375 L 638.726562 537.101562 C 638.886719 540.5625 641.351562 542.46875 645.664062 542.46875 C 649.316406 542.46875 651.679688 540.640625 651.679688 537.8125 C 651.679688 534.3125 648.78125 533.636719 646.226562 533.039062 "/><path d="M 657.660156 522.894531 L 654.246094 522.894531 L 654.246094 527.371094 L 652.1875 527.371094 L 652.1875 530.226562 L 654.246094 530.226562 L 654.246094 537.953125 C 654.246094 540.882812 655.46875 542.246094 658.09375 542.246094 C 658.84375 542.246094 659.496094 542.171875 660.152344 542.015625 L 660.328125 541.972656 L 660.328125 539.152344 L 660.085938 539.167969 C 659.050781 539.230469 658.34375 539.199219 657.992188 538.867188 C 657.765625 538.65625 657.660156 538.285156 657.660156 537.703125 L 657.660156 530.226562 L 660.328125 530.226562 L 660.328125 527.371094 L 657.660156 527.371094 Z M 657.660156 522.894531 "/><path d="M 668.089844 529.753906 C 670.214844 529.753906 671.667969 531.078125 671.773438 533.074219 L 664.265625 533.074219 C 664.382812 531.136719 665.953125 529.753906 668.089844 529.753906 M 668.089844 526.984375 C 663.640625 526.984375 660.875 529.949219 660.875 534.726562 C 660.875 539.429688 663.761719 542.46875 668.226562 542.46875 C 671.648438 542.46875 674.09375 540.671875 674.933594 537.539062 L 675.011719 537.246094 L 671.613281 537.246094 L 671.566406 537.414062 C 671.460938 537.78125 670.792969 539.609375 668.144531 539.609375 C 665.929688 539.609375 664.363281 538.019531 664.265625 535.707031 L 675.164062 535.707031 L 675.164062 535.476562 C 675.164062 530.078125 672.585938 526.984375 668.089844 526.984375 "/><path d="M 683.945312 527.039062 C 682.417969 527.039062 681.207031 527.824219 680.339844 529.382812 L 680.339844 527.371094 L 676.953125 527.371094 L 676.953125 542.050781 L 680.339844 542.050781 L 680.339844 534.558594 C 680.339844 533.152344 680.847656 531.945312 681.769531 531.164062 C 682.65625 530.414062 683.851562 530.121094 685.167969 530.339844 L 685.457031 530.339844 L 685.457031 527.152344 L 685.253906 527.125 C 684.796875 527.0625 684.429688 527.039062 683.945312 527.039062 "/><path d="M 697.003906 527.371094 L 693.488281 537.859375 L 689.652344 527.371094 L 686.007812 527.371094 L 691.277344 540.457031 C 691.882812 541.980469 691.160156 543.027344 690.925781 543.3125 C 690.414062 543.9375 689.691406 544.105469 688.324219 543.921875 L 687.84375 543.921875 L 687.84375 546.558594 L 688.015625 546.605469 C 688.546875 546.738281 689.269531 546.890625 690.160156 546.890625 C 693.078125 546.890625 694.035156 544.949219 694.828125 542.789062 L 700.617188 527.371094 Z M 697.003906 527.371094 "/><path d="M 711.484375 534.132812 L 705.8125 534.132812 L 708.660156 525.613281 Z M 706.746094 521.699219 L 699.261719 542.050781 L 703.125 542.050781 L 704.738281 537.347656 L 712.527344 537.347656 L 714.144531 542.050781 L 718.003906 542.050781 L 710.546875 521.699219 Z M 706.746094 521.699219 "/><path d="M 725.339844 529.839844 C 727.605469 529.839844 728.53125 531.378906 728.644531 532.824219 L 728.660156 533.035156 L 732.054688 533.035156 L 732.023438 532.777344 C 731.628906 529.257812 728.996094 526.984375 725.3125 526.984375 C 721 526.984375 718.101562 530.09375 718.101562 534.722656 C 718.101562 539.355469 721.011719 542.464844 725.339844 542.464844 C 729.039062 542.464844 731.789062 540.03125 732.027344 536.546875 L 732.042969 536.300781 L 728.65625 536.300781 L 728.644531 536.515625 C 728.578125 537.445312 728.125 539.609375 725.339844 539.609375 C 722.496094 539.609375 721.484375 537.085938 721.484375 534.722656 C 721.484375 532.363281 722.496094 529.839844 725.339844 529.839844 "/><path d="M 738.511719 539.695312 C 737.078125 539.695312 736.378906 539.105469 736.378906 537.894531 C 736.378906 536.640625 737.273438 535.976562 739.671875 535.453125 C 740.5625 535.269531 741.679688 535 742.371094 534.675781 L 742.371094 536.421875 C 742.371094 538.472656 740.929688 539.695312 738.511719 539.695312 M 746.007812 539.988281 C 745.828125 539.828125 745.753906 539.515625 745.753906 538.953125 L 745.753906 532.195312 C 745.753906 528.738281 743.832031 526.984375 740.042969 526.984375 C 734.695312 526.984375 733.734375 530.171875 733.636719 532.070312 L 733.625 532.3125 L 736.917969 532.3125 L 736.9375 532.101562 C 737.070312 530.347656 737.851562 529.753906 740.042969 529.753906 C 742.128906 529.753906 742.371094 530.65625 742.371094 531.332031 C 742.371094 532.476562 741.285156 532.734375 739.023438 533.164062 C 735.960938 533.761719 732.96875 534.640625 732.96875 538.175781 C 732.96875 540.742188 734.941406 542.46875 737.871094 542.46875 C 739.84375 542.46875 741.46875 541.800781 742.507812 540.585938 C 742.875 541.78125 743.699219 542.300781 745.1875 542.300781 C 745.757812 542.300781 746.253906 542.246094 746.964844 541.980469 L 747.117188 541.921875 L 747.117188 540.117188 L 746.863281 540.140625 C 746.445312 540.183594 746.164062 540.132812 746.007812 539.988281 "/><path d="M 754.703125 539.613281 C 752.152344 539.613281 751.011719 537.15625 751.011719 534.726562 C 751.011719 532.292969 752.152344 529.839844 754.703125 529.839844 C 756.976562 529.839844 758.335938 531.664062 758.335938 534.726562 C 758.335938 537.738281 756.945312 539.613281 754.703125 539.613281 M 758.363281 528.730469 C 757.65625 527.933594 756.359375 526.984375 754.203125 526.984375 C 750.269531 526.984375 747.628906 530.09375 747.628906 534.726562 C 747.628906 539.355469 750.269531 542.46875 754.203125 542.46875 C 756.296875 542.46875 757.625 541.519531 758.363281 540.738281 L 758.363281 542.050781 L 761.75 542.050781 L 761.75 521.699219 L 758.363281 521.699219 Z M 758.363281 528.730469 "/><path d="M 770.765625 529.753906 C 772.890625 529.753906 774.34375 531.078125 774.449219 533.074219 L 766.941406 533.074219 C 767.058594 531.136719 768.628906 529.753906 770.765625 529.753906 M 770.765625 526.984375 C 766.316406 526.984375 763.550781 529.949219 763.550781 534.726562 C 763.550781 539.429688 766.4375 542.46875 770.902344 542.46875 C 774.324219 542.46875 776.769531 540.671875 777.609375 537.539062 L 777.6875 537.246094 L 774.289062 537.246094 L 774.242188 537.414062 C 774.132812 537.78125 773.46875 539.609375 770.820312 539.609375 C 768.605469 539.609375 767.039062 538.019531 766.9375 535.707031 L 777.839844 535.707031 L 777.839844 535.476562 C 777.839844 530.078125 775.261719 526.984375 770.765625 526.984375 "/><path d="M 795.550781 526.984375 C 793.699219 526.984375 792.222656 527.707031 790.929688 529.261719 C 790.230469 527.746094 788.933594 526.984375 787.066406 526.984375 C 785.007812 526.984375 783.726562 527.988281 783.011719 528.824219 L 783.011719 527.371094 L 779.628906 527.371094 L 779.628906 542.050781 L 783.011719 542.050781 L 783.011719 533.167969 C 783.011719 531.164062 784.152344 529.921875 785.980469 529.921875 C 787.820312 529.921875 788.167969 530.945312 788.167969 532.832031 L 788.167969 542.050781 L 791.582031 542.050781 L 791.582031 533.167969 C 791.582031 531.164062 792.71875 529.921875 794.546875 529.921875 C 796.363281 529.921875 796.707031 530.945312 796.707031 532.832031 L 796.707031 542.050781 L 800.121094 542.050781 L 800.121094 532 C 800.121094 528.765625 798.496094 526.984375 795.550781 526.984375 "/><path d="M 811.574219 527.371094 L 808.058594 537.859375 L 804.226562 527.371094 L 800.574219 527.371094 L 805.851562 540.457031 C 806.453125 541.980469 805.730469 543.027344 805.496094 543.3125 C 804.984375 543.9375 804.261719 544.105469 802.894531 543.921875 L 802.410156 543.921875 L 802.410156 546.558594 L 802.589844 546.605469 C 803.117188 546.738281 803.839844 546.890625 804.730469 546.890625 C 807.652344 546.890625 808.605469 544.949219 809.398438 542.789062 L 815.1875 527.371094 Z M 811.574219 527.371094 "/></g></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 11h11.2l-4.6-4.6L12 5l7 7-7 7-1.4-1.4 4.6-4.6H4z"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M3 3h12v12H3zM5 5v8h8V5z"/><path d="M14.3 15.7l1.4-1.4 5.6 5.6-1.4 1.4z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M2 2h20v20H2zm2 2v16h16V4zm7 2h2v6h5v2h-7z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M3 4h8v17H3zm10 0h8v17h-8z"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2L1 21h22zm-1 7h2v6h-2zm0 8h2v2h-2z"/></symbol></defs></svg>
+
+<div class="ma-page">
+<header class="doc-bar">
+  <div class="ma-container doc-bar__inner">
+    <svg class="ma-logo" width="176" height="20" aria-label="Mastery Academy" role="img"><use href="#ma-logo"/></svg>
+    <span class="doc-bar__title">UI kit · v1</span>
+    <nav class="doc-toc" aria-label="Sections">
+      <a href="#colour">Colour</a><a href="#type">Type</a><a href="#shape">Space &amp; shape</a><a href="#logo">Logo</a><a href="#cta">CTAs</a><a href="#components">Components</a><a href="#product">Product</a>
+    </nav>
+    <div class="seg" role="group" aria-label="Theme">
+      <button type="button" id="th-system" data-t="system" aria-pressed="true">Auto</button>
+      <button type="button" id="th-light" data-t="light" aria-pressed="false">Light</button>
+      <button type="button" id="th-dark" data-t="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<main class="ma-container">
+  <section class="doc-hero">
+    <div>
+      <h1>Mastery Academy UI kit</h1>
+      <p>Every token, component and call to action in the Mastery Academy design system, live in both themes. Switch Light / Dark at the top, or scroll to the product sample to see both side by side.</p>
+    </div>
+    <div class="doc-blocks" aria-hidden="true"><div></div><div></div><div><svg class="ma-logo" width="64" height="27" style="color:inherit"><use href="#ma-mark"/></svg></div><div></div></div>
+  </section>
+
+  <!-- COLOUR -->
+  <section class="doc-section" id="colour">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 01</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Colour</h2>
+      <p class="ma-sechead__lead">Four primaries carry the identity; six secondaries add range. Use them as large solid fields, one colour per field. Text on any brand colour is ink.</p>
+    </header>
+    <h3 class="doc-sub">Primary</h3>
+    <div class="sw-primary">
+      <div class="sw" style="background:var(--coral)"><b>Coral</b><span class="doc-mono">--coral<br>#FF6555 · C0 M72 Y60 K0</span></div>
+      <div class="sw sw--ink" style="background:var(--ink)"><b>Ink</b><span class="doc-mono">--ink<br>#17161B · C83 M75 Y58 K82</span></div>
+      <div class="sw" style="background:var(--yellow)"><b>Yellow</b><span class="doc-mono">--yellow<br>#FFCD4C · C0 M21 Y77 K0</span></div>
+      <div class="sw" style="background:var(--purple)"><b>Purple</b><span class="doc-mono">--purple<br>#8A64FF · C68 M65 Y0 K0</span></div>
+    </div>
+    <h3 class="doc-sub">Secondary</h3>
+    <div class="sw-secondary">
+      <div class="sw" style="background:var(--sky)"><b>Sky</b><span class="doc-mono">#49D4FF</span></div>
+      <div class="sw" style="background:var(--pink)"><b>Pink</b><span class="doc-mono">#FD4B7D</span></div>
+      <div class="sw" style="background:var(--teal)"><b>Teal</b><span class="doc-mono">#13E5CC</span></div>
+      <div class="sw" style="background:var(--lilac)"><b>Lilac</b><span class="doc-mono">#E89CFF</span></div>
+      <div class="sw" style="background:var(--green)"><b>Green</b><span class="doc-mono">#1FED8B</span></div>
+      <div class="sw sw--cream" style="background:var(--cream)"><b>Cream</b><span class="doc-mono">#FFFEEB</span></div>
+    </div>
+    <h3 class="doc-sub">Role tokens (these change with the theme)</h3>
+    <p class="doc-note">Build interfaces from role tokens, never from raw brand colours, so both themes work with no extra code.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td class="doc-mono">--surface</td><td><span class="chip"><i style="background:#fff"></i><span class="doc-mono">#FFFFFF</span></span></td><td><span class="chip"><i style="background:#17161b"></i><span class="doc-mono">#17161B</span></span></td><td>Page background</td></tr>
+          <tr><td class="doc-mono">--surface-alt</td><td><span class="chip"><i style="background:#fffeeb"></i><span class="doc-mono">#FFFEEB</span></span></td><td><span class="chip"><i style="background:#000"></i><span class="doc-mono">#000000</span></span></td><td>Bands, stages, table heads</td></tr>
+          <tr><td class="doc-mono">--text</td><td><span class="chip"><i style="background:#17161b"></i><span class="doc-mono">#17161B</span></span></td><td><span class="chip"><i style="background:#fff"></i><span class="doc-mono">#FFFFFF</span></span></td><td>Body text, icons, secondary button fill</td></tr>
+          <tr><td class="doc-mono">--text-muted</td><td><span class="doc-mono">ink 64%</span></td><td><span class="doc-mono">white 64%</span></td><td>Captions, meta, running headers</td></tr>
+          <tr><td class="doc-mono">--line</td><td><span class="doc-mono">ink 16%</span></td><td><span class="doc-mono">white 16%</span></td><td>Dividers, card borders</td></tr>
+          <tr><td class="doc-mono">--line-strong</td><td><span class="doc-mono">#17161B</span></td><td><span class="doc-mono">#FFFFFF</span></td><td>Structural rules, inputs</td></tr>
+          <tr><td class="doc-mono">--accent / --on-accent</td><td colspan="2"><span class="chip"><i style="background:#ff6555"></i><span class="doc-mono">coral / ink (both themes)</span></span></td><td>Primary CTA, title rule, active tab</td></tr>
+          <tr><td class="doc-mono">--focus</td><td colspan="2"><span class="chip"><i style="background:#8a64ff"></i><span class="doc-mono">purple (both themes)</span></span></td><td>2px focus ring</td></tr>
+          <tr><td class="doc-mono">--success / --warning / --danger</td><td colspan="2"><span class="chip"><i style="background:#1fed8b"></i><i style="background:#ffcd4c"></i><i style="background:#fd4b7d"></i><span class="doc-mono">green / yellow / pink</span></span></td><td>Status fills with ink text + a word</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="doc-section" id="type">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 02</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Typography</h2>
+      <p class="ma-sechead__lead">Neue Montreal for English, Swissra for Arabic, Kaneda Gothic for condensed poster lines. Bold is the headline weight. Until the licensed files are installed this page renders IBM Plex Sans Arabic, Helvetica/Arial and Oswald in their place.</p>
+    </header>
+    <h3 class="doc-sub">English: Neue Montreal</h3>
+    <div class="spec"><span class="doc-mono">.t-display<br>64/64 · 700</span><div class="t-display">Bold is our headline weight.</div></div>
+    <div class="spec"><span class="doc-mono">.t-h1<br>40/44 · 700</span><div class="t-h1">Leadership Training Diploma</div></div>
+    <div class="spec"><span class="doc-mono">.t-h2<br>32/38 · 700</span><div class="t-h2">Primary colors</div></div>
+    <div class="spec"><span class="doc-mono">.t-h3<br>24/30 · 500</span><div class="t-h3">Logo and wordmark</div></div>
+    <div class="spec"><span class="doc-mono">.t-h4<br>20/26 · 500</span><div class="t-h4">Clear space</div></div>
+    <div class="spec"><span class="doc-mono">.t-body<br>16/24 · 400</span><div class="t-body">The logo contains sharp, non-curved corners. When you enlarge or reduce it, keep its proportions.</div></div>
+    <div class="spec"><span class="doc-mono">.t-caption<br>12/16 · 400</span><div class="t-caption">Design System / 01 · Mastery Academy</div></div>
+    <h3 class="doc-sub">Arabic: Swissra</h3>
+    <div dir="rtl">
+      <div class="spec"><span class="doc-mono" dir="ltr">.t-ar-display<br>64/80 · 700</span><div class="t-ar-display">لنبدأ التعلم اليوم.</div></div>
+      <div class="spec"><span class="doc-mono" dir="ltr">.t-ar-h1<br>40/56 · 700</span><div class="t-ar-h1">ماستري أكاديمي</div></div>
+      <div class="spec"><span class="doc-mono" dir="ltr">.t-ar-h2<br>28/40 · 500</span><div class="t-ar-h2">النظام اللوني</div></div>
+      <div class="spec"><span class="doc-mono" dir="ltr">.t-ar-body<br>17/28 · 400</span><div class="t-ar-body">تأسست أكاديمية إتقان للتدريب والتطوير في عام 2007، وتقدم خدمات التدريب على القيادة والإدارة لكبار القادة في القطاعين الحكومي والخاص.</div></div>
+      <div class="spec"><span class="doc-mono" dir="ltr">.t-ar-caption<br>13/20 · 400</span><div class="t-ar-caption">ماستري أكاديمي© — نظرة عامة</div></div>
+    </div>
+    <h3 class="doc-sub">Signature: kashida stretch</h3>
+    <p class="doc-note">On covers and posters only, stretch Arabic display words with tatweel (ـ). Never in body copy.</p>
+    <div class="kashida" dir="rtl">ماسـتـــري أكـاديـمـي</div>
+    <h3 class="doc-sub">Poster: Kaneda Gothic</h3>
+    <div class="spec"><span class="doc-mono">.t-poster<br>72/68 · 700 · caps</span><div class="t-poster">Live . 8pm</div></div>
+  </section>
+
+  <!-- SPACE & SHAPE -->
+  <section class="doc-section" id="shape">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 03</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Space and shape</h2>
+      <p class="ma-sechead__lead">An 8px rhythm, soft rounded corners, and 1px rules instead of shadows.</p>
+    </header>
+    <h3 class="doc-sub">Spacing scale</h3>
+    <div class="scale">
+      <div><span class="doc-mono">--space-1</span><span class="doc-mono">4px</span><span class="bar" style="width:4px"></span></div>
+      <div><span class="doc-mono">--space-2</span><span class="doc-mono">8px</span><span class="bar" style="width:8px"></span></div>
+      <div><span class="doc-mono">--space-3</span><span class="doc-mono">12px</span><span class="bar" style="width:12px"></span></div>
+      <div><span class="doc-mono">--space-4</span><span class="doc-mono">16px</span><span class="bar" style="width:16px"></span></div>
+      <div><span class="doc-mono">--space-6</span><span class="doc-mono">24px</span><span class="bar" style="width:24px"></span></div>
+      <div><span class="doc-mono">--space-8</span><span class="doc-mono">32px</span><span class="bar" style="width:32px"></span></div>
+      <div><span class="doc-mono">--space-12</span><span class="doc-mono">48px</span><span class="bar" style="width:48px"></span></div>
+      <div><span class="doc-mono">--space-16</span><span class="doc-mono">64px</span><span class="bar" style="width:64px"></span></div>
+    </div>
+    <h3 class="doc-sub">Corners and rules</h3>
+    <div class="shapes">
+      <div class="shape"><div></div><b>radius-none · 0</b><span style="color:var(--text-muted)">Rules, bands, full-bleed colour fields.</span></div>
+      <div class="shape"><div style="border-radius:var(--radius-tag)"></div><b>radius-tag · 6px</b><span style="color:var(--text-muted)">Tags, badges, small chips.</span></div>
+      <div class="shape"><div style="border-radius:var(--radius-control)"></div><b>radius-control · 10px</b><span style="color:var(--text-muted)">Buttons, inputs, filter chips.</span></div>
+      <div class="shape"><div style="border-radius:var(--radius-soft)"></div><b>radius-soft · 12px</b><span style="color:var(--text-muted)">Photos and app tiles.</span></div>
+      <div class="shape"><div style="border-radius:var(--radius-card)"></div><b>radius-card · 16px</b><span style="color:var(--text-muted)">Cards, posters, alerts, dialogs.</span></div>
+      <div class="shape"><div style="border-radius:var(--radius-full);width:96px"></div><b>radius-full</b><span style="color:var(--text-muted)">Avatars, bare icon buttons, badges.</span></div>
+      <div class="shape"><div style="background:none;border-block-start:1px solid var(--line-strong);height:40px"></div><b>rule-hairline · 1px</b><span style="color:var(--text-muted)">All borders and dividers.</span></div>
+      <div class="shape"><div style="background:none;height:40px;position:relative"><span style="position:absolute;inset-block-start:0;inset-inline-start:0;width:54px;height:3px;background:var(--accent)"></span></div><b>rule-accent · 3px × 54px</b><span style="color:var(--text-muted)">Under titles; active tab.</span></div>
+    </div>
+    <h3 class="doc-sub">Layout</h3>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>Constant</th><th>Value</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td class="doc-mono">--container</td><td class="doc-mono">1200px</td><td>Max content width, centred; gutter 16px (&lt;600px) / 24px.</td></tr>
+        <tr><td class="doc-mono">--header-h</td><td class="doc-mono">72px</td><td>Sticky top navigation.</td></tr>
+        <tr><td class="doc-mono">breakpoints</td><td class="doc-mono">600 · 900 · 1200</td><td>Phone → tablet → desktop → wide. Mobile-first min-width queries.</td></tr>
+        <tr><td class="doc-mono">.ma-section</td><td class="doc-mono">48px / 64px</td><td>Vertical section padding, mobile / ≥900px.</td></tr>
+        <tr><td class="doc-mono">.ma-grid</td><td class="doc-mono">auto-fill, min 260px, gap 24px</td><td>Card grids; 1 column on phones, up to 4 on desktop.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- LOGO -->
+  <section class="doc-section" id="logo">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 04</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Logo</h2>
+      <p class="ma-sechead__lead">Coral mark with an ink or white wordmark is the hero lockup. On a colour field, the whole logo takes one ink. Clear space is one wave module on every side; place it in a corner or bottom-centre.</p>
+    </header>
+    <div class="logos">
+      <div style="background:#fff;color:var(--ink);border:1px solid var(--line)"><svg class="ma-logo" width="210" height="24" style="color:var(--ink)"><use href="#ma-logo"/></svg><small>ma-logo-coral-ink.svg · white, cream</small></div>
+      <div style="background:var(--ink);color:#fff"><svg class="ma-logo" width="210" height="24" style="color:#fff"><use href="#ma-logo"/></svg><small>ma-logo-coral-white.svg · ink, dark photos</small></div>
+      <div style="background:var(--coral);color:var(--ink)"><svg class="ma-logo" width="210" height="24" style="color:var(--ink);--logo-mark:var(--ink)"><use href="#ma-logo"/></svg><small>ma-logo-ink.svg · coral and light fields</small></div>
+      <div style="background:var(--purple);color:#fff"><svg class="ma-logo" width="210" height="24" style="color:#fff;--logo-mark:#fff"><use href="#ma-logo"/></svg><small>ma-logo-white.svg · purple, ink</small></div>
+      <div style="background:var(--green);color:var(--ink)"><svg class="ma-logo" width="72" height="30" style="color:var(--ink);--logo-mark:var(--ink)"><use href="#ma-mark"/></svg><small>ma-mark-ink.svg · small spaces</small></div>
+      <div style="background:var(--ink);color:#fff"><svg class="ma-logo" width="72" height="30"><use href="#ma-mark"/></svg><small>ma-mark-coral.svg · app icon, favicon</small></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="doc-section" id="cta">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 05</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Calls to action</h2>
+      <p class="ma-sechead__lead">Five button variants, three sizes, six states. One coral primary per view; everything else steps down to secondary, soft or ghost. No button draws a border.</p>
+    </header>
+
+    <h3 class="doc-sub">Variants × states</h3>
+    <p class="doc-note">Hover, pressed and focus are shown statically with <code>.is-hover</code>, <code>.is-active</code> and <code>.is-focus</code>; in a product they come from the real pointer and keyboard. Hover over any button to try it.</p>
+    <div class="matrix-wrap"><div class="matrix">
+      <div class="mh">Variant</div><div class="mh">Default</div><div class="mh">Hover</div><div class="mh">Pressed</div><div class="mh">Focus</div><div class="mh">Disabled</div><div class="mh">Loading</div>
+      <div class="rh">Primary</div>
+      <div><button class="ma-btn ma-btn--primary" type="button">Enrol now</button></div>
+      <div><button class="ma-btn ma-btn--primary is-hover" type="button">Enrol now</button></div>
+      <div><button class="ma-btn ma-btn--primary is-active" type="button">Enrol now</button></div>
+      <div><button class="ma-btn ma-btn--primary is-focus" type="button">Enrol now</button></div>
+      <div><button class="ma-btn ma-btn--primary" type="button" disabled>Enrol now</button></div>
+      <div><button class="ma-btn ma-btn--primary is-loading" type="button" aria-busy="true">Enrol now</button></div>
+      <div class="rh">Secondary</div>
+      <div><button class="ma-btn ma-btn--secondary" type="button">Browse courses</button></div>
+      <div><button class="ma-btn ma-btn--secondary is-hover" type="button">Browse courses</button></div>
+      <div><button class="ma-btn ma-btn--secondary is-active" type="button">Browse courses</button></div>
+      <div><button class="ma-btn ma-btn--secondary is-focus" type="button">Browse courses</button></div>
+      <div><button class="ma-btn ma-btn--secondary" type="button" disabled>Browse courses</button></div>
+      <div><button class="ma-btn ma-btn--secondary is-loading" type="button" aria-busy="true">Browse courses</button></div>
+      <div class="rh">Soft</div>
+      <div><button class="ma-btn ma-btn--soft" type="button">Log in</button></div>
+      <div><button class="ma-btn ma-btn--soft is-hover" type="button">Log in</button></div>
+      <div><button class="ma-btn ma-btn--soft is-active" type="button">Log in</button></div>
+      <div><button class="ma-btn ma-btn--soft is-focus" type="button">Log in</button></div>
+      <div><button class="ma-btn ma-btn--soft" type="button" disabled>Log in</button></div>
+      <div><button class="ma-btn ma-btn--soft is-loading" type="button" aria-busy="true">Log in</button></div>
+      <div class="rh">Ghost</div>
+      <div><button class="ma-btn ma-btn--ghost" type="button">View syllabus</button></div>
+      <div><button class="ma-btn ma-btn--ghost is-hover" type="button">View syllabus</button></div>
+      <div><button class="ma-btn ma-btn--ghost is-active" type="button">View syllabus</button></div>
+      <div><button class="ma-btn ma-btn--ghost is-focus" type="button">View syllabus</button></div>
+      <div><button class="ma-btn ma-btn--ghost" type="button" disabled>View syllabus</button></div>
+      <div><span class="doc-mono" style="color:var(--text-muted)">not used</span></div>
+      <div class="rh" style="border:0">On colour</div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color" type="button">Join live</button></div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color is-hover" type="button">Join live</button></div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color is-active" type="button">Join live</button></div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color is-focus" type="button">Join live</button></div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color" type="button" disabled style="color:var(--ink);border-color:var(--ink);opacity:.5">Join live</button></div>
+      <div style="background:var(--coral);border:0"><button class="ma-btn ma-btn--on-color is-loading" type="button" aria-busy="true">Join live</button></div>
+    </div></div>
+
+    <h3 class="doc-sub">Sizes and icons</h3>
+    <div class="ma-cluster">
+      <button class="ma-btn ma-btn--primary ma-btn--sm" type="button">Small · 36px</button>
+      <button class="ma-btn ma-btn--primary" type="button">Medium · 48px</button>
+      <button class="ma-btn ma-btn--primary ma-btn--lg" type="button">Large · 56px</button>
+      <button class="ma-btn ma-btn--secondary" type="button">Start lesson <svg class="ma-icon-dir" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <button class="ma-btn ma-btn--soft" type="button"><svg aria-hidden="true"><use href="#i-play"/></svg> Watch intro</button>
+      <button class="ma-btn ma-btn--bare ma-btn--icon" type="button" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
+    </div>
+
+    <h3 class="doc-sub">The same CTA pair on every ground</h3>
+    <p class="doc-note">Primary + secondary as the hero pair. On a colour field, the primary switches to the on-colour variant, since coral on coral disappears.</p>
+    <div class="grounds">
+      <div class="ground" data-theme="light"><small>Light surface</small><div class="ma-cluster"><button class="ma-btn ma-btn--primary" type="button">Start free</button><button class="ma-btn ma-btn--soft" type="button">Browse</button></div></div>
+      <div class="ground" data-theme="dark"><small>Dark surface</small><div class="ma-cluster"><button class="ma-btn ma-btn--primary" type="button">Start free</button><button class="ma-btn ma-btn--soft" type="button">Browse</button></div></div>
+      <div class="ground ground--coral"><small>Coral field</small><div class="ma-cluster"><button class="ma-btn ma-btn--on-color" type="button">Start free</button><button class="ma-btn ma-btn--ghost" type="button" style="color:var(--ink)">Browse</button></div></div>
+      <div class="ground ground--purple"><small>Purple field</small><div class="ma-cluster"><button class="ma-btn ma-btn--on-color" type="button">Start free</button><button class="ma-btn ma-btn--ghost" type="button" style="color:var(--ink)">Browse</button></div></div>
+    </div>
+    <div dir="rtl" style="margin-block-start:var(--space-4)" class="ma-cluster ma-ar">
+      <button class="ma-btn ma-btn--primary ma-btn--lg" type="button">ابدأ التعلّم الآن <svg class="ma-icon-dir" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <button class="ma-btn ma-btn--soft ma-btn--lg" type="button">تصفّح الدورات</button>
+      <span class="ma-help">In RTL the arrow flips automatically (<code dir="ltr">.ma-icon-dir</code>).</span>
+    </div>
+
+    <h3 class="doc-sub">CTA rules</h3>
+    <div class="dodont">
+      <div><h4>Do</h4><ul><li>One primary per screen or card; it names the outcome: "Enrol now", "ابدأ التعلّم الآن".</li><li>Pair primary with soft or ghost, primary first in reading order.</li><li>Keep ink text on coral (6.4:1) and the 2px purple focus ring.</li><li>Show loading in place: the label hides, width stays.</li></ul></div>
+      <div class="dont"><h4>Don't</h4><ul><li>Draw a border box around a button, add shadows or gradients, or invent radii outside the token scale.</li><li>Put white text on coral, or a coral button on a coral field.</li><li>Use vague labels: "Click here", "Submit", "هل ترغب في التعلم؟".</li><li>Stack two primary buttons side by side.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="doc-section" id="components">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 06</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">Components</h2>
+      <p class="ma-sechead__lead">Each one below is live. Open "HTML" for the exact markup; it is read from the example, so it always matches.</p>
+    </header>
+
+    <div class="comp">
+      <div><h3>Navigation bar<code>.ma-nav</code></h3><p>Sticky top bar: logo, up to five links, and a CTA pair at the end.</p><ul><li>Current page: <code>aria-current="page"</code> gets the coral underline.</li><li>Links hide below 900px; keep the primary CTA visible.</li></ul></div>
+      <div><div class="stage plain" style="padding:0"><div class="demo-ex">
+<nav class="ma-nav" style="position:static"><div class="ma-container ma-nav__inner"><svg class="ma-logo" width="160" height="18" aria-label="Mastery Academy" role="img"><use href="#ma-logo"/></svg><ul class="ma-nav__links"><li><a href="#components" aria-current="page">Courses</a></li><li><a href="#components">Diplomas</a></li><li><a href="#components">Trainers</a></li></ul><div class="ma-nav__actions"><a class="ma-btn ma-btn--ghost ma-btn--sm" href="#components">Log in</a><a class="ma-btn ma-btn--primary ma-btn--sm" href="#components">Start free</a></div></div></nav>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Section header<code>.ma-sechead</code></h3><p>The brand-guide page header: full-width rule, running header, title, and the 54px coral rule.</p><ul><li>One per section. Localise the running header in Arabic.</li></ul></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<header class="ma-sechead"><div class="ma-sechead__run"><span>Courses / 02</span><span>Mastery Academy</span></div><h2 class="ma-sechead__title">What learners follow this week</h2><p class="ma-sechead__lead">Short lessons from trainers who lead in the field.</p></header>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Link<code>.ma-link</code></h3><p>Inline text link: text colour with a 2px coral underline that thickens on hover.</p></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<p style="margin:0">Read the <a class="ma-link" href="#components">certificate requirements</a> before you enrol.</p>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Tag<code>.ma-tag .ma-tag--{colour}</code></h3><p>Square, flat labels for tracks and categories. Ink text on every colour, white on ink.</p><ul><li>Give each course track one colour and keep it everywhere.</li><li>Latin tags are uppercase; Arabic tags aren't.</li></ul></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<div class="ma-cluster"><span class="ma-tag ma-tag--coral">Leadership</span><span class="ma-tag ma-tag--yellow">Marketing</span><span class="ma-tag ma-tag--purple">Management</span><span class="ma-tag ma-tag--sky">HR</span><span class="ma-tag ma-tag--green">New</span><span class="ma-tag ma-tag--ink">Diploma</span><span class="ma-tag ma-tag--soft">50 hours</span></div>
+<div class="ma-cluster" dir="rtl" style="margin-top:12px"><span class="ma-tag ma-tag--coral">القيادة</span><span class="ma-tag ma-tag--yellow">التسويق</span><span class="ma-tag ma-tag--lilac">الإدارة</span></div>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Form fields<code>.ma-field .ma-input .ma-check</code></h3><p>Square inputs with a 1px strong border, 48px tall. Labels always visible above the field.</p><ul><li>Error: pink edge plus a written message.</li><li>Checkbox is a square that fills coral.</li></ul></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<form class="ma-stack" style="max-width:420px" onsubmit="event.preventDefault()"><div class="ma-field"><label class="ma-label" for="f-name">Full name</label><input class="ma-input" id="f-name" value="Sara Al-Harbi"></div><div class="ma-field is-error"><label class="ma-label" for="f-mail">Email</label><input class="ma-input" id="f-mail" value="sara@" aria-invalid="true" aria-describedby="f-mail-h"><span class="ma-help" id="f-mail-h">Enter a full email address, for example sara@company.com.</span></div><div class="ma-field"><label class="ma-label" for="f-track">Track</label><select class="ma-select" id="f-track"><option>Leadership</option><option>Marketing</option></select></div><label class="ma-check"><input type="checkbox" id="f-cpd" checked> Send me a CPD certificate</label><button class="ma-btn ma-btn--primary" type="submit">Create account</button></form>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Course card<code>.ma-card</code></h3><p>Colour-field media, track tag, title, meta and trainer. The whole card is one link; hover darkens the border.</p><ul><li>No radius, no shadow.</li><li>Media is a brand colour or a photo, never both tinted together.</li></ul></div>
+      <div><div class="stage"><div class="demo-ex">
+<a class="ma-card" href="#components" style="max-width:340px"><div class="ma-card__media" style="background:var(--purple)"><span class="ma-tag ma-tag--cream">Management</span></div><div class="ma-card__body"><h3 class="ma-card__title">Leading teams through change</h3><div class="ma-card__meta"><span><svg aria-hidden="true"><use href="#i-clock"/></svg>6 h 40 min</span><span><svg aria-hidden="true"><use href="#i-book"/></svg>18 lessons</span></div></div><div class="ma-card__foot"><div class="ma-person"><span class="ma-avatar">TH</span><div><div class="ma-person__name">Thabet M. Hejazi</div><div class="ma-person__role">Certified Master Trainer</div></div></div></div></a>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Progress<code>.ma-progress</code></h3><p>Flat 8px track with a coral bar. Always print the number.</p></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<div class="ma-progress" style="max-width:420px"><div class="ma-progress__row"><span>Module 3 of 5</span><span>64%</span></div><div class="ma-progress__track" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" aria-label="Course progress"><div class="ma-progress__bar" style="width:64%"></div></div></div>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Alert<code>.ma-alert--success|warning|danger|info</code></h3><p>Solid colour fill, ink text, icon and a bold title. The words carry the meaning; colour supports it.</p></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<div class="ma-stack"><div class="ma-alert ma-alert--success" role="status"><svg aria-hidden="true"><use href="#i-check"/></svg><div><p class="ma-alert__title">Certificate issued</p><p class="ma-alert__text">Your CPD certificate for 50 training hours is ready.</p></div></div><div class="ma-alert ma-alert--warning"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><p class="ma-alert__title">Trial ends in 2 days</p><p class="ma-alert__text">Choose a plan to keep access to your courses.</p></div></div><div class="ma-alert ma-alert--danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><p class="ma-alert__title">Payment failed</p><p class="ma-alert__text">Your card was declined. Update the card and try again.</p></div></div></div>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Tabs<code>.ma-tabs</code></h3><p>Text tabs on a hairline; the selected tab gets the 3px coral rule.</p></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<div class="ma-tabs" role="tablist"><button role="tab" aria-selected="true" type="button">Overview</button><button role="tab" aria-selected="false" type="button">Syllabus</button><button role="tab" aria-selected="false" type="button">Trainer</button><button role="tab" aria-selected="false" type="button">Reviews</button></div>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp">
+      <div><h3>Poster<code>.ma-poster--{colour}</code></h3><p>The campaign unit: one solid colour, the mark, one short headline. Used for promos, banners, social and splash screens.</p><ul><li>Ink text on colour; white on ink with a coral mark.</li><li>Latin event lines use the condensed poster face.</li></ul></div>
+      <div><div class="stage plain"><div class="demo-ex">
+<div class="ma-grid"><div class="ma-poster ma-poster--coral ma-ar" dir="rtl"><div class="ma-poster__top"><svg class="ma-logo" width="56" height="24" style="color:var(--ink);--logo-mark:var(--ink)"><use href="#ma-mark"/></svg><span>ماستري أكاديمي</span></div><h3 class="ma-poster__title">لنبدأ التعلم اليوم.</h3></div><div class="ma-poster ma-poster--ink"><div class="ma-poster__top"><svg class="ma-logo" width="56" height="24" style="color:#fff"><use href="#ma-mark"/></svg><span>Leadership series</span></div><h3 class="ma-poster__title ma-poster__title--latin">Live . 8pm</h3></div></div>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+
+    <div class="comp" style="border:0">
+      <div><h3>Footer<code>.ma-footer</code></h3><p>Always ink, in both themes, with a coral mark. The brand's dark closing band.</p></div>
+      <div><div class="stage plain" style="padding:0"><div class="demo-ex">
+<footer class="ma-footer"><div class="ma-container ma-stack"><svg class="ma-logo" width="176" height="20" style="color:#fff" aria-label="Mastery Academy" role="img"><use href="#ma-logo"/></svg><div class="ma-cluster" style="gap:24px"><a href="#components">Courses</a><a href="#components">Diplomas</a><a href="#components">Help</a></div><span class="ma-footer__small">© 2026 Mastery Academy · Training &amp; Development</span></div></footer>
+      </div></div><details class="code"><summary>HTML</summary><pre></pre></details></div>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section class="doc-section" id="product">
+    <header class="ma-sechead">
+      <div class="ma-sechead__run"><span>Design System / 07</span><span>Mastery Academy</span></div>
+      <h2 class="ma-sechead__title">The product, in both themes</h2>
+      <p class="ma-sechead__lead">The same Arabic home page rendered twice, with <code>data-theme="light"</code> and <code>data-theme="dark"</code> on its wrapper. Nothing else changes: role tokens do the work. Coral fields and the ink footer stay fixed.</p>
+    </header>
+    <div class="frames" id="frames"></div>
+  </section>
+</main>
+</div>
+
+<template id="product-tpl">
+  <div class="ma-page ma-ar" dir="rtl">
+    <nav class="ma-nav"><div class="ma-container ma-nav__inner">
+      <svg class="ma-logo" width="160" height="18" aria-label="Mastery Academy" role="img"><use href="#ma-logo"/></svg>
+      <ul class="ma-nav__links"><li><a href="#product" aria-current="page">الدورات</a></li><li><a href="#product">الدبلومات</a></li><li><a href="#product">المدربون</a></li><li><a href="#product">الأسئلة الشائعة</a></li></ul>
+      <div class="ma-nav__actions"><a class="ma-btn ma-btn--ghost ma-btn--sm" href="#product">تسجيل الدخول</a><a class="ma-btn ma-btn--primary ma-btn--sm" href="#product">ابدأ مجانًا</a></div>
+    </div></nav>
+    <div class="ma-container">
+      <section class="p-hero">
+        <div>
+          <span class="ma-tag ma-tag--soft">منصة التدريب العربية · منذ 2007</span>
+          <h1 style="margin-top:16px">أتقن مهارتك القادمـــة بلغتك.</h1>
+          <p>دورات مصوّرة يقدّمها مدربون معتمدون في القيادة والإدارة والتسويق، مع شهادات CPD تُضاف إلى ملفك المهني.</p>
+          <div class="ma-cluster"><a class="ma-btn ma-btn--primary ma-btn--lg" href="#product">ابدأ التعلّم الآن <svg class="ma-icon-dir" aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="ma-btn ma-btn--soft ma-btn--lg" href="#product">تصفّح الدورات</a></div>
+        </div>
+        <div class="p-art" aria-hidden="true">
+          <div class="a1"><svg class="ma-logo" width="64" height="27" style="color:var(--ink);--logo-mark:var(--ink)"><use href="#ma-mark"/></svg><div><strong>+40</strong><div>مدربًا معتمدًا</div></div></div>
+          <div class="a2"><span>ساعات تدريب</span><strong>+320</strong></div>
+          <div class="a3"><span>رضا المتعلمين</span><strong>96%</strong></div>
+        </div>
+      </section>
+
+      <div class="p-continue">
+        <div><span class="ma-tag ma-tag--coral">القيادة</span><h3 style="margin:8px 0 0;font-size:20px;line-height:30px">تابع: قيادة الفرق في أوقات التغيير</h3></div>
+        <div class="ma-progress"><div class="ma-progress__row"><span>الوحدة 3 من 5</span><span>64%</span></div><div class="ma-progress__track"><div class="ma-progress__bar" style="width:64%"></div></div></div>
+        <a class="ma-btn ma-btn--secondary" href="#product"><svg aria-hidden="true"><use href="#i-play"/></svg> تابع الدرس</a>
+      </div>
+
+      <section class="ma-section">
+        <header class="ma-sechead"><div class="ma-sechead__run"><span>الدورات / ٠٢</span><span>ماستري أكاديمي</span></div><h2 class="ma-sechead__title">ما يتابعه المتعلمون هذا الأسبوع</h2></header>
+        <div class="ma-tabs" role="tablist" style="margin:24px 0"><button role="tab" aria-selected="true" type="button">الكل</button><button role="tab" aria-selected="false" type="button">القيادة</button><button role="tab" aria-selected="false" type="button">التسويق</button><button role="tab" aria-selected="false" type="button">الموارد البشرية</button></div>
+        <div class="ma-grid">
+          <a class="ma-card" href="#product"><div class="ma-card__media" style="background:var(--coral)"><span class="ma-tag ma-tag--cream">القيادة</span></div><div class="ma-card__body"><h3 class="ma-card__title">دبلوم القيادة الإدارية</h3><div class="ma-card__meta"><span><svg aria-hidden="true"><use href="#i-clock"/></svg>50 ساعة</span><span><svg aria-hidden="true"><use href="#i-book"/></svg>32 درسًا</span></div></div><div class="ma-card__foot"><div class="ma-person"><span class="ma-avatar">ث</span><div><div class="ma-person__name">ثابت حجازي</div><div class="ma-person__role">مدرب معتمد</div></div></div><span class="ma-tag ma-tag--ink">دبلوم</span></div></a>
+          <a class="ma-card" href="#product"><div class="ma-card__media" style="background:var(--yellow)"><span class="ma-tag ma-tag--cream">التسويق</span></div><div class="ma-card__body"><h3 class="ma-card__title">التسويق الرقمي الشامل</h3><div class="ma-card__meta"><span><svg aria-hidden="true"><use href="#i-clock"/></svg>12 ساعة</span><span><svg aria-hidden="true"><use href="#i-book"/></svg>24 درسًا</span></div></div><div class="ma-card__foot"><div class="ma-person"><span class="ma-avatar" style="background:var(--sky)">س</span><div><div class="ma-person__name">سهل مهدي</div><div class="ma-person__role">مدرب معتمد</div></div></div><span class="ma-tag ma-tag--green">جديد</span></div></a>
+          <a class="ma-card" href="#product"><div class="ma-card__media" style="background:var(--purple)"><span class="ma-tag ma-tag--cream">الإدارة</span></div><div class="ma-card__body"><h3 class="ma-card__title">إدارة الأداء وبناء الفرق</h3><div class="ma-card__meta"><span><svg aria-hidden="true"><use href="#i-clock"/></svg>8 ساعات</span><span><svg aria-hidden="true"><use href="#i-book"/></svg>16 درسًا</span></div></div><div class="ma-card__foot"><div class="ma-person"><span class="ma-avatar" style="background:var(--lilac)">ر</span><div><div class="ma-person__name">رسم الأتاسي</div><div class="ma-person__role">خبيرة موارد بشرية</div></div></div></div></a>
+        </div>
+      </section>
+
+      <section class="p-cta" style="margin-block-end:48px">
+        <div><svg class="ma-logo" width="64" height="27" style="color:var(--ink);--logo-mark:var(--ink)"><use href="#ma-mark"/></svg><h2 style="margin-top:16px">لنبدأ التعلم اليوم.</h2><p style="margin:8px 0 0">7 أيام مجانًا · بدون بطاقة دفع · ألغِ متى شئت</p></div>
+        <div class="ma-cluster"><a class="ma-btn ma-btn--on-color ma-btn--lg" href="#product">أنشئ حسابك</a></div>
+      </section>
+    </div>
+    <footer class="ma-footer"><div class="ma-container p-foot">
+      <div class="ma-stack"><svg class="ma-logo" width="160" height="18" style="color:#fff" aria-label="Mastery Academy" role="img"><use href="#ma-logo"/></svg><span class="ma-footer__small">تدريب عربي بمعايير عالمية.</span></div>
+      <div><h4>المنصة</h4><ul><li><a href="#product">الدورات</a></li><li><a href="#product">الدبلومات</a></li><li><a href="#product">العضوية</a></li></ul></div>
+      <div><h4>الدعم</h4><ul><li><a href="#product">الأسئلة الشائعة</a></li><li><a href="#product">تواصل معنا</a></li></ul></div>
+      <div><h4>الأكاديمية</h4><ul><li><a href="#product">من نحن</a></li><li><a href="#product">كن مدربًا</a></li></ul></div>
+    </div></footer>
+  </div>
+</template>
+
+<script>
+(function () {
+  // Theme switcher: Auto follows the OS; Light/Dark set data-theme on <html>.
+  var root = document.documentElement, btns = document.querySelectorAll('.seg button');
+  function apply(t) {
+    if (t === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.t === t)); });
+    try { localStorage.setItem('ma-theme', t); } catch (e) {}
+  }
+  var saved = 'system'; try { saved = localStorage.getItem('ma-theme') || 'system'; } catch (e) {}
+  apply(saved);
+  btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.t); }); });
+
+  // Code panels read the live example markup.
+  document.querySelectorAll('.comp').forEach(function (c) {
+    var ex = c.querySelector('.demo-ex'), pre = c.querySelector('details.code pre');
+    if (!ex || !pre) return;
+    var html = ex.innerHTML.trim().replace(/></g, '>\n<');
+    var depth = 0, out = [];
+    html.split('\n').forEach(function (line) {
+      if (/^<\//.test(line)) depth = Math.max(0, depth - 1);
+      out.push('  '.repeat(Math.min(depth, 8)) + line);
+      if (/^<[a-z]/i.test(line) && !/<\/[a-z0-9]+>$/i.test(line) && !/\/>$/.test(line) && !/^<(input|use|br|img|hr)\b/i.test(line)) depth++;
+    });
+    pre.textContent = out.join('\n');
+  });
+
+  // Tabs: click to select.
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[role="tab"]'); if (!t) return;
+    t.parentElement.querySelectorAll('[role="tab"]').forEach(function (x) { x.setAttribute('aria-selected', String(x === t)); });
+  });
+
+  // Product sample: one template, two themed frames.
+  var tpl = document.getElementById('product-tpl'), frames = document.getElementById('frames');
+  [['light', 'Light mode'], ['dark', 'Dark mode']].forEach(function (p) {
+    var wrap = document.createElement('div');
+    wrap.innerHTML = '<div class="frame-label"><span class="ma-tag ' + (p[0] === 'light' ? 'ma-tag--soft' : 'ma-tag--ink') + '">' + p[1] + '</span><span class="doc-mono" style="color:var(--text-muted)">data-theme="' + p[0] + '"</span></div>';
+    var f = document.createElement('div'); f.className = 'frame'; f.setAttribute('data-theme', p[0]);
+    f.appendChild(tpl.content.cloneNode(true));
+    wrap.appendChild(f); frames.appendChild(wrap);
+  });
+})();
+</script>
+
+</body>
+</html>

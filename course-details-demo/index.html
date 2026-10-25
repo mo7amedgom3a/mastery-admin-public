@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course details revamp</title>
+  <!-- Mastery Academy design system. fonts.css is skipped: its bundled font files aren't in the repo, so the token font stacks fall back to system faces. -->
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../design-system/tokens.css">
+  <link rel="stylesheet" href="../design-system/components.css">
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body class="ma-page">
+  <a class="cd-skip" href="#cd-content" data-i18n="skip">Skip to content</a>
+  <div class="cd-app">
+    <nav class="cd-rail" id="cd-rail" aria-label="Domains"></nav>
+    <div class="cd-main">
+      <header class="cd-top" id="cd-top"></header>
+      <main id="cd-content" tabindex="-1"></main>
+    </div>
+  </div>
+  <div class="cd-toasts" id="cd-toasts" aria-live="polite"></div>
+  <dialog class="cd-modal" id="cd-modal"></dialog>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

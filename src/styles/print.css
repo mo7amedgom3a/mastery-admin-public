@@ -1,0 +1,54 @@
+/*
+ * Branded export report (PDF). Rendered off-screen by `lib/export/pdf.ts` and rasterised page by page.
+ * Always the light palette, whatever the app theme: tokens are re-declared on the root so dark mode
+ * never leaks into a printed document. Kit rules: no shadows, no gradients, hairline rules, ink on brand fills.
+ */
+.pdf-report {
+  --surface: #ffffff;
+  --surface-alt: #fffeeb;
+  --text: #17161b;
+  --text-muted: rgba(23, 22, 27, 0.64);
+  --line: rgba(23, 22, 27, 0.16);
+  --line-strong: #17161b;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: -10000px;
+  width: 794px; /* A4 at 96dpi */
+  box-sizing: border-box;
+  padding: 40px 36px 24px;
+  background: #ffffff;
+  color: var(--text);
+  font-family: "IBM Plex Sans Arabic", var(--font-arabic), Tahoma, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+}
+.pdf-report[dir="rtl"] { direction: rtl; }
+.pdf-report * { box-sizing: border-box; }
+.pdf-report__brand { display: flex; align-items: center; justify-content: space-between; padding-block-end: 12px; border-block-end: 1px solid var(--line-strong); }
+.pdf-report__brand svg { width: 176px; height: auto; display: block; }
+.pdf-report__brand-note { color: var(--text-muted); font-size: 11px; }
+.pdf-report__title { margin: 20px 0 0; font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.01em; }
+.pdf-report[dir="rtl"] .pdf-report__title { letter-spacing: 0; line-height: 44px; }
+.pdf-report__rule { width: 54px; height: 3px; margin-block: 8px 12px; background: #ff6555; }
+.pdf-report__meta { display: flex; flex-direction: column; gap: 2px; color: var(--text-muted); font-size: 11px; line-height: 16px; }
+.pdf-report__summary { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 16px 0; }
+.pdf-report__tile { flex: 1 1 140px; padding: 12px 16px; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 16px; }
+.pdf-report__tile-label { color: var(--text-muted); font-size: 11px; }
+.pdf-report__tile-value { margin-block-start: 2px; font-size: 18px; line-height: 24px; font-weight: 700; }
+.pdf-report__figure { margin-block-start: 16px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.pdf-report__figure img { display: block; width: 100%; height: auto; }
+.pdf-report__table { width: 100%; margin-block-start: 20px; border-collapse: separate; border-spacing: 0; table-layout: auto; }
+.pdf-report__table { font-size: 11px; line-height: 16px; }
+.pdf-report__table th, .pdf-report__table td { padding: 6px 8px; text-align: start; vertical-align: top; border-block-end: 1px solid var(--line); overflow-wrap: break-word; word-break: normal; }
+.pdf-report__table td.is-nowrap { white-space: nowrap; }
+.pdf-report__table th { background: var(--surface-alt); color: var(--text-muted); font-size: 11px; font-weight: 500; white-space: nowrap; border-block-end: 1px solid var(--line-strong); }
+.pdf-report__table td.is-num, .pdf-report__table th.is-num { text-align: end; }
+.pdf-report__table tbody tr:nth-child(even) td { background: rgba(255, 254, 235, 0.55); }
+.pdf-report__empty { padding: 32px 0; text-align: center; color: var(--text-muted); }
+.pdf-report__note { margin-block-start: 12px; padding: 8px 12px; border: 1px solid var(--line); border-inline-start: 3px solid #ffcd4c; border-radius: 6px; font-size: 11px; }
+
+@media print {
+  @page { size: A4; margin: 12mm; }
+}

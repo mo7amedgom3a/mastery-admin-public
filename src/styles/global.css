@@ -1,0 +1,68 @@
+@import "tailwindcss";
+/* Mastery Academy design kit — tokens and .ma-* components, verbatim. Utilities layer on top. */
+@import "./tokens.css" layer(base);
+@import "./components.css" layer(components);
+/* Admin layout & components (from admin_demo), on top of the kit. */
+@import "./admin.css" layer(components);
+/* shadcn/recharts charts dressed on the kit tokens. */
+@import "./charts.css" layer(components);
+/* App-level patterns (KPI grid, login, range control) — kit rules, no shadows. */
+@import "./patterns.css" layer(components);
+/* Course / product details revamp styling. */
+@import "./product-detail.css" layer(components);
+/* Consultations management: availability calendar. */
+@import "./consultations.css" layer(components);
+/* Subscriptions management: plan cards, funnel. */
+@import "./subscriptions.css" layer(components);
+/* Support tickets: chat-style conversation console (detail page). */
+@import "./support-chat.css" layer(components);
+@import "./print.css" layer(components);
+
+/* Kit breakpoints: mobile-first 600 · 900 · 1200. */
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
+}
+
+/* Role tokens → Tailwind utilities (bg-surface, text-fg-muted, border-line …). */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-fg: var(--text);
+  --color-fg-muted: var(--text-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-focus: var(--focus);
+  --color-coral: var(--coral);
+  --color-ink: var(--ink);
+  --color-yellow: var(--yellow);
+  --color-purple: var(--purple);
+  --color-sky: var(--sky);
+  --color-pink: var(--pink);
+  --color-teal: var(--teal);
+  --color-lilac: var(--lilac);
+  --color-green: var(--green);
+  --color-cream: var(--cream);
+  --font-ar: var(--font-arabic);
+  --radius-photo: var(--radius-soft);
+  --radius-chip: var(--radius-tag);
+  --radius-ctl: var(--radius-control);
+  --radius-panel: var(--radius-card);
+}
+
+/* Fonts: system stacks (no next/font here); Variable/IBM Plex Arabic when installed locally. */
+:root {
+  --font-arabic: "Swissra", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  --font-sans: "Neue Montreal", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-ar);
+  background: var(--surface);
+  color: var(--text);
+}

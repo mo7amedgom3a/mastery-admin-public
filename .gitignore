@@ -1,0 +1,12 @@
+node_modules
+dist
+docs/contract/
+.playwright-cli
+admin_demo
+.env*
+!.env.example
+
+# Playwright
+e2e/.auth/
+test-results/
+playwright-report/

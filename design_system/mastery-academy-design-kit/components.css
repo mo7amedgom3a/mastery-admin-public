@@ -1,0 +1,204 @@
+/* Mastery Academy — component styles.
+   Requires tokens.css (and fonts.css). Framework-agnostic: plain class names, BEM-style modifiers.
+   Rules baked in: soft rounded corners (radius-control / radius-card / radius-tag), borderless buttons,
+   flat fills, 1px rules, no shadows,
+   logical properties so every component works in RTL (Arabic) and LTR (English). */
+
+/* ---------- Base ---------- */
+:root {
+  --container: 1200px;
+  --header-h: 72px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --dur: .15s;
+}
+.ma-page {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.ma-page[dir="rtl"], [dir="rtl"] .ma-page, .ma-ar { font-family: var(--font-arabic); font-size: 17px; line-height: 28px; }
+.is-focus, :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ---------- Layout ---------- */
+.ma-container { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-4); box-sizing: content-box; }
+@media (min-width: 600px) { .ma-container { padding-inline: var(--space-6); } }
+/* Viewport-aware rhythm: sections tighten on short screens so each one fits a single viewport. */
+.ma-section { padding-block: clamp(var(--space-8), 6svh, var(--space-12)); }
+@media (min-width: 900px) { .ma-section { padding-block: clamp(var(--space-12), 7svh, var(--space-16)); } }
+.ma-band { background: var(--surface-alt); }
+.ma-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.ma-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.ma-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.ma-rule { border: 0; border-block-start: 1px solid var(--line); margin: 0; }
+
+/* ---------- Navbar ---------- */
+.ma-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--surface); border-block-end: 1px solid var(--line); }
+.ma-nav__inner { display: flex; align-items: center; gap: var(--space-6); min-height: var(--header-h); }
+.ma-nav__links { display: flex; gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
+.ma-nav__links a { color: var(--text-muted); text-decoration: none; font-weight: 500; padding-block: var(--space-2); border-block-end: 3px solid transparent; }
+.ma-nav__links a:hover, .ma-nav__links a[aria-current="page"] { color: var(--text); border-block-end-color: var(--accent); }
+.ma-nav__actions { display: flex; gap: var(--space-3); margin-inline-start: auto; }
+@media (max-width: 899px) { .ma-nav__links { display: none; } }
+@media (max-width: 599px) { .ma-nav__actions .ma-btn--ghost { display: none; } .ma-nav__inner { gap: var(--space-3); } }
+
+/* ---------- Button (CTA) ---------- */
+.ma-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-6); min-height: 48px; box-sizing: border-box;
+  border: 0; border-radius: var(--radius-control);
+  font: inherit; font-weight: 500; font-size: 16px; line-height: 24px; white-space: nowrap;
+  text-decoration: none; cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.ma-btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+[dir="rtl"] .ma-btn .ma-icon-dir { transform: scaleX(-1); }
+.ma-btn--sm { min-height: 36px; padding: var(--space-2) var(--space-4); font-size: 14px; line-height: 20px; }
+.ma-btn--lg { min-height: 56px; padding: var(--space-4) var(--space-8); font-size: 18px; }
+.ma-btn--block { display: flex; width: 100%; }
+.ma-btn--icon { padding: 0; width: 48px; }
+
+/* Primary — the one coral action per view */
+.ma-btn--primary { background: var(--accent); color: var(--on-accent); }
+.ma-btn--primary:hover, .ma-btn--primary.is-hover { background: var(--text); color: var(--surface); }
+.ma-btn--primary:active, .ma-btn--primary.is-active { background: var(--accent); color: var(--on-accent); }
+
+/* Secondary — solid ink (light) / white (dark) */
+.ma-btn--secondary { background: var(--text); color: var(--surface); }
+.ma-btn--secondary:hover, .ma-btn--secondary.is-hover { background: var(--accent); color: var(--on-accent); }
+.ma-btn--secondary:active, .ma-btn--secondary.is-active { background: var(--text); color: var(--surface); }
+
+/* Soft — neutral translucent fill, no border (replaces the old 1px outline button).
+   Hover only deepens the fill; the text colour never changes, so counts, prices and muted parts
+   inside the button stay readable, and there is no light-on-light frame mid-transition. */
+.ma-btn--soft { background: var(--fill-soft); color: var(--text); }
+.ma-btn--soft:hover, .ma-btn--soft.is-hover { background: var(--fill-soft-hover); }
+.ma-btn--soft:active, .ma-btn--soft.is-active { background: var(--fill-soft-active); }
+
+/* Ghost — text-weight action; a soft fill appears on hover */
+.ma-btn--ghost { background: transparent; color: var(--text); padding-inline: var(--space-3); }
+.ma-btn--ghost:hover, .ma-btn--ghost.is-hover { background: var(--fill-soft); }
+
+/* Bare — icon tools (search, cart, wishlist, theme, menu): just the icon, a circular soft fill on hover */
+.ma-btn--bare { background: transparent; color: var(--text); border-radius: var(--radius-full); }
+.ma-btn--bare:hover, .ma-btn--bare.is-hover { background: var(--fill-soft); }
+.ma-btn--bare:active, .ma-btn--bare.is-active { background: var(--fill-soft-active); }
+
+/* On-colour — for CTAs placed on a brand colour field (poster, band). Always ink. */
+.ma-btn--on-color { background: var(--ink); color: var(--white); }
+.ma-btn--on-color:hover, .ma-btn--on-color.is-hover { background: var(--white); color: var(--ink); }
+
+/* States — .is-hover / .is-active / .is-focus mirror the pseudo-classes for documentation only. */
+.ma-btn--ghost:active, .ma-btn--ghost.is-active { background: var(--fill-soft-active); }
+.ma-btn--on-color:active, .ma-btn--on-color.is-active { background: var(--ink); color: var(--white); }
+.ma-btn:disabled, .ma-btn[aria-disabled="true"] { background: var(--fill-soft); color: var(--text-muted); cursor: not-allowed; }
+.ma-btn--bare:disabled, .ma-btn--bare[aria-disabled="true"], .ma-btn--ghost:disabled, .ma-btn--ghost[aria-disabled="true"] { background: transparent; }
+.ma-btn.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.ma-btn.is-loading::after {
+  content: ""; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  border-radius: 2px; background: var(--on-accent); animation: ma-spin .8s linear infinite;
+}
+.ma-btn--secondary.is-loading::after { background: var(--surface); }
+.ma-btn--soft.is-loading::after, .ma-btn--ghost.is-loading::after, .ma-btn--bare.is-loading::after { background: var(--text); }
+.ma-btn--on-color.is-loading::after { background: var(--white); }
+@keyframes ma-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Link ---------- */
+.ma-link { color: var(--text); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 500; }
+.ma-link:hover { text-decoration-thickness: 4px; }
+
+/* ---------- Tag ---------- */
+.ma-tag { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--text); background: var(--surface-alt); border-radius: var(--radius-tag); }
+[dir="rtl"] .ma-tag { letter-spacing: 0; text-transform: none; font-size: 13px; }
+.ma-tag--soft { background: var(--fill-soft); color: var(--text); }
+/* Brand-colour tags keep ink text in both themes (rule 5: ink on every brand colour). */
+.ma-tag--coral, .ma-tag--yellow, .ma-tag--purple, .ma-tag--sky, .ma-tag--pink, .ma-tag--teal, .ma-tag--lilac, .ma-tag--green, .ma-tag--cream { color: var(--ink); }
+.ma-tag--coral { background: var(--coral); } .ma-tag--yellow { background: var(--yellow); } .ma-tag--purple { background: var(--purple); }
+.ma-tag--sky { background: var(--sky); } .ma-tag--pink { background: var(--pink); } .ma-tag--teal { background: var(--teal); }
+.ma-tag--lilac { background: var(--lilac); } .ma-tag--green { background: var(--green); } .ma-tag--cream { background: var(--cream); }
+.ma-tag--ink { background: var(--ink); color: var(--white); }
+
+/* ---------- Form fields ---------- */
+.ma-field { display: flex; flex-direction: column; gap: var(--space-2); }
+.ma-label { font-weight: 500; font-size: 14px; line-height: 20px; }
+.ma-input, .ma-select {
+  min-height: 48px; box-sizing: border-box; width: 100%;
+  padding: var(--space-3) var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-control);
+  background: var(--surface); color: var(--text); font: inherit;
+}
+.ma-input::placeholder { color: var(--text-muted); }
+.ma-input:focus-visible, .ma-select:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.ma-help { font-size: 13px; line-height: 20px; color: var(--text-muted); }
+.ma-field.is-error .ma-input { border-color: var(--danger); box-shadow: inset 4px 0 0 var(--danger); }
+.ma-field.is-error .ma-help { color: var(--text); }
+.ma-check { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; }
+.ma-check input { appearance: none; width: 20px; height: 20px; margin: 0; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); display: grid; place-content: center; }
+.ma-check input:checked { background: var(--accent); border-color: var(--accent); }
+.ma-check input:checked::after { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--ink); }
+
+/* ---------- Section header ---------- */
+.ma-sechead__run { display: flex; justify-content: space-between; gap: var(--space-4); padding-block-start: var(--space-2); border-block-start: 1px solid var(--line-strong); font-size: 12px; line-height: 16px; color: var(--text-muted); }
+.ma-sechead__title { margin: var(--space-8) 0 0; font-size: 32px; line-height: 38px; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+[dir="rtl"] .ma-sechead__title { line-height: 48px; letter-spacing: 0; }
+.ma-sechead__title::after { content: ""; display: block; width: 54px; height: var(--rule-accent); margin-block-start: var(--space-3); background: var(--accent); }
+.ma-sechead__lead { margin: var(--space-4) 0 0; max-width: 36em; color: var(--text-muted); }
+
+/* ---------- Poster (colour field) ---------- */
+.ma-poster { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-6); min-height: 320px; padding: var(--space-6); box-sizing: border-box; border-radius: var(--radius-card); color: var(--ink); }
+.ma-poster--coral { background: var(--coral); } .ma-poster--yellow { background: var(--yellow); } .ma-poster--purple { background: var(--purple); }
+.ma-poster--sky { background: var(--sky); } .ma-poster--pink { background: var(--pink); } .ma-poster--teal { background: var(--teal); }
+.ma-poster--lilac { background: var(--lilac); } .ma-poster--green { background: var(--green); } .ma-poster--cream { background: var(--cream); }
+.ma-poster--ink { background: var(--ink); color: var(--white); --logo-mark: var(--coral); }
+.ma-poster__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); font-size: 13px; line-height: 20px; font-weight: 500; }
+.ma-poster__title { margin: 0; font-size: clamp(36px, 6vw, 56px); line-height: 1.2; font-weight: 700; text-wrap: balance; }
+.ma-poster__title--latin { font-family: var(--font-condensed); text-transform: uppercase; line-height: .95; }
+
+/* ---------- Course card ---------- */
+.ma-card { display: flex; flex-direction: column; overflow: hidden; background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-card); text-decoration: none; transition: border-color var(--dur) var(--ease); }
+.ma-card:hover { border-color: var(--line-strong); }
+.ma-card__media { aspect-ratio: 16 / 10; max-width: 100%; display: flex; align-items: flex-end; padding: var(--space-4); color: var(--ink); }
+.ma-card__body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4) var(--space-4) var(--space-6); flex: 1; }
+.ma-card__title { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; }
+.ma-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: 13px; line-height: 20px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ma-card__meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ma-card__meta svg { width: 14px; height: 14px; fill: currentColor; }
+.ma-card__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4); border-block-start: 1px solid var(--line); margin-block-start: auto; }
+
+/* ---------- Avatar ---------- */
+.ma-avatar { display: inline-grid; place-content: center; width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--yellow); color: var(--ink); font-weight: 700; font-size: 15px; flex: none; }
+.ma-person { display: flex; align-items: center; gap: var(--space-3); }
+.ma-person__name { font-weight: 500; font-size: 14px; line-height: 20px; }
+.ma-person__role { font-size: 12px; line-height: 16px; color: var(--text-muted); }
+
+/* ---------- Progress ---------- */
+.ma-progress { display: flex; flex-direction: column; gap: var(--space-2); }
+.ma-progress__row { display: flex; justify-content: space-between; font-size: 13px; line-height: 20px; font-variant-numeric: tabular-nums; }
+.ma-progress__track { height: 8px; overflow: hidden; border-radius: var(--radius-full); background: var(--line); }
+.ma-progress__bar { height: 100%; border-radius: var(--radius-full); background: var(--accent); }
+
+/* ---------- Alert ---------- */
+.ma-alert { display: flex; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius-card); color: var(--ink); }
+.ma-alert svg { width: 20px; height: 20px; fill: currentColor; flex: none; margin-block-start: 2px; }
+.ma-alert__title { margin: 0; font-weight: 700; }
+.ma-alert__text { margin: 0; font-size: 14px; line-height: 22px; }
+.ma-alert--success { background: var(--success); } .ma-alert--warning { background: var(--warning); }
+.ma-alert--danger { background: var(--danger); } .ma-alert--info { background: var(--sky); }
+
+/* ---------- Tabs ---------- */
+.ma-tabs { display: flex; gap: var(--space-6); border-block-end: 1px solid var(--line); overflow-x: auto; }
+.ma-tabs button { appearance: none; background: none; border: 0; padding: var(--space-3) 0; font: inherit; font-weight: 500; color: var(--text-muted); cursor: pointer; border-block-end: 3px solid transparent; margin-block-end: -1px; white-space: nowrap; }
+.ma-tabs button[aria-selected="true"] { color: var(--text); border-block-end-color: var(--accent); }
+.ma-tabs button:hover { color: var(--text); }
+
+/* ---------- Footer ---------- */
+.ma-footer { background: var(--ink); color: var(--white); --logo-mark: var(--coral); padding-block: var(--space-12); }
+.ma-footer a { color: rgba(255,255,255,.72); text-decoration: none; }
+.ma-footer a:hover { color: var(--white); }
+.ma-footer__small { color: rgba(255,255,255,.64); font-size: 13px; line-height: 20px; }
+
+/* ---------- Logo (inline SVG via <use href="#ma-logo"> / "#ma-mark") ---------- */
+.ma-logo { display: inline-block; vertical-align: middle; color: var(--text); --logo-mark: var(--coral); }

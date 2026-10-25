@@ -1,0 +1,39 @@
+/* Subscriptions management: plan card previews, funnel steps and ordered resource lists. Tokens only. */
+.ma-plangrid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.ma-plancard { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); min-width: 0; }
+.ma-plancard--featured { border-color: var(--coral); box-shadow: inset 0 var(--rule-accent) 0 var(--coral); }
+.ma-plancard__head { display: flex; flex-wrap: wrap-reverse; align-items: flex-start; justify-content: space-between; gap: var(--space-2); }
+.ma-plancard__head > :first-child { flex: 1 1 160px; }
+.ma-plancard__title { margin: 0; font-size: 18px; line-height: 26px; font-weight: 700; overflow-wrap: break-word; }
+.ma-plancard__slug { font-size: 12px; color: var(--text-muted); overflow-wrap: anywhere; }
+.ma-plancard__badges { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.ma-plancard__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); font-variant-numeric: tabular-nums; }
+.ma-plancard__amount { font-size: 28px; line-height: 34px; font-weight: 700; }
+.ma-plancard__interval { color: var(--text-muted); font-size: 14px; }
+.ma-plancard__was { color: var(--text-muted); text-decoration: line-through; font-size: 15px; }
+.ma-plancard__features { display: grid; gap: var(--space-1); margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.ma-plancard__features li { display: flex; gap: var(--space-2); align-items: flex-start; }
+.ma-plancard__features li::before { content: ""; flex: none; width: 8px; height: 8px; margin-block-start: 7px; border-radius: var(--radius-full); background: var(--coral); }
+.ma-plancard__empty { font-size: 13px; color: var(--text-muted); }
+.ma-plancard__stats { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ma-plancard__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: auto; padding-block-start: var(--space-3); border-block-start: 1px solid var(--line); }
+
+.ma-funnel { display: grid; gap: var(--space-3); }
+.ma-funnel__step { display: grid; gap: var(--space-1); }
+.ma-funnel__row { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 14px; }
+.ma-funnel__track { height: 12px; border-radius: var(--radius-full); background: var(--fill-soft); overflow: hidden; }
+.ma-funnel__fill { height: 100%; border-radius: var(--radius-full); }
+.ma-funnel__rate { font-size: 12px; color: var(--text-muted); }
+
+.ma-orderlist { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.ma-orderlist__row { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-control); min-width: 0; }
+.ma-orderlist__main { flex: 1; min-width: 0; display: grid; }
+.ma-orderlist__main > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ma-featureicon { display: inline-grid; place-content: center; flex: none; width: 32px; height: 32px; border-radius: var(--radius-tag); background: var(--fill-soft); color: var(--text); }
+.ma-iconpick { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ma-iconpick__item { display: inline-grid; place-content: center; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); cursor: pointer; }
+.ma-iconpick__item[aria-checked="true"] { border-color: var(--coral); outline: 2px solid var(--coral); outline-offset: -2px; }
+.ma-plancard__highlights { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.ma-plancard__highlights li { display: flex; gap: var(--space-2); align-items: center; }
+.ma-plancard__highlights small { color: var(--text-muted); }

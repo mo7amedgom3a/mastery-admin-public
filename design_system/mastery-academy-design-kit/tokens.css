@@ -1,0 +1,103 @@
+/* Mastery Academy — design tokens (generated from tokens.json). Light is the default theme.
+   Theme switch: set data-theme="light" | "dark" on <html> (or on any container to scope it).
+   With no attribute, the OS preference decides. */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --coral: #ff6555;
+  --ink: #17161b;
+  --yellow: #ffcd4c;
+  --purple: #8a64ff;
+  --sky: #49d4ff;
+  --pink: #fd4b7d;
+  --teal: #13e5cc;
+  --lilac: #e89cff;
+  --green: #1fed8b;
+  --cream: #fffeeb;
+  --white: #ffffff;
+  --black: #000000;
+  --surface: #ffffff;
+  --surface-alt: #fffeeb;
+  --text: #17161b;
+  --text-muted: rgba(23,22,27,0.64);
+  --line: rgba(23,22,27,0.16);
+  --line-strong: #17161b;
+  --accent: var(--coral);
+  --on-accent: var(--ink);
+  --focus: var(--purple);
+  --success: var(--green);
+  --warning: var(--yellow);
+  --danger: var(--pink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #17161b;
+    --surface-alt: #000000;
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.64);
+    --line: rgba(255,255,255,0.16);
+    --line-strong: #ffffff;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #17161b;
+  --surface-alt: #000000;
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.64);
+  --line: rgba(255,255,255,0.16);
+  --line-strong: #ffffff;
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-none: 0px;
+  --radius-tag: 6px;
+  --radius-control: 10px;
+  --radius-soft: 12px;
+  --radius-card: 16px;
+  --radius-full: 9999px;
+  --rule-hairline: 1px;
+  --rule-accent: 3px;
+  --font-sans: "Neue Montreal", "Helvetica Neue", Arial, sans-serif;
+  --font-arabic: "Swissra", "IBM Plex Sans Arabic", "Helvetica Neue LT Arabic", Tahoma, sans-serif;
+  --font-condensed: "Kaneda Gothic", "Arial Narrow", sans-serif-condensed, sans-serif;
+  --font-raleway: "Raleway", "Helvetica Neue", Arial, sans-serif;
+  --font-plex: "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  --font-serif: "Margaret", Georgia, serif;
+}
+
+/* Neutral soft fills (translucent text colour) for borderless buttons and tags on any background.
+   Redeclared on every [data-theme] scope so a locally forced theme mixes its own --text. */
+:root, [data-theme] {
+  --fill-soft: color-mix(in srgb, var(--text) 7%, transparent);
+  --fill-soft-hover: color-mix(in srgb, var(--text) 14%, transparent);
+  --fill-soft-active: color-mix(in srgb, var(--text) 20%, transparent);
+}
+
+/* Type styles — one class per style. */
+.t-display { font-family: var(--font-sans); font-size: 64px; line-height: 64px; font-weight: 700; letter-spacing: -0.02em; }
+.t-h1 { font-family: var(--font-sans); font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: -0.01em; }
+.t-h2 { font-family: var(--font-sans); font-size: 32px; line-height: 38px; font-weight: 700; }
+.t-h3 { font-family: var(--font-sans); font-size: 24px; line-height: 30px; font-weight: 500; }
+.t-h4 { font-family: var(--font-sans); font-size: 20px; line-height: 26px; font-weight: 500; }
+.t-body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.t-caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 400; }
+.t-ar-display { font-family: var(--font-arabic); font-size: 64px; line-height: 80px; font-weight: 700; }
+.t-ar-h1 { font-family: var(--font-arabic); font-size: 40px; line-height: 56px; font-weight: 700; }
+.t-ar-h2 { font-family: var(--font-arabic); font-size: 28px; line-height: 40px; font-weight: 500; }
+.t-ar-body { font-family: var(--font-arabic); font-size: 17px; line-height: 28px; font-weight: 400; }
+.t-ar-caption { font-family: var(--font-arabic); font-size: 13px; line-height: 20px; font-weight: 400; }
+.t-poster { font-family: var(--font-condensed); font-size: 72px; line-height: 68px; font-weight: 700; }
+.t-poster { text-transform: uppercase; }

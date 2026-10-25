@@ -1,0 +1,133 @@
+flowchart TD
+    ROOT[لوحة تحكم الإدارة<br/>Admin Panel]
+
+    ROOT --> HOME[الرئيسية<br/>/home]
+    ROOT --> COURSES[الدورات<br/>/courses/courses]
+    ROOT --> B2B_COURSES[B2B Courses<br/>/b2blibrary/courses]
+    ROOT --> PACKAGES[الباقات<br/>/curricula]
+    ROOT --> CONSULTANCY[الاستشارات<br/>/consultancy/consultants]
+    ROOT --> COUPONS[الكوبونات<br/>/coupons]
+    ROOT --> AFFILIATES[نظام التسويق<br/>/affiliates]
+    ROOT --> MARKETING[التسويق<br/>/new-affliate]
+    ROOT --> SUBSCRIPTIONS[نظام الاشتراكات<br/>/b2b]
+    ROOT --> SETTINGS[الإعدادات<br/>/settings]
+    ROOT --> TICKETS[تذاكر النظام<br/>/system/tickets]
+    ROOT --> REPORTS[التقارير<br/>/reports/sales]
+    ROOT --> USERS[المستخدمين<br/>/users]
+    ROOT --> REVIEWS[أسئلة المتدربين<br/>/reviews]
+    ROOT --> LOGOUT[تسجيل الخروج]
+
+    HOME --> HOME_DATA[بيانات لوحة التحكم<br/>• مبيعات الشهر<br/>• المبيعات حسب الأيام<br/>• تقارير سريعة<br/>• اختر تاريخ التقرير<br/>• إحصائيات المنصة]
+
+    COURSES --> COURSE_LIST[قائمة الدورات]
+    COURSE_LIST --> COURSE_DETAILS[تفاصيل الدورة]
+    COURSE_DETAILS --> COURSE_MGMT[إدارة الدورة]
+    COURSE_DETAILS --> C_USERS[المتدربين<br/>بحث وتصفية]
+    COURSE_DETAILS --> C_CRUD[عمليات CRUD]
+    COURSE_MGMT --> C_DESC[وصف الدورة]
+    COURSE_MGMT --> C_SECTIONS[الأقسام التدريبية]
+    COURSE_MGMT --> C_LIVE[البث المباشر]
+    COURSE_MGMT --> C_ACTIVITIES[الأنشطة التدريبية]
+    COURSE_MGMT --> C_EXAMS[الاختبارات]
+    COURSE_MGMT --> C_ASSIGNMENTS[الواجبات]
+    COURSE_MGMT --> C_RATING[تقييم الدورة]
+    COURSE_MGMT --> C_IMAGES[صور الدورة]
+    COURSE_MGMT --> C_INSTRUCTORS[المدربين]
+    COURSE_MGMT --> C_CERTS[الشهادات]
+    COURSE_MGMT --> C_COMPLETION[شروط إكمال الدورة]
+    COURSE_MGMT --> C_PRICES[قائمة الأسعار]
+    COURSE_MGMT --> C_ANNOUNCEMENTS[الإعلانات]
+    COURSE_MGMT --> C_CASES[حالات دراسية]
+    COURSE_MGMT --> C_ATTENDANCE[سجل حضور شخصي]
+    COURSE_MGMT --> C_GLOSSARY[قائمة المصطلحات]
+    COURSE_MGMT --> C_DISCUSSIONS[النقاشات]
+    COURSE_MGMT --> C_WIKI[الموسوعة الحرة]
+    COURSE_MGMT --> C_REPORTS[تقارير الدورة]
+
+    B2B_COURSES --> B2B_LIST[قائمة دورات B2B]
+    B2B_LIST --> B2B_DETAILS[تفاصيل دورة B2B]
+    B2B_DETAILS --> B2B_MGMT[إدارة دورة B2B]
+    B2B_MGMT --> B2B_DESC[وصف الدورة]
+    B2B_MGMT --> B2B_SECTIONS[الأقسام التدريبية]
+    B2B_MGMT --> B2B_LIVE[البث المباشر]
+    B2B_MGMT --> B2B_ACTIVITIES[الأنشطة التدريبية]
+    B2B_MGMT --> B2B_EXAMS[الاختبارات]
+    B2B_MGMT --> B2B_ASSIGNMENTS[الواجبات]
+    B2B_MGMT --> B2B_RATING[تقييم الدورة]
+    B2B_MGMT --> B2B_IMAGES[صور الدورة]
+    B2B_MGMT --> B2B_INSTRUCTORS[المدربين]
+    B2B_MGMT --> B2B_CERTS[الشهادات]
+    B2B_MGMT --> B2B_COMPLETION[شروط إكمال الدورة]
+    B2B_MGMT --> B2B_PRICES[قائمة الأسعار]
+    B2B_MGMT --> B2B_ANNOUNCEMENTS[الإعلانات]
+    B2B_MGMT --> B2B_CASES[حالات دراسية]
+    B2B_MGMT --> B2B_ATTENDANCE[سجل حضور شخصي]
+    B2B_MGMT --> B2B_GLOSSARY[قائمة المصطلحات]
+    B2B_MGMT --> B2B_DISCUSSIONS[النقاشات]
+    B2B_MGMT --> B2B_WIKI[الموسوعة الحرة]
+    B2B_MGMT --> B2B_REPORTS[تقارير الدورة]
+
+    PACKAGES --> PACKAGE_LIST[قائمة الباقات]
+    PACKAGE_LIST --> PACKAGE_DETAILS[تفاصيل الباقة]
+    PACKAGE_DETAILS --> PACKAGE_USERS[المتدربين<br/>بحث وتصفية]
+    PACKAGE_DETAILS --> PACKAGE_SALES[التقرير التفصيلي لمبيعات الباقة]
+    PACKAGE_DETAILS --> PACKAGE_MANAGE[إدارة الباقة]
+    PACKAGE_MANAGE --> P_DESC[وصف الدورة]
+    PACKAGE_MANAGE --> P_COURSES[إدارة الدورات]
+    PACKAGE_MANAGE --> P_IMAGES[صور الباقة]
+    PACKAGE_MANAGE --> P_CERTS[الشهادات]
+    PACKAGE_MANAGE --> P_COMPLETION[شروط إتمام الباقة]
+    PACKAGE_MANAGE --> P_PRICES[الأسعار]
+
+    CONSULTANCY --> CONSULTANTS[قائمة المستشارين]
+    CONSULTANTS --> CONSULTANT_DETAILS[تفاصيل المستشار]
+    CONSULTANT_DETAILS --> CONSULTATIONS[جميع الاستشارات]
+    CONSULTANT_DETAILS --> CONSULTANT_STATS[إحصائيات المستشار<br/>المبلغ الإجمالي • عدد الاستشارات • الجلسات المنفذة • إجمالي وقت الاستشارات]
+
+    COUPONS --> COUPON_LIST[قائمة الكوبونات]
+    COUPON_LIST --> COUPON_CRUD[إدارة وإجراءات الكوبونات CRUD]
+
+    AFFILIATES --> AFF_MANAGERS[إدارة المسوقين]
+    AFFILIATES --> AFF_COMMISSIONS[إدارة العمولات]
+    AFFILIATES --> AFF_PAYMENTS[طلبات الدفع]
+    AFFILIATES --> AFF_POLICY[سياسة البرنامج]
+
+    SUBSCRIPTIONS --> B2B_NEW[الطلبات الجديدة]
+    SUBSCRIPTIONS --> B2B_CONTACTED[تم التواصل معهم]
+    SUBSCRIPTIONS --> B2B_ACTIVE[إدارة الاشتراكات المفعلة]
+    SUBSCRIPTIONS --> B2B_CONSULT[طلبات الاستشارات]
+    SUBSCRIPTIONS --> B2B_POLICY[سياسة البرنامج]
+
+    USERS --> USER_QUERY[الاستعلام عن مشترك]
+    USERS --> USER_NAME_REQUESTS[طلبات تغيير الاسم من المستخدمين]
+    USERS --> TRAINER_REQUESTS[طلبات المدربين]
+    USERS --> ADMIN_USERS[إدارة مستخدمي الإدارة]
+    USERS --> TRAINERS[إدارة المدربين]
+
+    REPORTS --> R_SALES[تقارير المبيعات<br/>/reports/sales]
+    REPORTS --> R_PRODUCTS[تقارير المنتجات<br/>/reports/products]
+    REPORTS --> R_COUPONS[تقرير الكوبونات<br/>/reports/coupons]
+    REPORTS --> R_BUNDLE[تقرير مشتريات عرض كأس العالم<br/>/reports/bundle-offers]
+    REPORTS --> R_CUSTOMERS[تقارير العملاء<br/>/reports/customers]
+    REPORTS --> R_RATINGS[تقييم الدورات<br/>/reports/ratings]
+    REPORTS --> R_AFFILIATES[التسويق بالعمولة<br/>/reports/affiliates]
+    REPORTS --> R_CERTIFICATES[الشهادات<br/>/reports/certificates]
+
+    MARKETING --> MARKETING_PAGE[صفحة التسويق]
+    SETTINGS --> SETTINGS_PAGE[صفحة الإعدادات]
+    TICKETS --> TICKETS_PAGE[صفحة تذاكر النظام]
+    REVIEWS --> REVIEWS_PAGE[صفحة أسئلة المتدربين]
+
+    %% Larger nodes and increased spacing
+    classDef root fill:#1f2937,color:#fff,stroke:#111827,stroke-width:4px,font-size:22px,font-weight:bold,padding:24px;
+    classDef main fill:#2563eb,color:#fff,stroke:#1d4ed8,stroke-width:3px,font-size:19px,font-weight:bold,padding:20px;
+    classDef detail fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:3px,font-size:18px,font-weight:bold,padding:18px;
+    classDef leaf fill:#f3f4f6,color:#111827,stroke:#9ca3af,stroke-width:2px,font-size:17px,padding:18px;
+
+    class ROOT root;
+    class HOME,COURSES,B2B_COURSES,PACKAGES,CONSULTANCY,COUPONS,AFFILIATES,MARKETING,SUBSCRIPTIONS,SETTINGS,TICKETS,REPORTS,USERS,REVIEWS,LOGOUT main;
+    class COURSE_DETAILS,COURSE_MGMT,B2B_DETAILS,B2B_MGMT,PACKAGE_DETAILS,PACKAGE_MANAGE,CONSULTANT_DETAILS detail;
+    class HOME_DATA,COURSE_LIST,C_USERS,C_CRUD,C_DESC,C_SECTIONS,C_LIVE,C_ACTIVITIES,C_EXAMS,C_ASSIGNMENTS,C_RATING,C_IMAGES,C_INSTRUCTORS,C_CERTS,C_COMPLETION,C_PRICES,C_ANNOUNCEMENTS,C_CASES,C_ATTENDANCE,C_GLOSSARY,C_DISCUSSIONS,C_WIKI,C_REPORTS,B2B_LIST,B2B_DESC,B2B_SECTIONS,B2B_LIVE,B2B_ACTIVITIES,B2B_EXAMS,B2B_ASSIGNMENTS,B2B_RATING,B2B_IMAGES,B2B_INSTRUCTORS,B2B_CERTS,B2B_COMPLETION,B2B_PRICES,B2B_ANNOUNCEMENTS,B2B_CASES,B2B_ATTENDANCE,B2B_GLOSSARY,B2B_DISCUSSIONS,B2B_WIKI,B2B_REPORTS,PACKAGE_LIST,PACKAGE_USERS,PACKAGE_SALES,P_DESC,P_COURSES,P_IMAGES,P_CERTS,P_COMPLETION,P_PRICES,CONSULTANTS,CONSULTATIONS,CONSULTANT_STATS,COUPON_LIST,COUPON_CRUD,AFF_MANAGERS,AFF_COMMISSIONS,AFF_PAYMENTS,AFF_POLICY,B2B_NEW,B2B_CONTACTED,B2B_ACTIVE,B2B_CONSULT,B2B_POLICY,USER_QUERY,USER_NAME_REQUESTS,TRAINER_REQUESTS,ADMIN_USERS,TRAINERS,R_SALES,R_PRODUCTS,R_COUPONS,R_BUNDLE,R_CUSTOMERS,R_RATINGS,R_AFFILIATES,R_CERTIFICATES,MARKETING_PAGE,SETTINGS_PAGE,TICKETS_PAGE,REVIEWS_PAGE leaf;
+
+    %% Extra vertical separation between hierarchy levels
+    linkStyle default stroke-width:2px;
