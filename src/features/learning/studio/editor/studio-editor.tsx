@@ -16,6 +16,13 @@ import {
   type StudioEditor as Editor,
 } from "@/features/learning/studio/editor/schema";
 
+function countTags(blocks: unknown[]): number {
+  return (blocks as { type?: string; children?: unknown[] }[]).reduce(
+    (count, block) => count + (block?.type === "tags" ? 1 : 0) + countTags(block?.children ?? []),
+    0,
+  );
+}
+
 /**
  * The Notion-like page editor: `/` opens the block menu (headings, lists, quote, image, table and the studio
  * blocks), the handle beside each block drags it or opens its menu, and pasted/dropped images upload to the
@@ -48,11 +55,8 @@ export function StudioEditor({
   const t = useT();
   const lang = useLang();
   const theme = resolvedTheme(useThemeStore((state) => state.theme));
-  const isInitial = useRef(true);
-
-  useEffect(() => {
-    isInitial.current = true;
-  }, [editorKey]);
+  // The document last reported through `onChange`: a change event that leaves it as it was is not reported.
+  const reported = useRef<string | null>(null);
 
   const editor = useCreateBlockNote(
     {
@@ -63,6 +67,15 @@ export function StudioEditor({
     },
     [editorKey, lang],
   );
+
+  // A freshly built editor holds the loaded document. When loading rewrote it ("المجالات: …" lines became `tags`
+  // blocks), that is reported at once so the preview and the draft get the new blocks without waiting for an edit.
+  useEffect(() => {
+    reported.current = JSON.stringify(editor.document);
+    if (countTags(editor.document) > countTags(initialBlocks)) onChange(editor.document as unknown[]);
+    // Only once per editor: `initialBlocks` and `onChange` are read when it is built.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -107,10 +120,9 @@ export function StudioEditor({
         slashMenu={false}
         onChange={() => {
           queueMicrotask(() => {
-            if (isInitial.current) {
-              isInitial.current = false;
-              return;
-            }
+            const document = JSON.stringify(editor.document);
+            if (document === reported.current) return;
+            reported.current = document;
             onChange(editor.document as unknown[]);
           });
         }}

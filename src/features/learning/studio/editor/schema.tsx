@@ -1,6 +1,6 @@
 import { BlockNoteSchema, createHeadingBlockSpec, defaultBlockSpecs, insertOrUpdateBlockForSlashMenu } from "@blocknote/core";
 import type { DefaultReactSuggestionItem } from "@blocknote/react";
-import { FileCode, Images, Info, LayoutGrid, LayoutPanelTop, MessageCircleQuestion, UserRound } from "lucide-react";
+import { FileCode, Images, Info, LayoutGrid, LayoutPanelTop, MessageCircleQuestion, Tags, UserRound } from "lucide-react";
 
 import {
   assetGalleryBlock,
@@ -9,6 +9,7 @@ import {
   faqBlock,
   instructorCardBlock,
   programCardsBlock,
+  tagsBlock,
 } from "@/features/learning/studio/editor/custom-blocks";
 
 /*
@@ -29,6 +30,7 @@ export const studioSchema = BlockNoteSchema.create({
     instructorCard: instructorCardBlock(),
     assetGallery: assetGalleryBlock(),
     programCards: programCardsBlock(),
+    tags: tagsBlock(),
   },
 });
 
@@ -86,6 +88,11 @@ export function studioSlashItems(
       title: t("معرض صور", "Gallery"), subtext: t("شبكة صور من مكتبة الملفات", "Image grid from the asset library"), group,
       aliases: ["gallery", "images", "assets", "معرض"], icon: <Images size={18} />,
       onItemClick: () => insertOrUpdateBlockForSlashMenu(editor, { type: "assetGallery" }),
+    },
+    {
+      title: t("وسوم", "Tags"), subtext: t("صف من الوسوم مثل المجالات أو المهارات", "A row of chips, like fields or skills"), group,
+      aliases: ["tags", "chips", "skills", "وسوم", "مهارات", "مجالات"], icon: <Tags size={18} />,
+      onItemClick: () => insertOrUpdateBlockForSlashMenu(editor, { type: "tags" }),
     },
   ];
 

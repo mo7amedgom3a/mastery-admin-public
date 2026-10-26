@@ -19,7 +19,11 @@ const GROUPS: [keyof ExpertCurrentPage, string][] = [
 ];
 
 const heading = (text: string, level: 2 | 3 = 2): StudioPartialBlock => ({ type: "heading", props: { level }, content: text });
-const paragraph = (text: string): StudioPartialBlock => ({ type: "paragraph", content: text });
+/** The storefront's fields (yellow) and skills (soft) chips. */
+const tags = (label: string, items: string[], tone: "yellow" | "soft"): StudioPartialBlock => ({
+  type: "tags",
+  props: { label, tone, items: JSON.stringify(items) },
+});
 
 /** The README's own headings sit one level under the section heading (`#`/`##` → `###`). */
 function demoteHeadings(markdown: string): string {
@@ -58,8 +62,8 @@ function buildSeed(page: ExpertCurrentPage): StudioPartialBlock[] {
   const topics = [...new Set([...(page.skills ?? []), ...(page.tags ?? [])].map((topic) => topic.name.trim()).filter(Boolean))].slice(0, 16);
   if (fields.length || topics.length) {
     blocks.push(heading("المجالات والمهارات"));
-    if (fields.length) blocks.push(paragraph(`المجالات: ${fields.join("، ")}`));
-    if (topics.length) blocks.push(paragraph(`المهارات: ${topics.join("، ")}`));
+    if (fields.length) blocks.push(tags("المجالات", fields, "yellow"));
+    if (topics.length) blocks.push(tags("المهارات", topics, "soft"));
   }
 
   const whatTheyDo = page.highlights?.what_i_do ?? [];

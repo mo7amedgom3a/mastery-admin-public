@@ -13,7 +13,7 @@ export const SCHEMA_VERSION = 1;
 export const STUDIO_BLOCK_TYPES = [
   "heading", "paragraph", "bulletListItem", "numberedListItem", "checkListItem", "quote",
   "image", "video", "file", "divider", "table",
-  "banner", "instructorCard", "callout", "faq", "assetGallery", "programCards",
+  "banner", "instructorCard", "callout", "faq", "assetGallery", "programCards", "tags",
 ] as const;
 
 export type StudioBlock = StudioDocument["blocks"] extends (infer B)[] | undefined ? B : never;
@@ -99,13 +99,36 @@ export type GalleryItem = { url: string; alt: string };
  * Blocks whose data lives in props. BlockNote throws while building a document that gives them `content`,
  * which would blank the whole studio page, so anything loaded from the API is normalised first.
  */
-const CONTENTLESS = new Set(["banner", "instructorCard", "assetGallery", "programCards", "divider", "image", "video", "file"]);
+const CONTENTLESS = new Set(["banner", "instructorCard", "assetGallery", "programCards", "tags", "divider", "image", "video", "file"]);
 
-/** Makes API-stored blocks loadable: drops `content` from content-less blocks and empty `children`. */
+/** "المجالات: …" (fields, yellow) or "المهارات: …" (skills, soft): a list line pages wrote before the tags block. */
+const TAG_LINE = /^\s*(المجالات|المهارات|الوسوم|fields|skills|tags)\s*[:：]\s*(.+)$/i;
+const FIELD_LABELS = new Set(["المجالات", "fields"]);
+
+/** A paragraph that is a "label: a، b، c" list becomes a `tags` block (same id); anything else is returned as is. */
+export function tagsFromParagraph<B extends { id?: unknown; type?: unknown; content?: unknown; children?: unknown }>(block: B): B {
+  if (block.type !== "paragraph" || (Array.isArray(block.children) && block.children.length > 0)) return block;
+  const text = typeof block.content === "string" ? block.content : plainText(block.content);
+  const match = TAG_LINE.exec(text);
+  if (!match) return block;
+  const items = [...new Set(match[2].split(/[،,؛;]/).map((item) => item.trim()).filter(Boolean))];
+  if (!items.length) return block;
+  const label = match[1];
+  return {
+    ...(block.id ? { id: block.id } : {}),
+    type: "tags",
+    props: { label, tone: FIELD_LABELS.has(label.toLowerCase()) ? "yellow" : "soft", items: JSON.stringify(items) },
+  } as unknown as B;
+}
+
+/**
+ * Makes API-stored blocks loadable: drops `content` from content-less blocks and empty `children`, and turns
+ * "المجالات: …"/"المهارات: …" lines into `tags` blocks.
+ */
 export function toEditorBlocks(blocks: unknown[]): StudioPartialBlock[] {
   const clean = (raw: unknown): StudioPartialBlock | null => {
     if (!raw || typeof raw !== "object") return null;
-    const block = { ...(raw as Record<string, unknown>) };
+    const block = tagsFromParagraph({ ...(raw as Record<string, unknown>) });
     if (CONTENTLESS.has(String(block.type))) delete block.content;
     if (Array.isArray(block.children)) {
       const children = block.children.map(clean).filter((child): child is StudioPartialBlock => child !== null);
@@ -124,6 +147,17 @@ export function parseGallery(value: unknown): GalleryItem[] {
     return Array.isArray(items)
       ? items.filter((item): item is GalleryItem => typeof item?.url === "string" && isSafeUrl(item.url) && item.url !== "")
       : [];
+  } catch {
+    return [];
+  }
+}
+
+/** `tags.items`: a JSON array of chip labels (blank ones dropped). */
+export function parseTags(value: unknown): string[] {
+  if (typeof value !== "string" || !value) return [];
+  try {
+    const items = JSON.parse(value) as unknown;
+    return Array.isArray(items) ? items.filter((item): item is string => typeof item === "string" && item.trim() !== "") : [];
   } catch {
     return [];
   }

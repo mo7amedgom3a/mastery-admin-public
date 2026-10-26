@@ -1,7 +1,7 @@
 import { BlockNoteEditor } from "@blocknote/core";
 
 import { studioSchema, type StudioEditor, type StudioPartialBlock } from "@/features/learning/studio/editor/schema";
-import { STUDIO_BLOCK_TYPES } from "@/features/learning/studio/model/document";
+import { STUDIO_BLOCK_TYPES, tagsFromParagraph } from "@/features/learning/studio/model/document";
 
 export function sanitizeParsedBlocks(blocks: unknown[]): StudioPartialBlock[] {
   if (!Array.isArray(blocks)) return [];
@@ -23,13 +23,13 @@ export function sanitizeParsedBlocks(blocks: unknown[]): StudioPartialBlock[] {
       props = {};
     }
 
-    return {
+    return tagsFromParagraph({
       ...b,
       type,
       props,
       content,
       children,
-    };
+    });
   }
 
   return blocks.map(sanitizeBlock).filter(Boolean) as StudioPartialBlock[];

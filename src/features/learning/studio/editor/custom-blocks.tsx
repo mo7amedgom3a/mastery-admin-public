@@ -1,8 +1,9 @@
 import { createReactBlockSpec } from "@blocknote/react";
-import { ImageIcon, Images, Info, LayoutGrid, MessageCircleQuestion, Plus, Trash2, UserRound } from "lucide-react";
+import { useState } from "react";
+import { ImageIcon, Images, Info, LayoutGrid, MessageCircleQuestion, Plus, Tags, Trash2, UserRound } from "lucide-react";
 
 import { useT } from "@/lib/i18n";
-import { isSafeUrl, parseGallery } from "@/features/learning/studio/model/document";
+import { isSafeUrl, parseGallery, parseTags } from "@/features/learning/studio/model/document";
 import { useStudioContext } from "@/features/learning/studio/editor/studio-context";
 
 /*
@@ -232,6 +233,65 @@ export const programCardsBlock = createReactBlockSpec(
           ) : slugs.length === 0 ? (
             <span className="ma-studio__hint" style={{ margin: 0 }}>{t("لا توجد برامج منشورة لهذا المدرّب.", "This expert has no published programs.")}</span>
           ) : null}
+        </div>
+      );
+    },
+  },
+);
+
+const TAG_TONES = ["soft", "yellow"] as const;
+
+/** A row of chips (an expert's fields or skills); `items` is a JSON array of labels, `label` names the list. */
+export const tagsBlock = createReactBlockSpec(
+  {
+    type: "tags",
+    propSchema: { items: { default: "[]" }, tone: { default: "soft", values: TAG_TONES }, label: { default: "" } },
+    content: "none",
+  },
+  {
+    render: function TagsBlock({ block, editor }) {
+      const t = useT();
+      const [draft, setDraft] = useState("");
+      const tags = parseTags(block.props.items);
+      const save = (next: string[]) => editor.updateBlock(block, { props: { items: JSON.stringify(next) } });
+      const add = (value: string) => {
+        const clean = value.trim();
+        setDraft("");
+        if (clean && !tags.some((tag) => tag.toLowerCase() === clean.toLowerCase())) save([...tags, clean]);
+      };
+      const next = TAG_TONES[(TAG_TONES.indexOf(block.props.tone) + 1) % TAG_TONES.length];
+      return (
+        <div className="ma-sblock ma-sblock--gallery" contentEditable={false}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBlockEnd: "var(--space-2)" }}>
+            <button type="button" className="ma-sblock__tone" title={t("تغيير اللون", "Change tone")}
+              onClick={() => editor.updateBlock(block, { props: { tone: next } })}>
+              <Tags size={16} aria-hidden />
+            </button>
+            <input className="ma-sblock__input" placeholder={t("اسم القائمة (مثل: المجالات)", "List name (e.g. Fields)")}
+              value={block.props.label} onChange={(event) => editor.updateBlock(block, { props: { label: event.target.value } })} {...stop} />
+          </div>
+          <div className="ma-taginput">
+            {tags.map((tag) => (
+              <span key={tag} className={`ma-tag ma-tag--${block.props.tone}`}>
+                {tag}
+                <button type="button" aria-label={t(`إزالة ${tag}`, `Remove ${tag}`)} onClick={() => save(tags.filter((item) => item !== tag))}>
+                  ×
+                </button>
+              </span>
+            ))}
+            <input className="ma-input ma-taginput__input" value={draft} placeholder={t("اكتب ثم Enter…", "Type then Enter…")}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation();
+                if (event.key === "Enter" || event.key === "," || event.key === "،") {
+                  event.preventDefault();
+                  add(draft);
+                } else if (event.key === "Backspace" && !draft && tags.length) {
+                  save(tags.slice(0, -1));
+                }
+              }}
+              onBlur={() => add(draft)} />
+          </div>
         </div>
       );
     },
