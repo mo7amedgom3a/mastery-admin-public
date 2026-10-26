@@ -144,7 +144,15 @@ export const navigation: NavModule[] = [
       {
         title: { ar: "إدارة المدربين", en: "Trainers management" },
         items: [
-          { title: { ar: "المدربون", en: "Instructors" }, href: "/learning/instructors", permission: "instructors.read" },
+          {
+            title: { ar: "المدربون", en: "Instructors" },
+            href: "/learning/instructors",
+            permission: "instructors.read",
+            children: [
+              { title: { ar: "قائمة المدربين", en: "All instructors" }, href: "/learning/instructors", permission: "instructors.read" },
+              { title: { ar: "إضافة مدرب", en: "Add instructor" }, href: "/learning/instructors/new", permission: "instructors.write" },
+            ],
+          },
           { title: { ar: "طلبات المدربين", en: "Trainer requests" }, href: "/learning/applications", permission: "instructors.read", badge: "applications" },
         ],
       },

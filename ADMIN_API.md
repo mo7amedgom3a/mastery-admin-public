@@ -117,6 +117,8 @@ The product's analytics panels read `/admin/catalog/products/{ref}/{sales,behavi
 | `learning/instructors.ts` | `/admin/instructors` (+ public `/legacy/instructors/*` for profiles) | |
 | `learning/consultations.ts`, `learning/consultants.ts` | `/admin/consultations/*` | |
 | `marketing/promotions.ts`, `marketing/referrals.ts`, `marketing/content.ts` | `/admin/promotions`, `/admin/referrals`, `/admin/marketing` | |
+| `subscriptions/admin.ts` | `/admin/subscriptions/*` | Plans (products = what a plan grants, features, benefits, discount), stats, team leads, and customer subscriptions: list, detail and the lifecycle actions `cancel` (`{immediate, reason?}`), `resume`, `extend` (`{days, reason}`), `revoke` (`{reason}`). Lifecycle calls reach Stripe and send an `Idempotency-Key` |
+| `entitlements/admin.ts` | `/admin/entitlements/*`, `/admin/customers/{ref}/entitlements` | Per-access extend / suspend / reinstate / revoke with a reason |
 | `settings/settings.ts` | `/admin/settings/*` | |
 | `learning/bundles.ts`, `system/fx.ts`, `analytics/behavior.ts` | `/admin/bundles`, `/admin/fx`, `/admin/analytics` | Pure-B2C module APIs |
 | `search/search.ts`, `system/health.ts`, `learning/experts.ts` | `/search`, `/health`, `/legacy/*` | Public read APIs |

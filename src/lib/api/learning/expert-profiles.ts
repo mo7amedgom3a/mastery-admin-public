@@ -12,6 +12,7 @@ import type { QueryParams, RequestBody, SuccessResponse } from "@/lib/api/operat
 type ListOp = "list_instructors_api_v1_admin_catalog_instructors_get";
 type GetOp = "get_instructor_api_v1_admin_catalog_instructors__key__get";
 type UpdateOp = "update_instructor_api_v1_admin_catalog_instructors__key__patch";
+type CreateOp = "create_instructor_api_v1_admin_catalog_instructors_post";
 type ImageOp = "upload_instructor_image_api_v1_admin_catalog_instructors__key__images_post";
 type ReadmeOp = "get_instructor_readme_api_v1_admin_catalog_instructors__key__readme_get";
 type PutReadmeOp = "put_instructor_readme_api_v1_admin_catalog_instructors__key__readme_put";
@@ -23,6 +24,7 @@ export type ExpertProfilePage = SuccessResponse<ListOp>;
 export type ExpertProfileRow = ExpertProfilePage["items"][number];
 export type ExpertProfileDetail = SuccessResponse<GetOp>;
 export type ExpertProfileUpdate = RequestBody<UpdateOp>;
+export type ExpertProfileCreate = RequestBody<CreateOp>;
 export type ExpertImageResult = SuccessResponse<ImageOp>;
 export type ExpertReadme = SuccessResponse<ReadmeOp>;
 export type ExpertProduct = SuccessResponse<ProductsOp>[number];
@@ -54,6 +56,11 @@ export function listExpertProfiles(params: ExpertProfileListParams = {}): Promis
 
 export function getExpertProfile(key: string): Promise<ExpertProfileDetail> {
   return apiGet(expertProfilesPaths.detail, { path: { key } });
+}
+
+/** Adds an expert profile by hand (seed fields only; the rest is edited on the detail page). */
+export function createExpertProfile(body: ExpertProfileCreate): Promise<ExpertProfileDetail> {
+  return apiPost(expertProfilesPaths.list, { body });
 }
 
 /** Only the fields sent change; `null` clears one. */

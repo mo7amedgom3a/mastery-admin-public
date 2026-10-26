@@ -8,11 +8,13 @@ import { Avatar, Badge, Button, PageHead } from "@/components/ui/kit";
 import { type Column } from "@/components/ui/data-table";
 import { PagedList, type ListFilter } from "@/components/ui/paged-list";
 import { DuplicatesModal } from "@/features/learning/expert-profile/duplicates-modal";
+import { can } from "@/lib/permissions";
 
 /** Experts on B2C (`/admin/catalog/instructors`): trainers, consultants, or both under one profile. */
 export default function InstructorsPage() {
   const t = useT();
   const [duplicates, setDuplicates] = useState(false);
+  const canWrite = can("instructors.write");
 
   const columns: Column<ExpertProfileRow>[] = [
     {
@@ -137,6 +139,7 @@ export default function InstructorsPage() {
         )}
         actions={
           <>
+            {canWrite ? <Button kind="primary" icon="plus" label={t("إضافة مدرب", "Add instructor")} href="/learning/instructors/new" /> : null}
             <Button kind="ghost" icon="copy" label={t("ملفات مكررة", "Duplicates")} onClick={() => setDuplicates(true)} />
             <Button kind="ghost" icon="calendar" label={t("إدارة الاستشارات", "Consultations")} href="/consultations/experts" />
           </>

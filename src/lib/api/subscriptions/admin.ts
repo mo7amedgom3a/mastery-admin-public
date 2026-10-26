@@ -36,6 +36,12 @@ type SetPlanFeaturesOp =
   "admin_set_subscription_plan_features_api_v1_admin_subscriptions_plans__plan_id__features_put";
 type CancelOp =
   "admin_cancel_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__cancel_post";
+type ResumeOp =
+  "admin_resume_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__resume_post";
+type ExtendOp =
+  "admin_extend_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__extend_post";
+type RevokeOp =
+  "admin_revoke_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__revoke_post";
 
 export type SubscriptionPlan = SuccessResponse<PlanOp>;
 export type SubscriptionPlansParams = QueryParams<PlansOp>;
@@ -104,6 +110,9 @@ export const subscriptionPaths = {
   teamLead: "admin/subscriptions/team-leads/{lead_id}",
   subscriber: "admin/subscriptions/customer-subscriptions/{subscription_id}",
   cancel: "admin/subscriptions/customer-subscriptions/{subscription_id}/cancel",
+  resume: "admin/subscriptions/customer-subscriptions/{subscription_id}/resume",
+  extend: "admin/subscriptions/customer-subscriptions/{subscription_id}/extend",
+  revoke: "admin/subscriptions/customer-subscriptions/{subscription_id}/revoke",
   features: "admin/subscriptions/features",
   feature: "admin/subscriptions/features/{feature_id}",
   planFeatures: "admin/subscriptions/plans/{plan_id}/features",
@@ -195,8 +204,36 @@ export const setSubscriptionPlanFeatures = (
   plan_id: PlanId,
   body: SetSubscriptionPlanFeaturesBody,
 ): Promise<SuccessResponse<SetPlanFeaturesOp>> => apiPut(subscriptionPaths.planFeatures, { path: { plan_id }, body });
-export const cancelSubscriber = (subscription_id: SubscriptionId, immediate: boolean): Promise<SuccessResponse<CancelOp>> =>
-  apiPost(subscriptionPaths.cancel, { path: { subscription_id }, body: { immediate } });
+// Lifecycle actions call Stripe; the idempotency key makes a retried request repeat the same call.
+const idempotent = (key: string) => ({ "Idempotency-Key": key });
+
+export const cancelSubscriber = (
+  subscription_id: SubscriptionId,
+  body: RequestBody<CancelOp>,
+  idempotencyKey: string,
+): Promise<SuccessResponse<CancelOp>> =>
+  apiPost(subscriptionPaths.cancel, { path: { subscription_id }, body, headers: idempotent(idempotencyKey) });
+/** Undo a scheduled cancel-at-period-end: renewal continues. */
+export const resumeSubscriber = (
+  subscription_id: SubscriptionId,
+  body: RequestBody<ResumeOp>,
+  idempotencyKey: string,
+): Promise<SuccessResponse<ResumeOp>> =>
+  apiPost(subscriptionPaths.resume, { path: { subscription_id }, body, headers: idempotent(idempotencyKey) });
+/** Free days on the current period and its access; Stripe's next charge moves out with it. */
+export const extendSubscriber = (
+  subscription_id: SubscriptionId,
+  body: RequestBody<ExtendOp>,
+  idempotencyKey: string,
+): Promise<SuccessResponse<ExtendOp>> =>
+  apiPost(subscriptionPaths.extend, { path: { subscription_id }, body, headers: idempotent(idempotencyKey) });
+/** End the subscription now and revoke the plan's access (reason required, audited). */
+export const revokeSubscriber = (
+  subscription_id: SubscriptionId,
+  body: RequestBody<RevokeOp>,
+  idempotencyKey: string,
+): Promise<SuccessResponse<RevokeOp>> =>
+  apiPost(subscriptionPaths.revoke, { path: { subscription_id }, body, headers: idempotent(idempotencyKey) });
 
 export const subscriptionQueries = {
   plans: (params: SubscriptionPlansParams = {}) =>

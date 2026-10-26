@@ -64,6 +64,7 @@ const ACTIONS: { ar: string; en: string; href: string; permission: string; icon:
   { ar: "إنشاء استشارة", en: "Create consultation", href: "/learning/consultations/new", permission: "consultations.read", icon: "calendar" },
   { ar: "إنشاء باقة اشتراك", en: "Create subscription plan", href: "/subscriptions/plans/new", permission: "subscriptionsWrite.write", icon: "refresh" },
   { ar: "إنشاء كوبون", en: "Create coupon", href: "/sales/coupons/new", permission: "coupons.create", icon: "tag" },
+  { ar: "إضافة مدرب", en: "Add instructor", href: "/learning/instructors/new", permission: "instructors.write", icon: "user" },
   { ar: "إصدار استرداد لطلب", en: "Issue a refund", href: "/sales/orders", permission: "refunds.create", icon: "refund", hint: { ar: "اختر الطلب ثم «استرداد»", en: "Pick the order, then Refund" } },
   { ar: "الرد على أسئلة المتدربين", en: "Answer trainee questions", href: "/learning/qa", permission: "qa.read", icon: "message" },
   { ar: "مراجعة طلبات الصرف", en: "Review payout requests", href: "/marketing/payouts", permission: "affiliates.read", icon: "card" },

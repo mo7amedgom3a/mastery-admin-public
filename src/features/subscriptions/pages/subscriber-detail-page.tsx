@@ -1,42 +1,31 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
-import { cancelSubscriber, subscriptionKeys, subscriptionQueries, type SubscriberDetail } from "@/lib/api";
+import { subscriptionQueries, type SubscriberDetail } from "@/lib/api";
 import { formatAmount, formatDate, formatDateTime } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { can } from "@/lib/permissions";
 import { subscriberStatusBadge } from "@/lib/status";
 import { AppLink } from "@/components/ui/app-link";
-import { Badge, Button, Card, Dl, ErrorAlert, Loading, PageHead } from "@/components/ui/kit";
+import { Alert, Badge, Button, Card, Dl, Loading, PageHead } from "@/components/ui/kit";
 import { DataTable, type Column } from "@/components/ui/data-table";
-import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { PageState } from "@/components/ui/primitives";
-import { toast } from "@/components/ui/toast";
 
 import { paidPrice } from "../components/subscriber-columns";
+import { SubscriberActionModal, SubscriberExtendModal, type SubscriberAction } from "../components/subscriber-lifecycle-dialogs";
 import { INTERVAL_LABELS, PLAN_TYPE_LABELS, labelOf, toNumber } from "../lib";
 
 type Selection = NonNullable<SubscriberDetail["selections"]>[number];
 type Seat = NonNullable<SubscriberDetail["seats"]>[number];
 
-/** One customer subscription: terms they bought (snapshot), Choose-X selections, seats, and admin cancel. */
+/** One customer subscription: terms they bought (snapshot), Choose-X selections, seats, and the admin lifecycle actions. */
 export default function SubscriberDetailPage() {
   const t = useT();
-  const queryClient = useQueryClient();
   const { id = "" } = useParams<{ id: string }>();
   const detail = useQuery(subscriptionQueries.subscriber(id));
   const s = detail.data;
-  const [cancelMode, setCancelMode] = useState<"period_end" | "immediate" | null>(null);
-
-  const cancel = useMutation({
-    mutationFn: (immediate: boolean) => cancelSubscriber(id, immediate),
-    onSuccess: () => {
-      setCancelMode(null);
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all });
-      toast.success(t("تم إلغاء الاشتراك", "Subscription canceled"));
-    },
-  });
+  const [action, setAction] = useState<SubscriberAction | "extend" | null>(null);
 
   const selectionColumns: Column<Selection>[] = [
     { key: "course", header: t("الدورة", "Course"), cell: (r) => r.product_title ?? r.product_slug ?? r.product_id },
@@ -63,12 +52,28 @@ export default function SubscriberDetailPage() {
         sub={s?.customer_email ? <bdi>{s.customer_email}</bdi> : undefined}
         actions={live && can("subscribersManage.manage") ? (
           <>
-            {!s.cancel_at_period_end ? <Button sm kind="soft" label={t("إلغاء بنهاية الفترة", "Cancel at period end")} onClick={() => setCancelMode("period_end")} /> : null}
-            <Button sm kind="danger" label={t("إلغاء فوري", "Cancel now")} onClick={() => setCancelMode("immediate")} />
+            {s.cancel_at_period_end ? (
+              <Button sm kind="primary" label={t("استئناف", "Resume")} onClick={() => setAction("resume")} />
+            ) : (
+              <Button sm kind="soft" label={t("إلغاء بنهاية الفترة", "Cancel at period end")} onClick={() => setAction("cancel_period_end")} />
+            )}
+            <Button sm kind="soft" label={t("تمديد", "Extend")} onClick={() => setAction("extend")} />
+            <Button sm kind="danger" label={t("إلغاء فوري", "Cancel now")} onClick={() => setAction("cancel_now")} />
+            <Button sm kind="danger" label={t("سحب", "Revoke")} onClick={() => setAction("revoke")} />
           </>
         ) : null}
       />
-      <ErrorAlert error={cancel.error} title={t("تعذّر الإلغاء", "Couldn't cancel")} />
+      {s?.status === "past_due" ? (
+        <Alert kind="warning" title={t("تعذّر تجديد الدفع", "Renewal payment failed")}>
+          {t("وصول العميل لموارد الباقة موقوف حتى تنجح الدفعة في Stripe، ويعود تلقائياً بعدها.",
+            "The customer's access to plan resources is suspended until Stripe collects the payment, then comes back automatically.")}
+        </Alert>
+      ) : null}
+      {live && s.cancel_at_period_end ? (
+        <Alert kind="info" title={t("إلغاء مجدول", "Cancellation scheduled")}>
+          {t(`ينتهي الاشتراك في ${formatDate(s.current_period_end)} ما لم يُستأنف.`, `The subscription ends on ${formatDate(s.current_period_end)} unless it is resumed.`)}
+        </Alert>
+      ) : null}
       <PageState error={detail.error}>
         {detail.isLoading ? <Loading /> : null}
         {s ? (
@@ -112,19 +117,8 @@ export default function SubscriberDetailPage() {
           </>
         ) : null}
       </PageState>
-      <ConfirmModal
-        open={cancelMode !== null}
-        onOpenChange={(open) => !open && setCancelMode(null)}
-        title={cancelMode === "immediate" ? t("إلغاء الاشتراك فورًا؟", "Cancel the subscription now?") : t("إلغاء بنهاية الفترة؟", "Cancel at the end of the period?")}
-        message={
-          cancelMode === "immediate"
-            ? t("يفقد المشترك الوصول لكل موارد الباقة الآن ويتوقف التجديد.", "The subscriber loses access to every plan resource now and renewal stops.")
-            : t("يبقى الوصول حتى نهاية الفترة الحالية ثم يتوقف التجديد.", "Access continues until the current period ends, then renewal stops.")
-        }
-        confirmLabel={t("تأكيد الإلغاء", "Confirm cancel")}
-        loading={cancel.isPending}
-        onConfirm={() => cancel.mutate(cancelMode === "immediate")}
-      />
+      {s && action === "extend" ? <SubscriberExtendModal subscription={s} onClose={() => setAction(null)} /> : null}
+      {s && action && action !== "extend" ? <SubscriberActionModal subscription={s} action={action} onClose={() => setAction(null)} /> : null}
     </>
   );
 }

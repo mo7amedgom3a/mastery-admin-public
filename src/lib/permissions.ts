@@ -21,6 +21,8 @@ const AREA_SCOPE: Record<string, string> = {
   // Add/edit availability and reschedule bookings.
   consultationsWrite: "admin:consultations:write",
   instructors: "admin:catalog:read",
+  // Manual expert creation and profile writes; the API enforces `admin:catalog:write`.
+  instructorsWrite: "admin:catalog:write",
   // Subscription plans (catalog scopes) and subscribers (entitlement scopes).
   subscriptions: "admin:catalog:read",
   subscriptionsWrite: "admin:catalog:write",

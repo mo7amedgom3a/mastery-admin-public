@@ -1705,7 +1705,11 @@ export interface paths {
         /** Experts (B2C profiles) */
         get: operations["list_instructors_api_v1_admin_catalog_instructors_get"];
         put?: never;
-        post?: never;
+        /**
+         * Create an expert manually
+         * @description Adds a B2C expert profile by hand (no application and no legacy trainer). Only the essentials are captured here — details, socials and the images are edited on the detail page afterwards. With `make_consultant` their consultant profile is created active right away (bookings still need an email and availability under consultations). Audited like every write.
+         */
+        post: operations["create_instructor_api_v1_admin_catalog_instructors_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5417,6 +5421,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/requests/company-training/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Company Draft */
+        put: operations["save_company_draft_api_v1_requests_company_training_draft_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/requests/trainer-applications": {
         parameters: {
             query?: never;
@@ -6372,6 +6393,910 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/affiliates/partners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Partners */
+        get: operations["list_partners_api_v1_admin_affiliates_partners_get"];
+        put?: never;
+        /**
+         * Create Partner
+         * @description Creates the marketer in B2C, then in Tolt (partner + `?ref=` link). A Tolt failure leaves
+         *     `sync_status=failed` for retry; the partner is still created.
+         */
+        post: operations["create_partner_api_v1_admin_affiliates_partners_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Partner */
+        get: operations["get_partner_api_v1_admin_affiliates_partners__partner_id__get"];
+        /**
+         * Update Partner
+         * @description Email and referral code are fixed once created (Tolt identity and live links).
+         */
+        put: operations["update_partner_api_v1_admin_affiliates_partners__partner_id__put"];
+        post?: never;
+        /**
+         * Archive Partner
+         * @description Archives the partner here and rejects it in Tolt. Sales and commissions stay.
+         */
+        delete: operations["archive_partner_api_v1_admin_affiliates_partners__partner_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set Partner Status
+         * @description Approve (`active`), suspend or reject; mirrored to Tolt.
+         */
+        post: operations["set_partner_status_api_v1_admin_affiliates_partners__partner_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/resync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resync Partner */
+        post: operations["resync_partner_api_v1_admin_affiliates_partners__partner_id__resync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Partner Customers */
+        get: operations["partner_customers_api_v1_admin_affiliates_partners__partner_id__customers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/coupons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Partner Coupons */
+        get: operations["partner_coupons_api_v1_admin_affiliates_partners__partner_id__coupons_get"];
+        put?: never;
+        /**
+         * Create Partner Coupon
+         * @description A coupon owned by the partner: customers who use it are attributed to them (also a Tolt promotion code).
+         */
+        post: operations["create_partner_coupon_api_v1_admin_affiliates_partners__partner_id__coupons_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tolt Groups */
+        get: operations["tolt_groups_api_v1_admin_affiliates_groups_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/attributions/{customer_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Customer Attribution */
+        get: operations["customer_attribution_api_v1_admin_affiliates_attributions__customer_id__get"];
+        put?: never;
+        post?: never;
+        /** Unassign Customer */
+        delete: operations["unassign_customer_api_v1_admin_affiliates_attributions__customer_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/customers/{customer_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Customer Referrals
+         * @description Who referred this customer, and (when they are a referrer) their link, counts and rewards.
+         */
+        get: operations["customer_referrals_api_v1_admin_affiliates_customers__customer_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/attributions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign Customer */
+        post: operations["assign_customer_api_v1_admin_affiliates_attributions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/conversions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Conversions */
+        get: operations["list_conversions_api_v1_admin_affiliates_conversions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/commissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Commissions */
+        get: operations["list_commissions_api_v1_admin_affiliates_commissions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/commissions/{commission_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set Commission
+         * @description Approve or decline a Tolt commission (e.g. decline after a partial refund).
+         */
+        post: operations["set_commission_api_v1_admin_affiliates_commissions__commission_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sync Now
+         * @description Push everything pending to Tolt now and pull commissions (the sweep, on demand).
+         */
+        post: operations["sync_now_api_v1_admin_affiliates_sync_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/referral-program": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Referral Program */
+        get: operations["get_referral_program_api_v1_admin_affiliates_referral_program_get"];
+        /** Save Referral Program */
+        put: operations["save_referral_program_api_v1_admin_affiliates_referral_program_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/program": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Affiliate Program Settings */
+        get: operations["get_affiliate_program_settings_api_v1_admin_affiliates_program_get"];
+        /** Save Affiliate Program Settings */
+        put: operations["save_affiliate_program_settings_api_v1_admin_affiliates_program_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/referral-rewards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Referral Rewards */
+        get: operations["list_referral_rewards_api_v1_admin_affiliates_referral_rewards_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/referral-rewards/{reward_id}/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant Referral Reward
+         * @description Skip the holding period and issue the referrer's voucher now.
+         */
+        post: operations["grant_referral_reward_api_v1_admin_affiliates_referral_rewards__reward_id__grant_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/import/legacy/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Legacy Preview */
+        post: operations["legacy_preview_api_v1_admin_affiliates_import_legacy_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/import/legacy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Legacy Import
+         * @description Copies legacy affiliates into B2C (keeping their codes). Tolt is not touched.
+         */
+        post: operations["legacy_import_api_v1_admin_affiliates_import_legacy_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/import/legacy/push": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Legacy Push
+         * @description Creates the next batch of imported active partners in Tolt (no welcome email).
+         */
+        post: operations["legacy_push_api_v1_admin_affiliates_import_legacy_push_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Affiliate Analytics */
+        get: operations["affiliate_analytics_api_v1_admin_affiliates_analytics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Payouts */
+        get: operations["list_payouts_api_v1_admin_affiliates_payouts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Payouts Summary */
+        get: operations["payouts_summary_api_v1_admin_affiliates_payouts_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts/{payout_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Payout
+         * @description The request with the full payout details, the marketer's balance and recent ledger entries.
+         */
+        get: operations["get_payout_api_v1_admin_affiliates_payouts__payout_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts/{payout_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve Payout */
+        post: operations["approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts/{payout_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reject Payout
+         * @description The whole requested amount returns to the marketer's available balance.
+         */
+        post: operations["reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/payouts/{payout_id}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pay Payout
+         * @description Record the transfer (made outside the platform) in full or in part; the unpaid part returns to the
+         *     marketer's available balance.
+         */
+        post: operations["pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Partner Balance */
+        get: operations["partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/affiliates/partners/{partner_id}/ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Partner Ledger */
+        get: operations["partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Referrals */
+        get: operations["my_referrals_api_v1_me_referrals_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/referrals/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join Referrals
+         * @description Get a personal referral link (mirrored to Tolt in the background).
+         */
+        post: operations["join_referrals_api_v1_me_referrals_join_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/referrals/invites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Invites */
+        get: operations["my_invites_api_v1_me_referrals_invites_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Earnings
+         * @description Balance (USD minor units) and whether a payout can be requested. Marketers only (403 otherwise).
+         */
+        get: operations["my_earnings_api_v1_me_affiliate_earnings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/payouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Payouts */
+        get: operations["my_payouts_api_v1_me_affiliate_payouts_get"];
+        put?: never;
+        /**
+         * Request Payout
+         * @description Ask to be paid. 409 when a request is already open; 422 `below_minimum`, `above_available`,
+         *     `missing_details` or `partner_inactive`.
+         */
+        post: operations["request_payout_api_v1_me_affiliate_payouts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/payouts/{payout_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Payout */
+        post: operations["cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/payout-details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Payout Details */
+        get: operations["my_payout_details_api_v1_me_affiliate_payout_details_get"];
+        /**
+         * Save Payout Details
+         * @description Where payouts are sent. A request keeps the details it was made with.
+         */
+        put: operations["save_payout_details_api_v1_me_affiliate_payout_details_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Marketer Overview
+         * @description Dashboard home. 403 `marketers_only` for anyone who is not a marketer.
+         */
+        get: operations["marketer_overview_api_v1_me_affiliate_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Marketer Customers
+         * @description Customers who signed up through the marketer's link or coupon (first name and masked email only).
+         */
+        get: operations["marketer_customers_api_v1_me_affiliate_customers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/sales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Marketer Sales */
+        get: operations["marketer_sales_api_v1_me_affiliate_sales_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/commissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Marketer Commissions */
+        get: operations["marketer_commissions_api_v1_me_affiliate_commissions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/coupons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Marketer Coupons
+         * @description Coupons the admin created for the marketer, with confirmed uses. Read-only.
+         */
+        get: operations["marketer_coupons_api_v1_me_affiliate_coupons_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/affiliate/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Marketer Profile */
+        get: operations["marketer_profile_api_v1_me_affiliate_profile_get"];
+        /**
+         * Save Marketer Profile
+         * @description Name, phone, country, city and channels. Name and country are mirrored to Tolt.
+         */
+        put: operations["save_marketer_profile_api_v1_me_affiliate_profile_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/affiliates/webhooks/tolt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tolt Webhook */
+        post: operations["tolt_webhook_api_v1_affiliates_webhooks_tolt_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/affiliates/program": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Affiliate Program
+         * @description Terms shown on the storefront marketers page.
+         */
+        get: operations["affiliate_program_api_v1_affiliates_program_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/affiliates/policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Affiliate Policy
+         * @description The marketer programme policy an applicant must read and accept before applying.
+         */
+        get: operations["affiliate_policy_api_v1_affiliates_policy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/affiliates/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Apply As Marketer
+         * @description Join as a marketer: stored as a pending partner, sent to Tolt once an admin approves it.
+         */
+        post: operations["apply_as_marketer_api_v1_affiliates_applications_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/affiliates/referrals/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Resolve Referral Code */
+        get: operations["resolve_referral_code_api_v1_affiliates_referrals_resolve_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/vouchers": {
         parameters: {
             query?: never;
@@ -6675,6 +7600,23 @@ export interface paths {
         put?: never;
         /** Cancel My Subscription */
         post: operations["cancel_my_subscription_api_v1_subscriptions_me__subscription_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/subscriptions/me/{subscription_id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo a scheduled cancellation before the period ends */
+        post: operations["resume_my_subscription_api_v1_subscriptions_me__subscription_id__resume_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -7233,6 +8175,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/subscriptions/customer-subscriptions/{subscription_id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo a scheduled cancellation */
+        post: operations["admin_resume_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__resume_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/subscriptions/customer-subscriptions/{subscription_id}/extend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add free days to the current period and its access */
+        post: operations["admin_extend_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__extend_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/subscriptions/customer-subscriptions/{subscription_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** End the subscription now and revoke its access */
+        post: operations["admin_revoke_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/support/categories": {
         parameters: {
             query?: never;
@@ -7654,927 +8647,6 @@ export interface paths {
         };
         /** Get admin authorized download URL */
         get: operations["get_admin_attachment_download_api_v1_admin_support_attachments__attachment_id__download_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Partners */
-        get: operations["list_partners_api_v1_admin_affiliates_partners_get"];
-        put?: never;
-        /**
-         * Create Partner
-         * @description Creates the marketer in B2C, then in Tolt (partner + `?ref=` link). A Tolt failure leaves
-         *     `sync_status=failed` for retry; the partner is still created.
-         */
-        post: operations["create_partner_api_v1_admin_affiliates_partners_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Partner */
-        get: operations["get_partner_api_v1_admin_affiliates_partners__partner_id__get"];
-        /**
-         * Update Partner
-         * @description Email and referral code are fixed once created (Tolt identity and live links).
-         */
-        put: operations["update_partner_api_v1_admin_affiliates_partners__partner_id__put"];
-        post?: never;
-        /**
-         * Archive Partner
-         * @description Archives the partner here and rejects it in Tolt. Sales and commissions stay.
-         */
-        delete: operations["archive_partner_api_v1_admin_affiliates_partners__partner_id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Set Partner Status
-         * @description Approve (`active`), suspend or reject; mirrored to Tolt.
-         */
-        post: operations["set_partner_status_api_v1_admin_affiliates_partners__partner_id__status_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/resync": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Resync Partner */
-        post: operations["resync_partner_api_v1_admin_affiliates_partners__partner_id__resync_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/customers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Customers */
-        get: operations["partner_customers_api_v1_admin_affiliates_partners__partner_id__customers_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/coupons": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Coupons */
-        get: operations["partner_coupons_api_v1_admin_affiliates_partners__partner_id__coupons_get"];
-        put?: never;
-        /**
-         * Create Partner Coupon
-         * @description A coupon owned by the partner: customers who use it are attributed to them (also a Tolt promotion code).
-         */
-        post: operations["create_partner_coupon_api_v1_admin_affiliates_partners__partner_id__coupons_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/groups": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Tolt Groups */
-        get: operations["tolt_groups_api_v1_admin_affiliates_groups_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/attributions/{customer_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Customer Attribution */
-        get: operations["customer_attribution_api_v1_admin_affiliates_attributions__customer_id__get"];
-        put?: never;
-        post?: never;
-        /** Unassign Customer */
-        delete: operations["unassign_customer_api_v1_admin_affiliates_attributions__customer_id__delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/customers/{customer_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Customer Referrals
-         * @description Who referred this customer, and (when they are a referrer) their link, counts and rewards.
-         */
-        get: operations["customer_referrals_api_v1_admin_affiliates_customers__customer_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/attributions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Assign Customer */
-        post: operations["assign_customer_api_v1_admin_affiliates_attributions_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/conversions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Conversions */
-        get: operations["list_conversions_api_v1_admin_affiliates_conversions_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/commissions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Commissions */
-        get: operations["list_commissions_api_v1_admin_affiliates_commissions_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/commissions/{commission_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Set Commission
-         * @description Approve or decline a Tolt commission (e.g. decline after a partial refund).
-         */
-        post: operations["set_commission_api_v1_admin_affiliates_commissions__commission_id__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/sync": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Sync Now
-         * @description Push everything pending to Tolt now and pull commissions (the sweep, on demand).
-         */
-        post: operations["sync_now_api_v1_admin_affiliates_sync_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/referral-program": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Referral Program */
-        get: operations["get_referral_program_api_v1_admin_affiliates_referral_program_get"];
-        /** Save Referral Program */
-        put: operations["save_referral_program_api_v1_admin_affiliates_referral_program_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/program": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Affiliate Program Settings */
-        get: operations["get_affiliate_program_settings_api_v1_admin_affiliates_program_get"];
-        /** Save Affiliate Program Settings */
-        put: operations["save_affiliate_program_settings_api_v1_admin_affiliates_program_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/referral-rewards": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Referral Rewards */
-        get: operations["list_referral_rewards_api_v1_admin_affiliates_referral_rewards_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/referral-rewards/{reward_id}/grant": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Grant Referral Reward
-         * @description Skip the holding period and issue the referrer's voucher now.
-         */
-        post: operations["grant_referral_reward_api_v1_admin_affiliates_referral_rewards__reward_id__grant_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/import/legacy/preview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Legacy Preview */
-        post: operations["legacy_preview_api_v1_admin_affiliates_import_legacy_preview_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/import/legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Legacy Import
-         * @description Copies legacy affiliates into B2C (keeping their codes). Tolt is not touched.
-         */
-        post: operations["legacy_import_api_v1_admin_affiliates_import_legacy_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/import/legacy/push": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Legacy Push
-         * @description Creates the next batch of imported active partners in Tolt (no welcome email).
-         */
-        post: operations["legacy_push_api_v1_admin_affiliates_import_legacy_push_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/analytics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Affiliate Analytics */
-        get: operations["affiliate_analytics_api_v1_admin_affiliates_analytics_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/referrals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Referrals */
-        get: operations["my_referrals_api_v1_me_referrals_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/referrals/join": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Join Referrals
-         * @description Get a personal referral link (mirrored to Tolt in the background).
-         */
-        post: operations["join_referrals_api_v1_me_referrals_join_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/referrals/invites": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Invites */
-        get: operations["my_invites_api_v1_me_referrals_invites_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/affiliates/webhooks/tolt": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Tolt Webhook */
-        post: operations["tolt_webhook_api_v1_affiliates_webhooks_tolt_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/affiliates/program": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Affiliate Program
-         * @description Terms shown on the storefront marketers page.
-         */
-        get: operations["affiliate_program_api_v1_affiliates_program_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/affiliates/applications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Apply As Marketer
-         * @description Join as a marketer: stored as a pending partner, sent to Tolt once an admin approves it.
-         */
-        post: operations["apply_as_marketer_api_v1_affiliates_applications_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/requests/company-training/draft": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Save Company Draft */
-        put: operations["save_company_draft_api_v1_requests_company_training_draft_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Payouts */
-        get: operations["list_payouts_api_v1_admin_affiliates_payouts_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/summary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Payouts Summary */
-        get: operations["payouts_summary_api_v1_admin_affiliates_payouts_summary_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Payout
-         * @description The request with the full payout details, the marketer's balance and recent ledger entries.
-         */
-        get: operations["get_payout_api_v1_admin_affiliates_payouts__payout_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Approve Payout */
-        post: operations["approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/reject": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Reject Payout
-         * @description The whole requested amount returns to the marketer's available balance.
-         */
-        post: operations["reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/pay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Pay Payout
-         * @description Record the transfer (made outside the platform) in full or in part; the unpaid part returns to the
-         *     marketer's available balance.
-         */
-        post: operations["pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/balance": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Balance */
-        get: operations["partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/ledger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Ledger */
-        get: operations["partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/earnings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * My Earnings
-         * @description Balance (USD minor units) and whether a payout can be requested. Marketers only (403 otherwise).
-         */
-        get: operations["my_earnings_api_v1_me_affiliate_earnings_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payouts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Payouts */
-        get: operations["my_payouts_api_v1_me_affiliate_payouts_get"];
-        put?: never;
-        /**
-         * Request Payout
-         * @description Ask to be paid. 409 when a request is already open; 422 `below_minimum`, `above_available`,
-         *     `missing_details` or `partner_inactive`.
-         */
-        post: operations["request_payout_api_v1_me_affiliate_payouts_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payouts/{payout_id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel Payout */
-        post: operations["cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payout-details": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Payout Details */
-        get: operations["my_payout_details_api_v1_me_affiliate_payout_details_get"];
-        /**
-         * Save Payout Details
-         * @description Where payouts are sent. A request keeps the details it was made with.
-         */
-        put: operations["save_payout_details_api_v1_me_affiliate_payout_details_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/affiliates/referrals/resolve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Resolve Referral Code */
-        get: operations["resolve_referral_code_api_v1_affiliates_referrals_resolve_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/overview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Marketer Overview
-         * @description Dashboard home. 403 `marketers_only` for anyone who is not a marketer.
-         */
-        get: operations["marketer_overview_api_v1_me_affiliate_overview_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/customers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Marketer Customers
-         * @description Customers who signed up through the marketer's link or coupon (first name and masked email only).
-         */
-        get: operations["marketer_customers_api_v1_me_affiliate_customers_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/sales": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Marketer Sales */
-        get: operations["marketer_sales_api_v1_me_affiliate_sales_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/commissions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Marketer Commissions */
-        get: operations["marketer_commissions_api_v1_me_affiliate_commissions_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/coupons": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Marketer Coupons
-         * @description Coupons the admin created for the marketer, with confirmed uses. Read-only.
-         */
-        get: operations["marketer_coupons_api_v1_me_affiliate_coupons_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/profile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Marketer Profile */
-        get: operations["marketer_profile_api_v1_me_affiliate_profile_get"];
-        /**
-         * Save Marketer Profile
-         * @description Name, phone, country, city and channels. Name and country are mirrored to Tolt.
-         */
-        put: operations["save_marketer_profile_api_v1_me_affiliate_profile_put"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/affiliates/policy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Affiliate Policy
-         * @description The marketer programme policy an applicant must read and accept before applying.
-         */
-        get: operations["affiliate_policy_api_v1_affiliates_policy_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -10088,6 +10160,81 @@ export interface components {
             /** Offset */
             offset: number;
         };
+        /** AdminPayoutOut */
+        AdminPayoutOut: {
+            /**
+             * Payout Id
+             * Format: uuid
+             */
+            payout_id: string;
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /** Currency Code */
+            currency_code: string;
+            /** Requested Minor */
+            requested_minor: number;
+            /** Paid Minor */
+            paid_minor: number | null;
+            /**
+             * Returned Minor
+             * @description Back in the available balance after a partial payment, rejection or cancel.
+             */
+            returned_minor: number;
+            /** Status */
+            status: string;
+            /** Method */
+            method: string;
+            /**
+             * Destination
+             * @description Masked payout destination.
+             */
+            destination: string | null;
+            /** Payment Reference */
+            payment_reference: string | null;
+            /** Reject Reason */
+            reject_reason: string | null;
+            /** Requested At */
+            requested_at: string | null;
+            /** Reviewed At */
+            reviewed_at: string | null;
+            /** Paid At */
+            paid_at: string | null;
+            /** Cancelled At */
+            cancelled_at: string | null;
+            /** Partner Name */
+            partner_name: string | null;
+            /** Partner Email */
+            partner_email: string | null;
+            /** Admin Note */
+            admin_note: string | null;
+            /** Reviewed By */
+            reviewed_by: string | null;
+            /** Paid By */
+            paid_by: string | null;
+            /** @description Full payout details (admin only). */
+            details?: components["schemas"]["PayoutDetailsIO"] | null;
+        };
+        /** AdminPayoutPage */
+        AdminPayoutPage: {
+            /** Items */
+            items: components["schemas"]["AdminPayoutOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** AdminPayoutReviewOut */
+        AdminPayoutReviewOut: {
+            payout: components["schemas"]["AdminPayoutOut"];
+            balance: components["schemas"]["AffiliateBalanceOut"];
+            /** Ledger */
+            ledger: components["schemas"]["LedgerEntryOut"][];
+        };
         /** AdminPerson */
         AdminPerson: {
             /**
@@ -10477,6 +10624,157 @@ export interface components {
             /** Scopes */
             scopes: string[];
         };
+        /**
+         * AffiliateApplicationIn
+         * @description The storefront "join as a marketer" form.
+         */
+        AffiliateApplicationIn: {
+            /**
+             * Full Name
+             * @description Full (three-part) name.
+             */
+            full_name: string;
+            /** Email */
+            email: string;
+            /** Phone */
+            phone: string;
+            /** Country */
+            country: string;
+            /** Country Code */
+            country_code?: string | null;
+            /** City */
+            city: string;
+            /** Po Box */
+            po_box?: string | null;
+            /** Postal Code */
+            postal_code?: string | null;
+            /** Address */
+            address: string;
+            /**
+             * Links
+             * @description Accounts the applicant answered yes to: platform -> link (instagram, tiktok, x, youtube, snapchat, facebook, linkedin, telegram, whatsapp, website). Each link must be on that platform's domain.
+             */
+            links?: {
+                [key: string]: string;
+            };
+            /**
+             * Has Email List
+             * @enum {string}
+             */
+            has_email_list: "yes" | "no";
+            /**
+             * Is Influencer
+             * @enum {string}
+             */
+            is_influencer: "yes" | "no";
+            /** Audience Size */
+            audience_size?: string | null;
+            /** Marketing Plan */
+            marketing_plan: string;
+            /**
+             * Accept Terms
+             * @constant
+             */
+            accept_terms: true;
+            /**
+             * Policy Version
+             * @description `version` of GET /affiliates/policy the applicant read.
+             */
+            policy_version: string;
+            /** Website */
+            website?: string | null;
+        };
+        /** AffiliateBalanceOut */
+        AffiliateBalanceOut: {
+            /**
+             * Currency Code
+             * @default USD
+             */
+            currency_code: string;
+            /**
+             * Available Minor
+             * @description Can be requested now. Negative after a refund clawback.
+             */
+            available_minor: number;
+            /**
+             * Held Minor
+             * @description In an open payout request.
+             */
+            held_minor: number;
+            /**
+             * Pending Minor
+             * @description Commissions Tolt has not approved yet.
+             */
+            pending_minor: number;
+            /** Lifetime Earned Minor */
+            lifetime_earned_minor: number;
+            /** Paid Total Minor */
+            paid_total_minor: number;
+            /** Minimum Payout Minor */
+            minimum_payout_minor: number;
+        };
+        /** AffiliatePolicyOut */
+        AffiliatePolicyOut: {
+            /**
+             * Version
+             * @description Send it back as `policy_version` when applying.
+             */
+            version: string;
+            /** Sections */
+            sections: components["schemas"]["AffiliatePolicySectionOut"][];
+        };
+        /** AffiliatePolicySectionOut */
+        AffiliatePolicySectionOut: {
+            /** Id */
+            id: number;
+            /** Order */
+            order: number;
+            /** Title */
+            title: string | null;
+            /**
+             * Body Html
+             * @description Legacy rich text (HTML); render as text, never as raw HTML.
+             */
+            body_html: string | null;
+        };
+        /**
+         * AffiliateProgramIO
+         * @description Public marketer-programme terms (also edited by the admin).
+         */
+        "AffiliateProgramIO-Input": {
+            /** Applications Open */
+            applications_open: boolean;
+            /**
+             * Commission Percent
+             * @description Shown on the public page; keep it in line with the Tolt group.
+             */
+            commission_percent: number | string;
+            /** Cookie Days */
+            cookie_days: number;
+            /** Payout Terms */
+            payout_terms: string;
+            /** Minimum Payout Minor */
+            minimum_payout_minor: number;
+        };
+        /**
+         * AffiliateProgramIO
+         * @description Public marketer-programme terms (also edited by the admin).
+         */
+        "AffiliateProgramIO-Output": {
+            /** Applications Open */
+            applications_open: boolean;
+            /**
+             * Commission Percent
+             * @description Shown on the public page; keep it in line with the Tolt group.
+             */
+            commission_percent: string;
+            /** Cookie Days */
+            cookie_days: number;
+            /** Payout Terms */
+            payout_terms: string;
+            /** Minimum Payout Minor */
+            minimum_payout_minor: number;
+        };
         /** AgentInfoResponse */
         AgentInfoResponse: {
             /**
@@ -10492,6 +10790,21 @@ export interface components {
             roles?: string[];
             /** Active Ticket Count */
             active_ticket_count: number;
+        };
+        /** AnalyticsOut */
+        AnalyticsOut: {
+            /** Totals */
+            totals: {
+                [key: string]: unknown;
+            };
+            /** Daily */
+            daily: {
+                [key: string]: unknown;
+            }[];
+            /** Top */
+            top: {
+                [key: string]: unknown;
+            }[];
         };
         /** Announcement */
         Announcement: {
@@ -10562,6 +10875,24 @@ export interface components {
             content_type: string;
             /** Expires In Seconds */
             expires_in_seconds: number;
+        };
+        /** AssignIn */
+        AssignIn: {
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /**
+             * Replace
+             * @default false
+             */
+            replace: boolean;
         };
         /** AssignProductRequest */
         AssignProductRequest: {
@@ -10652,6 +10983,50 @@ export interface components {
             confirmed_at?: string | null;
             /** Download Url */
             download_url?: string | null;
+        };
+        /** AttributionOut */
+        AttributionOut: {
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /** Source */
+            source: string;
+            /** Ref Value */
+            ref_value: string | null;
+            /** Attributed At */
+            attributed_at: string | null;
+            /** Sync Status */
+            sync_status: string;
+            /** Customer Email */
+            customer_email: string | null;
+            /** Customer Name */
+            customer_name: string | null;
+            /** Partner Name */
+            partner_name: string | null;
+            /** Partner Code */
+            partner_code: string | null;
+            /** Paid Orders */
+            paid_orders: number;
+            /** Revenue Minor */
+            revenue_minor: number;
+        };
+        /** AttributionPage */
+        AttributionPage: {
+            /** Items */
+            items: components["schemas"]["AttributionOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
         };
         /** AuthResponse */
         AuthResponse: {
@@ -11537,9 +11912,15 @@ export interface components {
         CancelSubscriptionRequest: {
             /**
              * Immediate
+             * @description End now and lose access; otherwise cancel at the end of the paid period.
              * @default false
              */
             immediate: boolean;
+            /**
+             * Reason
+             * @description Admin only: recorded in the audit log.
+             */
+            reason?: string | null;
         };
         /** CartItemRequest */
         CartItemRequest: {
@@ -12245,6 +12626,57 @@ export interface components {
             /** Original Price */
             original_price?: number | null;
         };
+        /** CommissionActionIn */
+        CommissionActionIn: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "approve" | "decline";
+        };
+        /** CommissionOut */
+        CommissionOut: {
+            /** Tolt Commission Id */
+            tolt_commission_id: string;
+            /** Partner Id */
+            partner_id: string | null;
+            /** Conversion Id */
+            conversion_id: string | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Status */
+            status: string;
+            /** Payout Id */
+            payout_id: string | null;
+            /** Tolt Created At */
+            tolt_created_at: string | null;
+            /** Order Id */
+            order_id: string | null;
+            /** Partner Name */
+            partner_name: string | null;
+            /** Customer Email */
+            customer_email: string | null;
+            /** Settled Payout Id */
+            settled_payout_id?: string | null;
+            /** Settled At */
+            settled_at?: string | null;
+            /**
+             * Effective Status
+             * @description `paid` once a local payout settled it; otherwise the Tolt status.
+             */
+            effective_status: string;
+        };
+        /** CommissionPage */
+        CommissionPage: {
+            /** Items */
+            items: components["schemas"]["CommissionOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
         /**
          * CompanyContactIn
          * @description Who to contact about a company subscription (from the team checkout form).
@@ -12258,6 +12690,20 @@ export interface components {
             phone?: string | null;
             /** Job Title */
             job_title?: string | null;
+        };
+        /** CompanyDraftProgress */
+        CompanyDraftProgress: {
+            /** Drafttoken */
+            draftToken: string;
+            /**
+             * Step
+             * @enum {string}
+             */
+            step: "company" | "training" | "departments" | "budget" | "needs";
+            /** Answers */
+            answers: {
+                [key: string]: unknown;
+            };
         };
         /**
          * CompanyInsightsResponse
@@ -12801,6 +13247,60 @@ export interface components {
             /** Items */
             items?: components["schemas"]["ContentViewResponse"][];
         };
+        /** ConversionOut */
+        ConversionOut: {
+            /**
+             * Conversion Id
+             * Format: uuid
+             */
+            conversion_id: string;
+            /**
+             * Order Id
+             * Format: uuid
+             */
+            order_id: string;
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /** Base Amount Minor */
+            base_amount_minor: number;
+            /** Is First Purchase */
+            is_first_purchase: boolean;
+            /** Status */
+            status: string;
+            /** Tolt Transaction Id */
+            tolt_transaction_id: string | null;
+            /** Created At */
+            created_at: string | null;
+            /** Customer Email */
+            customer_email: string | null;
+            /** Product Name */
+            product_name: string | null;
+            /** Partner Name */
+            partner_name: string | null;
+            /** Commission Minor */
+            commission_minor: number | null;
+            /** Commission Status */
+            commission_status: string | null;
+        };
+        /** ConversionPage */
+        ConversionPage: {
+            /** Items */
+            items: components["schemas"]["ConversionOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
         /** Country */
         Country: {
             /** Country Code */
@@ -13173,6 +13673,38 @@ export interface components {
              * @default true
              */
             is_active: boolean;
+        };
+        /**
+         * CreateInstructorRequest
+         * @description A new expert profile is a small seed: the rest is edited on the detail page.
+         */
+        CreateInstructorRequest: {
+            /** Display Name */
+            display_name: string;
+            /** Headline */
+            headline?: string | null;
+            /** Specialized */
+            specialized?: string | null;
+            /** Bio */
+            bio?: string | null;
+            /**
+             * Status
+             * @default active
+             */
+            status: string;
+            /**
+             * Is Featured
+             * @default false
+             */
+            is_featured: boolean;
+            /** Featured Order */
+            featured_order?: number | null;
+            /**
+             * Make Consultant
+             * @description Also create their (active) consultant profile.
+             * @default false
+             */
+            make_consultant: boolean;
         };
         /** CreateLessonRequest */
         CreateLessonRequest: {
@@ -13775,6 +14307,46 @@ export interface components {
             preferred_currency?: string | null;
             /** Preferred Locale */
             preferred_locale?: string | null;
+        };
+        /**
+         * CustomerReferralsOut
+         * @description Everything referral-related about one customer, for the admin customer page.
+         */
+        CustomerReferralsOut: {
+            /** @description Who brought this customer (first touch). */
+            attribution: components["schemas"]["AttributionOut"] | null;
+            /** @description Set when the customer is themselves a referrer. */
+            partner: components["schemas"]["PartnerOut"] | null;
+            /**
+             * Invited
+             * @default 0
+             */
+            invited: number;
+            /**
+             * Qualified
+             * @default 0
+             */
+            qualified: number;
+            /**
+             * Pending Rewards
+             * @default 0
+             */
+            pending_rewards: number;
+            /**
+             * Granted Rewards
+             * @default 0
+             */
+            granted_rewards: number;
+            /**
+             * Earned Minor
+             * @default 0
+             */
+            earned_minor: number;
+            /**
+             * Rewards
+             * @default []
+             */
+            rewards: components["schemas"]["ReferralRewardOut"][];
         };
         /** CustomerReplyRequest */
         CustomerReplyRequest: {
@@ -14681,6 +15253,16 @@ export interface components {
              */
             lifetime: boolean;
         };
+        /** ExtendSubscriptionRequest */
+        ExtendSubscriptionRequest: {
+            /**
+             * Days
+             * @description Days added to the current period, free of charge.
+             */
+            days: number;
+            /** Reason */
+            reason: string;
+        };
         /** ExtensionPackage */
         ExtensionPackage: {
             /** Legacy Extension Id */
@@ -14702,6 +15284,15 @@ export interface components {
             label: string;
             /** Count */
             count: number;
+        };
+        /** FormStepPoint */
+        FormStepPoint: {
+            /** Label */
+            label: string;
+            /** Value */
+            value: number;
+            /** Id */
+            id: string;
         };
         /** FreeEnrollmentRequest */
         FreeEnrollmentRequest: {
@@ -15179,6 +15770,88 @@ export interface components {
             /** Started At */
             started_at?: string | null;
         };
+        /** LedgerEntryOut */
+        LedgerEntryOut: {
+            /** Entry Id */
+            entry_id: number;
+            /** Entry Type */
+            entry_type: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Tolt Commission Id */
+            tolt_commission_id: string | null;
+            /** Payout Id */
+            payout_id: string | null;
+            /** Note */
+            note: string | null;
+            /** Created At */
+            created_at: string | null;
+        };
+        /** LedgerPage */
+        LedgerPage: {
+            /** Items */
+            items: components["schemas"]["LedgerEntryOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** LegacyAffiliateOut */
+        LegacyAffiliateOut: {
+            /** Legacy Id */
+            legacy_id: number;
+            /** Name */
+            name?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Code */
+            code?: string | null;
+            /** Status */
+            status?: number | null;
+        };
+        /** LegacyImportIn */
+        LegacyImportIn: {
+            /**
+             * Only Approved
+             * @default true
+             */
+            only_approved: boolean;
+        };
+        /** LegacyImportOut */
+        LegacyImportOut: {
+            /** Imported */
+            imported: number;
+            /** Skipped */
+            skipped: number;
+        };
+        /** LegacyPreviewOut */
+        LegacyPreviewOut: {
+            /** Total */
+            total: number;
+            /** Already Imported */
+            already_imported: number;
+            /** To Import */
+            to_import: number;
+            /** Sample */
+            sample: components["schemas"]["LegacyAffiliateOut"][];
+        };
+        /** LegacyPushIn */
+        LegacyPushIn: {
+            /**
+             * Limit
+             * @default 50
+             */
+            limit: number;
+        };
+        /** LegacyPushOut */
+        LegacyPushOut: {
+            /** Attempted */
+            attempted: number;
+            /** Pushed */
+            pushed: number;
+        };
         /** LiveDiplomaView */
         LiveDiplomaView: {
             /** Slug */
@@ -15401,6 +16074,280 @@ export interface components {
             /** Refresh Token */
             refresh_token?: string | null;
         };
+        /** MarketerCommissionOut */
+        MarketerCommissionOut: {
+            /** Commission Id */
+            commission_id: string;
+            /** Order Ref */
+            order_ref: string | null;
+            /**
+             * Customer Email
+             * @description Masked.
+             */
+            customer_email: string | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /**
+             * Status
+             * @description pending | approved | paid | rejected | refunded (paid once a payout settled it).
+             */
+            status: string;
+            /** Created At */
+            created_at: string | null;
+            /** Settled At */
+            settled_at: string | null;
+        };
+        /** MarketerCommissionPage */
+        MarketerCommissionPage: {
+            /** Items */
+            items: components["schemas"]["MarketerCommissionOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** MarketerCouponOut */
+        MarketerCouponOut: {
+            /**
+             * Promotion Id
+             * Format: uuid
+             */
+            promotion_id: string;
+            /** Code */
+            code: string;
+            /** Name */
+            name: string | null;
+            /** Discount Type */
+            discount_type: string;
+            /** Discount Value */
+            discount_value: string;
+            /** Max Discount Minor */
+            max_discount_minor: number | null;
+            /** Min Subtotal Minor */
+            min_subtotal_minor: number | null;
+            /** First Purchase Only */
+            first_purchase_only: boolean;
+            /** Usage Limit */
+            usage_limit: number | null;
+            /** Per Customer Limit */
+            per_customer_limit: number | null;
+            /** Starts At */
+            starts_at: string | null;
+            /** Ends At */
+            ends_at: string | null;
+            /** Is Active */
+            is_active: boolean;
+            /** Is Referral Code */
+            is_referral_code: boolean;
+            /** Uses */
+            uses: number;
+            /** Customers */
+            customers: number;
+            /** Discount Given Minor */
+            discount_given_minor: number;
+            /** Sales Minor */
+            sales_minor: number;
+        };
+        /** MarketerCustomerOut */
+        MarketerCustomerOut: {
+            /** First Name */
+            first_name: string | null;
+            /**
+             * Email
+             * @description Masked.
+             */
+            email: string | null;
+            /** Joined At */
+            joined_at: string | null;
+            /** Source */
+            source: string;
+            /** Orders */
+            orders: number;
+            /** Revenue Minor */
+            revenue_minor: number;
+        };
+        /** MarketerCustomerPage */
+        MarketerCustomerPage: {
+            /** Items */
+            items: components["schemas"]["MarketerCustomerOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** MarketerDayOut */
+        MarketerDayOut: {
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Signups */
+            signups: number;
+            /** Orders */
+            orders: number;
+            /** Revenue Minor */
+            revenue_minor: number;
+            /** Commission Minor */
+            commission_minor: number;
+        };
+        /**
+         * MarketerOverviewOut
+         * @description Everything the dashboard home needs. Stats, balance, series and Tolt are absent while pending.
+         */
+        MarketerOverviewOut: {
+            partner: components["schemas"]["MarketerPartnerOut"];
+            program: components["schemas"]["MarketerProgramOut"];
+            stats?: components["schemas"]["MarketerStatsOut"] | null;
+            balance?: components["schemas"]["AffiliateBalanceOut"] | null;
+            tolt?: components["schemas"]["MarketerToltOut"] | null;
+            /**
+             * Series
+             * @default []
+             */
+            series: components["schemas"]["MarketerDayOut"][];
+        };
+        /** MarketerPartnerOut */
+        MarketerPartnerOut: {
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /** Full Name */
+            full_name: string | null;
+            /** Email */
+            email: string;
+            /** Status */
+            status: string;
+            /** Referral Code */
+            referral_code: string;
+            /** Link */
+            link: string;
+            /** Phone */
+            phone: string | null;
+            /** Country Code */
+            country_code: string | null;
+            /** Joined At */
+            joined_at: string | null;
+        };
+        /**
+         * MarketerProfileIn
+         * @description Contact details. Email and referral code are fixed (Tolt identity and live links).
+         */
+        MarketerProfileIn: {
+            /** Full Name */
+            full_name: string;
+            /** Phone */
+            phone?: string | null;
+            /** Country Code */
+            country_code?: string | null;
+            /** City */
+            city?: string | null;
+            /** Channels */
+            channels?: string | null;
+            /** Audience Size */
+            audience_size?: string | null;
+        };
+        /** MarketerProfileOut */
+        MarketerProfileOut: {
+            partner: components["schemas"]["MarketerPartnerOut"];
+            /** City */
+            city?: string | null;
+            /** Channels */
+            channels?: string | null;
+            /** Audience Size */
+            audience_size?: string | null;
+        };
+        /** MarketerProgramOut */
+        MarketerProgramOut: {
+            /** Commission Percent */
+            commission_percent: string;
+            /** Cookie Days */
+            cookie_days: number;
+            /** Payout Terms */
+            payout_terms: string;
+            /** Minimum Payout Minor */
+            minimum_payout_minor: number;
+        };
+        /** MarketerSaleOut */
+        MarketerSaleOut: {
+            /**
+             * Order Ref
+             * @description Short order reference.
+             */
+            order_ref: string;
+            /** Created At */
+            created_at: string | null;
+            /** Product Name */
+            product_name: string | null;
+            /**
+             * Customer Email
+             * @description Masked.
+             */
+            customer_email: string | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Is First Purchase */
+            is_first_purchase: boolean;
+            /** Status */
+            status: string;
+            /** Commission Minor */
+            commission_minor: number | null;
+            /** Commission Status */
+            commission_status: string | null;
+        };
+        /** MarketerSalePage */
+        MarketerSalePage: {
+            /** Items */
+            items: components["schemas"]["MarketerSaleOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** MarketerStatsOut */
+        MarketerStatsOut: {
+            /** Customers */
+            customers: number;
+            /** Paying Customers */
+            paying_customers: number;
+            /**
+             * Conversion Rate
+             * @description Paying customers / attributed customers, percent.
+             */
+            conversion_rate: number | null;
+            /** Orders */
+            orders: number;
+            /** Revenue Minor */
+            revenue_minor: number;
+            /** Commission Pending Minor */
+            commission_pending_minor: number;
+            /** Commission Approved Minor */
+            commission_approved_minor: number;
+            /** Commission Paid Minor */
+            commission_paid_minor: number;
+        };
+        /** MarketerToltOut */
+        MarketerToltOut: {
+            /** Connected */
+            connected: boolean;
+            /** Sync Status */
+            sync_status: string;
+            /**
+             * Clicks
+             * @description Link clicks counted by Tolt (null when Tolt did not answer).
+             */
+            clicks: number | null;
+            /** Customers */
+            customers: number | null;
+        };
         /** MediaResponse */
         MediaResponse: {
             /**
@@ -15510,6 +16457,144 @@ export interface components {
             currency: string;
             /** Amount */
             amount: number;
+        };
+        /**
+         * MyAffiliateEarningsOut
+         * @description The marketer's earnings card: balance, whether a payout can be requested, and where it goes.
+         */
+        MyAffiliateEarningsOut: {
+            balance: components["schemas"]["AffiliateBalanceOut"];
+            /** Can Request */
+            can_request: boolean;
+            /** Blocked Reason */
+            blocked_reason: ("partner_inactive" | "request_open" | "missing_details" | "below_minimum") | null;
+            open_payout: components["schemas"]["PayoutOut"] | null;
+            /** Payout Method */
+            payout_method: string | null;
+            /** Destination */
+            destination: string | null;
+            /** Payout Terms */
+            payout_terms: string;
+        };
+        /** MyReferralsOut */
+        MyReferralsOut: {
+            /** Program Active */
+            program_active: boolean;
+            /** Joined */
+            joined: boolean;
+            /** Partner Id */
+            partner_id?: string | null;
+            /** Partner Type */
+            partner_type?: string | null;
+            /**
+             * Partner Status
+             * @description pending while a marketer application is reviewed.
+             */
+            partner_status?: string | null;
+            /** Referral Code */
+            referral_code?: string | null;
+            /** Link */
+            link?: string | null;
+            /** Reward Minor */
+            reward_minor: number;
+            /** Friend Discount Percent */
+            friend_discount_percent: string;
+            /** Holding Days */
+            holding_days: number;
+            /** Min Order Minor */
+            min_order_minor: number;
+            /**
+             * Invited
+             * @default 0
+             */
+            invited: number;
+            /**
+             * Qualified
+             * @default 0
+             */
+            qualified: number;
+            /**
+             * Clicks
+             * @default 0
+             */
+            clicks: number;
+            /**
+             * Total Orders
+             * @default 0
+             */
+            total_orders: number;
+            /**
+             * Total Revenue Minor
+             * @default 0
+             */
+            total_revenue_minor: number;
+            /**
+             * Total Commission Minor
+             * @default 0
+             */
+            total_commission_minor: number;
+            /**
+             * Pending Commission Minor
+             * @default 0
+             */
+            pending_commission_minor: number;
+            /**
+             * Approved Commission Minor
+             * @default 0
+             */
+            approved_commission_minor: number;
+            /**
+             * Paid Commission Minor
+             * @default 0
+             */
+            paid_commission_minor: number;
+            /**
+             * Pending Rewards
+             * @default 0
+             */
+            pending_rewards: number;
+            /**
+             * Granted Rewards
+             * @default 0
+             */
+            granted_rewards: number;
+            /**
+             * Earned Minor
+             * @default 0
+             */
+            earned_minor: number;
+            /**
+             * Referral Balance Minor
+             * @description Spendable referral vouchers, applied at checkout.
+             * @default 0
+             */
+            referral_balance_minor: number;
+            /**
+             * Referral Vouchers
+             * @default 0
+             */
+            referral_vouchers: number;
+            /**
+             * Referral Balance Expires At
+             * @description Soonest expiry of that credit.
+             */
+            referral_balance_expires_at?: string | null;
+            /**
+             * Pending Reward Minor
+             * @description Rewards still in the holding period.
+             * @default 0
+             */
+            pending_reward_minor: number;
+            /**
+             * Rewards
+             * @default []
+             */
+            rewards: components["schemas"]["ReferralRewardOut"][];
+            /**
+             * Conversions
+             * @default []
+             */
+            conversions: components["schemas"]["PartnerConversionOut"][];
         };
         /** NoteCreate */
         NoteCreate: {
@@ -16174,6 +17259,164 @@ export interface components {
              */
             revalidated: boolean;
         };
+        /** PartnerBalanceOut */
+        PartnerBalanceOut: {
+            balance: components["schemas"]["AffiliateBalanceOut"];
+            details: components["schemas"]["PayoutDetailsIO"] | null;
+        };
+        /** PartnerConversionOut */
+        PartnerConversionOut: {
+            /**
+             * Conversion Id
+             * Format: uuid
+             */
+            conversion_id: string;
+            /**
+             * Order Id
+             * Format: uuid
+             */
+            order_id: string;
+            /** Order Total Minor */
+            order_total_minor: number;
+            /**
+             * Currency
+             * @default USD
+             */
+            currency: string;
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Is First Purchase
+             * @default false
+             */
+            is_first_purchase: boolean;
+            /** Commission Minor */
+            commission_minor?: number | null;
+            /** Commission Status */
+            commission_status?: string | null;
+            /** Reward Minor */
+            reward_minor?: number | null;
+            /** Reward Status */
+            reward_status?: string | null;
+        };
+        /** PartnerIn */
+        PartnerIn: {
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /** Country Code */
+            country_code?: string | null;
+            /**
+             * Referral Code
+             * @description ?ref= value; generated when empty.
+             */
+            referral_code?: string | null;
+            /**
+             * Tolt Group Id
+             * @description Tolt group (commission plan).
+             */
+            tolt_group_id?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** PartnerOut */
+        PartnerOut: {
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /** Kind */
+            kind: string;
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name: string | null;
+            /** Phone */
+            phone: string | null;
+            /** Country Code */
+            country_code: string | null;
+            /** Status */
+            status: string;
+            /** Referral Code */
+            referral_code: string;
+            /** Referral Link */
+            referral_link: string;
+            /** Customer Id */
+            customer_id: string | null;
+            /** Tolt Partner Id */
+            tolt_partner_id: string | null;
+            /** Tolt Group Id */
+            tolt_group_id: string | null;
+            /** Sync Status */
+            sync_status: string;
+            /** Sync Error */
+            sync_error: string | null;
+            /** Legacy Affiliate Id */
+            legacy_affiliate_id: number | null;
+            /** Notes */
+            notes: string | null;
+            /** Created At */
+            created_at: string | null;
+            stats: components["schemas"]["PartnerStatsOut"];
+            /** Tolt Stats */
+            tolt_stats?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Source
+             * @default admin
+             */
+            source: string;
+            /** Application */
+            application?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** PartnerPage */
+        PartnerPage: {
+            /** Items */
+            items: components["schemas"]["PartnerOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** PartnerStatsOut */
+        PartnerStatsOut: {
+            /** Customers */
+            customers: number;
+            /** Paying Customers */
+            paying_customers: number;
+            /** Conversions */
+            conversions: number;
+            /** Revenue Minor */
+            revenue_minor: number;
+            /** Commission Pending Minor */
+            commission_pending_minor: number;
+            /** Commission Approved Minor */
+            commission_approved_minor: number;
+            /** Commission Paid Minor */
+            commission_paid_minor: number;
+        };
+        /** PartnerStatusIn */
+        PartnerStatusIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "suspended" | "rejected";
+        };
         /** PartnerStatusRequest */
         PartnerStatusRequest: {
             /**
@@ -16297,6 +17540,114 @@ export interface components {
             /** Failure Message */
             failure_message?: string | null;
         };
+        /** PayoutApproveIn */
+        PayoutApproveIn: {
+            /** Note */
+            note?: string | null;
+        };
+        /** PayoutDetailsIO */
+        PayoutDetailsIO: {
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "paypal" | "bank_transfer" | "wise" | "other";
+            /** Email */
+            email?: string | null;
+            /** Account Name */
+            account_name?: string | null;
+            /** Iban */
+            iban?: string | null;
+            /** Bank Name */
+            bank_name?: string | null;
+            /** Swift */
+            swift?: string | null;
+            /** Country */
+            country?: string | null;
+            /** Instructions */
+            instructions?: string | null;
+        };
+        /** PayoutOut */
+        PayoutOut: {
+            /**
+             * Payout Id
+             * Format: uuid
+             */
+            payout_id: string;
+            /**
+             * Partner Id
+             * Format: uuid
+             */
+            partner_id: string;
+            /** Currency Code */
+            currency_code: string;
+            /** Requested Minor */
+            requested_minor: number;
+            /** Paid Minor */
+            paid_minor: number | null;
+            /**
+             * Returned Minor
+             * @description Back in the available balance after a partial payment, rejection or cancel.
+             */
+            returned_minor: number;
+            /** Status */
+            status: string;
+            /** Method */
+            method: string;
+            /**
+             * Destination
+             * @description Masked payout destination.
+             */
+            destination: string | null;
+            /** Payment Reference */
+            payment_reference: string | null;
+            /** Reject Reason */
+            reject_reason: string | null;
+            /** Requested At */
+            requested_at: string | null;
+            /** Reviewed At */
+            reviewed_at: string | null;
+            /** Paid At */
+            paid_at: string | null;
+            /** Cancelled At */
+            cancelled_at: string | null;
+        };
+        /** PayoutPage */
+        PayoutPage: {
+            /** Items */
+            items: components["schemas"]["PayoutOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /**
+         * PayoutPayIn
+         * @description Record a payment made outside the platform. Give either the amount or a percentage of the request.
+         */
+        PayoutPayIn: {
+            /** Amount Minor */
+            amount_minor?: number | null;
+            /** Percent */
+            percent?: number | string | null;
+            /**
+             * Payment Reference
+             * @description Transfer id / PayPal transaction.
+             */
+            payment_reference: string;
+            /** Note */
+            note?: string | null;
+        };
+        /** PayoutRejectIn */
+        PayoutRejectIn: {
+            /**
+             * Reason
+             * @description Shown to the marketer.
+             */
+            reason: string;
+        };
         /** PayoutRequest */
         PayoutRequest: {
             /** Legacy Payment Id */
@@ -16316,6 +17667,14 @@ export interface components {
             /** Notes */
             notes: string | null;
         };
+        /** PayoutRequestIn */
+        PayoutRequestIn: {
+            /**
+             * Amount Minor
+             * @description USD minor units, at most the available balance.
+             */
+            amount_minor: number;
+        };
         /** PayoutStatusRequest */
         PayoutStatusRequest: {
             /**
@@ -16329,6 +17688,17 @@ export interface components {
              * @description Admin note stored on the request.
              */
             notes?: string | null;
+        };
+        /** PayoutSummaryOut */
+        PayoutSummaryOut: {
+            /** Requested Count */
+            requested_count: number;
+            /** Approved Count */
+            approved_count: number;
+            /** Open Minor */
+            open_minor: number;
+            /** Paid 30D Minor */
+            paid_30d_minor: number;
         };
         /** PermissionModule */
         PermissionModule: {
@@ -17602,6 +18972,18 @@ export interface components {
             /** Commission */
             commission: number | null;
         };
+        /** ReferralIn */
+        ReferralIn: {
+            /**
+             * Ref
+             * @description The ?ref= value (partner code).
+             */
+            ref?: string | null;
+            /** Tolt Click Id */
+            tolt_click_id?: string | null;
+            /** Tolt Partner Id */
+            tolt_partner_id?: string | null;
+        };
         /** ReferralPartner */
         ReferralPartner: {
             /** Legacy Affiliate Id */
@@ -17644,6 +19026,129 @@ export interface components {
             title: string | null;
             /** Body */
             body: string | null;
+        };
+        /** ReferralResolveOut */
+        ReferralResolveOut: {
+            /** Valid */
+            valid: boolean;
+            /** Referral Code */
+            referral_code: string;
+            /** Partner Kind */
+            partner_kind?: string | null;
+            /** Partner Name */
+            partner_name?: string | null;
+            /**
+             * Discount Percent
+             * @default 10.00
+             */
+            discount_percent: string;
+            /** Coupon Code */
+            coupon_code?: string | null;
+            /** Message */
+            message?: string | null;
+        };
+        /** ReferralRewardOut */
+        ReferralRewardOut: {
+            /**
+             * Reward Id
+             * Format: uuid
+             */
+            reward_id: string;
+            /**
+             * Referrer Customer Id
+             * Format: uuid
+             */
+            referrer_customer_id: string;
+            /**
+             * Referred Customer Id
+             * Format: uuid
+             */
+            referred_customer_id: string;
+            /**
+             * Order Id
+             * Format: uuid
+             */
+            order_id: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Status */
+            status: string;
+            /**
+             * Eligible At
+             * Format: date-time
+             */
+            eligible_at: string;
+            /** Voucher Id */
+            voucher_id: string | null;
+            /** Created At */
+            created_at: string | null;
+            /** Referrer Email */
+            referrer_email: string | null;
+            /** Referred Email */
+            referred_email: string | null;
+            /** Referred Name */
+            referred_name: string | null;
+        };
+        /** ReferralRewardPage */
+        ReferralRewardPage: {
+            /** Items */
+            items: components["schemas"]["ReferralRewardOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** ReferralSettingsIO */
+        "ReferralSettingsIO-Input": {
+            /** Is Active */
+            is_active: boolean;
+            /**
+             * Referrer Reward Minor
+             * @description Voucher for the referrer, in cents.
+             */
+            referrer_reward_minor: number;
+            /** Reward Validity Days */
+            reward_validity_days: number;
+            /** Friend Discount Percent */
+            friend_discount_percent: number | string;
+            /** Friend Coupon Validity Days */
+            friend_coupon_validity_days: number;
+            /** Min Order Minor */
+            min_order_minor: number;
+            /**
+             * Holding Days
+             * @description Days without refund before the reward is granted.
+             */
+            holding_days: number;
+            /** Max Rewards Per Referrer */
+            max_rewards_per_referrer?: number | null;
+        };
+        /** ReferralSettingsIO */
+        "ReferralSettingsIO-Output": {
+            /** Is Active */
+            is_active: boolean;
+            /**
+             * Referrer Reward Minor
+             * @description Voucher for the referrer, in cents.
+             */
+            referrer_reward_minor: number;
+            /** Reward Validity Days */
+            reward_validity_days: number;
+            /** Friend Discount Percent */
+            friend_discount_percent: string;
+            /** Friend Coupon Validity Days */
+            friend_coupon_validity_days: number;
+            /** Min Order Minor */
+            min_order_minor: number;
+            /**
+             * Holding Days
+             * @description Days without refund before the reward is granted.
+             */
+            holding_days: number;
+            /** Max Rewards Per Referrer */
+            max_rewards_per_referrer?: number | null;
         };
         /** RefreshRequest */
         RefreshRequest: {
@@ -17998,6 +19503,14 @@ export interface components {
             last_synced_at: string | null;
             legacy_detail?: components["schemas"]["LearningResourceDetailResponse"] | null;
         };
+        /** ResumeSubscriptionRequest */
+        ResumeSubscriptionRequest: {
+            /**
+             * Reason
+             * @description Admin only: recorded in the audit log.
+             */
+            reason?: string | null;
+        };
         /** RevenueSummary */
         RevenueSummary: {
             /** Orders */
@@ -18017,6 +19530,11 @@ export interface components {
              * @description Products priced again after the batch; their newer price is kept.
              */
             skipped: string[];
+        };
+        /** RevokeSubscriptionRequest */
+        RevokeSubscriptionRequest: {
+            /** Reason */
+            reason: string;
         };
         /**
          * SalesPoint
@@ -19420,6 +20938,20 @@ export interface components {
             /** Churned */
             churned: number;
         };
+        /** SuggestedCouponResponse */
+        SuggestedCouponResponse: {
+            /** Code */
+            code: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Value
+             * @description Percent, or the amount in major units for fixed coupons.
+             */
+            value: string;
+            /** Ends At */
+            ends_at?: string | null;
+        };
         /** SupportAnalyticsResponse */
         SupportAnalyticsResponse: {
             /** Total Tickets */
@@ -19818,6 +21350,20 @@ export interface components {
             expires_in: number;
             /** Refresh Expires In */
             refresh_expires_in: number;
+        };
+        /** ToltGroupOut */
+        ToltGroupOut: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Is Default
+             * @default false
+             */
+            is_default: boolean;
         };
         /** TrackingTag */
         TrackingTag: {
@@ -20630,1419 +22176,6 @@ export interface components {
             is_active: boolean;
             /** Display Order */
             display_order: number;
-        };
-        /**
-         * AffiliateApplicationIn
-         * @description The storefront "join as a marketer" form.
-         */
-        AffiliateApplicationIn: {
-            /**
-             * Full Name
-             * @description Full (three-part) name.
-             */
-            full_name: string;
-            /** Email */
-            email: string;
-            /** Phone */
-            phone: string;
-            /** Country */
-            country: string;
-            /** Country Code */
-            country_code?: string | null;
-            /** City */
-            city: string;
-            /** Po Box */
-            po_box?: string | null;
-            /** Postal Code */
-            postal_code?: string | null;
-            /** Address */
-            address: string;
-            /**
-             * Links
-             * @description Accounts the applicant answered yes to: platform -> link (instagram, tiktok, x, youtube, snapchat, facebook, linkedin, telegram, whatsapp, website). Each link must be on that platform's domain.
-             */
-            links?: {
-                [key: string]: string;
-            };
-            /**
-             * Has Email List
-             * @enum {string}
-             */
-            has_email_list: "yes" | "no";
-            /**
-             * Is Influencer
-             * @enum {string}
-             */
-            is_influencer: "yes" | "no";
-            /** Audience Size */
-            audience_size?: string | null;
-            /** Marketing Plan */
-            marketing_plan: string;
-            /**
-             * Accept Terms
-             * @constant
-             */
-            accept_terms: true;
-            /**
-             * Policy Version
-             * @description `version` of GET /affiliates/policy the applicant read.
-             */
-            policy_version: string;
-            /** Website */
-            website?: string | null;
-        };
-        /**
-         * AffiliateProgramIO
-         * @description Public marketer-programme terms (also edited by the admin).
-         */
-        "AffiliateProgramIO-Input": {
-            /** Applications Open */
-            applications_open: boolean;
-            /**
-             * Commission Percent
-             * @description Shown on the public page; keep it in line with the Tolt group.
-             */
-            commission_percent: number | string;
-            /** Cookie Days */
-            cookie_days: number;
-            /** Payout Terms */
-            payout_terms: string;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
-        /**
-         * AffiliateProgramIO
-         * @description Public marketer-programme terms (also edited by the admin).
-         */
-        "AffiliateProgramIO-Output": {
-            /** Applications Open */
-            applications_open: boolean;
-            /**
-             * Commission Percent
-             * @description Shown on the public page; keep it in line with the Tolt group.
-             */
-            commission_percent: string;
-            /** Cookie Days */
-            cookie_days: number;
-            /** Payout Terms */
-            payout_terms: string;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
-        /** AttributionOut */
-        AttributionOut: {
-            /**
-             * Customer Id
-             * Format: uuid
-             */
-            customer_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Source */
-            source: string;
-            /** Ref Value */
-            ref_value: string | null;
-            /** Attributed At */
-            attributed_at: string | null;
-            /** Sync Status */
-            sync_status: string;
-            /** Customer Email */
-            customer_email: string | null;
-            /** Customer Name */
-            customer_name: string | null;
-            /** Partner Name */
-            partner_name: string | null;
-            /** Partner Code */
-            partner_code: string | null;
-            /** Paid Orders */
-            paid_orders: number;
-            /** Revenue Minor */
-            revenue_minor: number;
-        };
-        /** AttributionPage */
-        AttributionPage: {
-            /** Items */
-            items: components["schemas"]["AttributionOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** CommissionActionIn */
-        CommissionActionIn: {
-            /**
-             * Action
-             * @enum {string}
-             */
-            action: "approve" | "decline";
-        };
-        /** CommissionOut */
-        CommissionOut: {
-            /** Tolt Commission Id */
-            tolt_commission_id: string;
-            /** Partner Id */
-            partner_id: string | null;
-            /** Conversion Id */
-            conversion_id: string | null;
-            /** Amount Minor */
-            amount_minor: number;
-            /** Status */
-            status: string;
-            /** Payout Id */
-            payout_id: string | null;
-            /** Tolt Created At */
-            tolt_created_at: string | null;
-            /** Order Id */
-            order_id: string | null;
-            /** Partner Name */
-            partner_name: string | null;
-            /** Customer Email */
-            customer_email: string | null;
-            /** Settled Payout Id */
-            settled_payout_id?: string | null;
-            /** Settled At */
-            settled_at?: string | null;
-            /**
-             * Effective Status
-             * @description `paid` once a local payout settled it; otherwise the Tolt status.
-             */
-            effective_status: string;
-        };
-        /** CommissionPage */
-        CommissionPage: {
-            /** Items */
-            items: components["schemas"]["CommissionOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** ConversionOut */
-        ConversionOut: {
-            /**
-             * Conversion Id
-             * Format: uuid
-             */
-            conversion_id: string;
-            /**
-             * Order Id
-             * Format: uuid
-             */
-            order_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /**
-             * Customer Id
-             * Format: uuid
-             */
-            customer_id: string;
-            /** Base Amount Minor */
-            base_amount_minor: number;
-            /** Is First Purchase */
-            is_first_purchase: boolean;
-            /** Status */
-            status: string;
-            /** Tolt Transaction Id */
-            tolt_transaction_id: string | null;
-            /** Created At */
-            created_at: string | null;
-            /** Customer Email */
-            customer_email: string | null;
-            /** Product Name */
-            product_name: string | null;
-            /** Partner Name */
-            partner_name: string | null;
-            /** Commission Minor */
-            commission_minor: number | null;
-            /** Commission Status */
-            commission_status: string | null;
-        };
-        /** ConversionPage */
-        ConversionPage: {
-            /** Items */
-            items: components["schemas"]["ConversionOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /**
-         * CustomerReferralsOut
-         * @description Everything referral-related about one customer, for the admin customer page.
-         */
-        CustomerReferralsOut: {
-            /** @description Who brought this customer (first touch). */
-            attribution: components["schemas"]["AttributionOut"] | null;
-            /** @description Set when the customer is themselves a referrer. */
-            partner: components["schemas"]["PartnerOut"] | null;
-            /**
-             * Invited
-             * @default 0
-             */
-            invited: number;
-            /**
-             * Qualified
-             * @default 0
-             */
-            qualified: number;
-            /**
-             * Pending Rewards
-             * @default 0
-             */
-            pending_rewards: number;
-            /**
-             * Granted Rewards
-             * @default 0
-             */
-            granted_rewards: number;
-            /**
-             * Earned Minor
-             * @default 0
-             */
-            earned_minor: number;
-            /**
-             * Rewards
-             * @default []
-             */
-            rewards: components["schemas"]["ReferralRewardOut"][];
-        };
-        /** LegacyAffiliateOut */
-        LegacyAffiliateOut: {
-            /** Legacy Id */
-            legacy_id: number;
-            /** Name */
-            name?: string | null;
-            /** Email */
-            email?: string | null;
-            /** Code */
-            code?: string | null;
-            /** Status */
-            status?: number | null;
-        };
-        /** MyReferralsOut */
-        MyReferralsOut: {
-            /** Program Active */
-            program_active: boolean;
-            /** Joined */
-            joined: boolean;
-            /** Partner Id */
-            partner_id?: string | null;
-            /** Partner Type */
-            partner_type?: string | null;
-            /**
-             * Partner Status
-             * @description pending while a marketer application is reviewed.
-             */
-            partner_status?: string | null;
-            /** Referral Code */
-            referral_code?: string | null;
-            /** Link */
-            link?: string | null;
-            /** Reward Minor */
-            reward_minor: number;
-            /** Friend Discount Percent */
-            friend_discount_percent: string;
-            /** Holding Days */
-            holding_days: number;
-            /** Min Order Minor */
-            min_order_minor: number;
-            /**
-             * Invited
-             * @default 0
-             */
-            invited: number;
-            /**
-             * Qualified
-             * @default 0
-             */
-            qualified: number;
-            /**
-             * Clicks
-             * @default 0
-             */
-            clicks: number;
-            /**
-             * Total Orders
-             * @default 0
-             */
-            total_orders: number;
-            /**
-             * Total Revenue Minor
-             * @default 0
-             */
-            total_revenue_minor: number;
-            /**
-             * Total Commission Minor
-             * @default 0
-             */
-            total_commission_minor: number;
-            /**
-             * Pending Commission Minor
-             * @default 0
-             */
-            pending_commission_minor: number;
-            /**
-             * Approved Commission Minor
-             * @default 0
-             */
-            approved_commission_minor: number;
-            /**
-             * Paid Commission Minor
-             * @default 0
-             */
-            paid_commission_minor: number;
-            /**
-             * Pending Rewards
-             * @default 0
-             */
-            pending_rewards: number;
-            /**
-             * Granted Rewards
-             * @default 0
-             */
-            granted_rewards: number;
-            /**
-             * Earned Minor
-             * @default 0
-             */
-            earned_minor: number;
-            /**
-             * Referral Balance Minor
-             * @description Spendable referral vouchers, applied at checkout.
-             * @default 0
-             */
-            referral_balance_minor: number;
-            /**
-             * Referral Vouchers
-             * @default 0
-             */
-            referral_vouchers: number;
-            /**
-             * Referral Balance Expires At
-             * @description Soonest expiry of that credit.
-             */
-            referral_balance_expires_at?: string | null;
-            /**
-             * Pending Reward Minor
-             * @description Rewards still in the holding period.
-             * @default 0
-             */
-            pending_reward_minor: number;
-            /**
-             * Rewards
-             * @default []
-             */
-            rewards: components["schemas"]["ReferralRewardOut"][];
-            /**
-             * Conversions
-             * @default []
-             */
-            conversions: components["schemas"]["PartnerConversionOut"][];
-        };
-        /** PartnerIn */
-        PartnerIn: {
-            /** Email */
-            email: string;
-            /** Full Name */
-            full_name?: string | null;
-            /** Phone */
-            phone?: string | null;
-            /** Country Code */
-            country_code?: string | null;
-            /**
-             * Referral Code
-             * @description ?ref= value; generated when empty.
-             */
-            referral_code?: string | null;
-            /**
-             * Tolt Group Id
-             * @description Tolt group (commission plan).
-             */
-            tolt_group_id?: string | null;
-            /** Notes */
-            notes?: string | null;
-        };
-        /** PartnerOut */
-        PartnerOut: {
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Kind */
-            kind: string;
-            /** Email */
-            email: string;
-            /** Full Name */
-            full_name: string | null;
-            /** Phone */
-            phone: string | null;
-            /** Country Code */
-            country_code: string | null;
-            /** Status */
-            status: string;
-            /** Referral Code */
-            referral_code: string;
-            /** Referral Link */
-            referral_link: string;
-            /** Customer Id */
-            customer_id: string | null;
-            /** Tolt Partner Id */
-            tolt_partner_id: string | null;
-            /** Tolt Group Id */
-            tolt_group_id: string | null;
-            /** Sync Status */
-            sync_status: string;
-            /** Sync Error */
-            sync_error: string | null;
-            /** Legacy Affiliate Id */
-            legacy_affiliate_id: number | null;
-            /** Notes */
-            notes: string | null;
-            /** Created At */
-            created_at: string | null;
-            stats: components["schemas"]["PartnerStatsOut"];
-            /** Tolt Stats */
-            tolt_stats?: {
-                [key: string]: unknown;
-            } | null;
-            /**
-             * Source
-             * @default admin
-             */
-            source: string;
-            /** Application */
-            application?: {
-                [key: string]: unknown;
-            } | null;
-        };
-        /** PartnerPage */
-        PartnerPage: {
-            /** Items */
-            items: components["schemas"]["PartnerOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** PartnerStatsOut */
-        PartnerStatsOut: {
-            /** Customers */
-            customers: number;
-            /** Paying Customers */
-            paying_customers: number;
-            /** Conversions */
-            conversions: number;
-            /** Revenue Minor */
-            revenue_minor: number;
-            /** Commission Pending Minor */
-            commission_pending_minor: number;
-            /** Commission Approved Minor */
-            commission_approved_minor: number;
-            /** Commission Paid Minor */
-            commission_paid_minor: number;
-        };
-        /** PartnerStatusIn */
-        PartnerStatusIn: {
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "active" | "suspended" | "rejected";
-        };
-        /** ReferralIn */
-        ReferralIn: {
-            /**
-             * Ref
-             * @description The ?ref= value (partner code).
-             */
-            ref?: string | null;
-            /** Tolt Click Id */
-            tolt_click_id?: string | null;
-            /** Tolt Partner Id */
-            tolt_partner_id?: string | null;
-        };
-        /** ReferralRewardOut */
-        ReferralRewardOut: {
-            /**
-             * Reward Id
-             * Format: uuid
-             */
-            reward_id: string;
-            /**
-             * Referrer Customer Id
-             * Format: uuid
-             */
-            referrer_customer_id: string;
-            /**
-             * Referred Customer Id
-             * Format: uuid
-             */
-            referred_customer_id: string;
-            /**
-             * Order Id
-             * Format: uuid
-             */
-            order_id: string;
-            /** Amount Minor */
-            amount_minor: number;
-            /** Status */
-            status: string;
-            /**
-             * Eligible At
-             * Format: date-time
-             */
-            eligible_at: string;
-            /** Voucher Id */
-            voucher_id: string | null;
-            /** Created At */
-            created_at: string | null;
-            /** Referrer Email */
-            referrer_email: string | null;
-            /** Referred Email */
-            referred_email: string | null;
-            /** Referred Name */
-            referred_name: string | null;
-        };
-        /** ReferralRewardPage */
-        ReferralRewardPage: {
-            /** Items */
-            items: components["schemas"]["ReferralRewardOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** ReferralSettingsIO */
-        "ReferralSettingsIO-Input": {
-            /** Is Active */
-            is_active: boolean;
-            /**
-             * Referrer Reward Minor
-             * @description Voucher for the referrer, in cents.
-             */
-            referrer_reward_minor: number;
-            /** Reward Validity Days */
-            reward_validity_days: number;
-            /** Friend Discount Percent */
-            friend_discount_percent: number | string;
-            /** Friend Coupon Validity Days */
-            friend_coupon_validity_days: number;
-            /** Min Order Minor */
-            min_order_minor: number;
-            /**
-             * Holding Days
-             * @description Days without refund before the reward is granted.
-             */
-            holding_days: number;
-            /** Max Rewards Per Referrer */
-            max_rewards_per_referrer?: number | null;
-        };
-        /** ReferralSettingsIO */
-        "ReferralSettingsIO-Output": {
-            /** Is Active */
-            is_active: boolean;
-            /**
-             * Referrer Reward Minor
-             * @description Voucher for the referrer, in cents.
-             */
-            referrer_reward_minor: number;
-            /** Reward Validity Days */
-            reward_validity_days: number;
-            /** Friend Discount Percent */
-            friend_discount_percent: string;
-            /** Friend Coupon Validity Days */
-            friend_coupon_validity_days: number;
-            /** Min Order Minor */
-            min_order_minor: number;
-            /**
-             * Holding Days
-             * @description Days without refund before the reward is granted.
-             */
-            holding_days: number;
-            /** Max Rewards Per Referrer */
-            max_rewards_per_referrer?: number | null;
-        };
-        /** SuggestedCouponResponse */
-        SuggestedCouponResponse: {
-            /** Code */
-            code: string;
-            /** Kind */
-            kind: string;
-            /**
-             * Value
-             * @description Percent, or the amount in major units for fixed coupons.
-             */
-            value: string;
-            /** Ends At */
-            ends_at?: string | null;
-        };
-        /** ToltGroupOut */
-        ToltGroupOut: {
-            /** Id */
-            id: string;
-            /** Name */
-            name: string;
-            /** Description */
-            description?: string | null;
-            /**
-             * Is Default
-             * @default false
-             */
-            is_default: boolean;
-        };
-        /** AnalyticsOut */
-        AnalyticsOut: {
-            /** Totals */
-            totals: {
-                [key: string]: unknown;
-            };
-            /** Daily */
-            daily: {
-                [key: string]: unknown;
-            }[];
-            /** Top */
-            top: {
-                [key: string]: unknown;
-            }[];
-        };
-        /** AssignIn */
-        AssignIn: {
-            /**
-             * Customer Id
-             * Format: uuid
-             */
-            customer_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /**
-             * Replace
-             * @default false
-             */
-            replace: boolean;
-        };
-        /** CompanyDraftProgress */
-        CompanyDraftProgress: {
-            /** Drafttoken */
-            draftToken: string;
-            /**
-             * Step
-             * @enum {string}
-             */
-            step: "company" | "training" | "departments" | "budget" | "needs";
-            /** Answers */
-            answers: {
-                [key: string]: unknown;
-            };
-        };
-        /** FormStepPoint */
-        FormStepPoint: {
-            /** Label */
-            label: string;
-            /** Value */
-            value: number;
-            /** Id */
-            id: string;
-        };
-        /** LegacyImportIn */
-        LegacyImportIn: {
-            /**
-             * Only Approved
-             * @default true
-             */
-            only_approved: boolean;
-        };
-        /** LegacyImportOut */
-        LegacyImportOut: {
-            /** Imported */
-            imported: number;
-            /** Skipped */
-            skipped: number;
-        };
-        /** LegacyPreviewOut */
-        LegacyPreviewOut: {
-            /** Total */
-            total: number;
-            /** Already Imported */
-            already_imported: number;
-            /** To Import */
-            to_import: number;
-            /** Sample */
-            sample: components["schemas"]["LegacyAffiliateOut"][];
-        };
-        /** LegacyPushIn */
-        LegacyPushIn: {
-            /**
-             * Limit
-             * @default 50
-             */
-            limit: number;
-        };
-        /** LegacyPushOut */
-        LegacyPushOut: {
-            /** Attempted */
-            attempted: number;
-            /** Pushed */
-            pushed: number;
-        };
-        /** AdminPayoutOut */
-        AdminPayoutOut: {
-            /**
-             * Payout Id
-             * Format: uuid
-             */
-            payout_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Currency Code */
-            currency_code: string;
-            /** Requested Minor */
-            requested_minor: number;
-            /** Paid Minor */
-            paid_minor: number | null;
-            /**
-             * Returned Minor
-             * @description Back in the available balance after a partial payment, rejection or cancel.
-             */
-            returned_minor: number;
-            /** Status */
-            status: string;
-            /** Method */
-            method: string;
-            /**
-             * Destination
-             * @description Masked payout destination.
-             */
-            destination: string | null;
-            /** Payment Reference */
-            payment_reference: string | null;
-            /** Reject Reason */
-            reject_reason: string | null;
-            /** Requested At */
-            requested_at: string | null;
-            /** Reviewed At */
-            reviewed_at: string | null;
-            /** Paid At */
-            paid_at: string | null;
-            /** Cancelled At */
-            cancelled_at: string | null;
-            /** Partner Name */
-            partner_name: string | null;
-            /** Partner Email */
-            partner_email: string | null;
-            /** Admin Note */
-            admin_note: string | null;
-            /** Reviewed By */
-            reviewed_by: string | null;
-            /** Paid By */
-            paid_by: string | null;
-            /** @description Full payout details (admin only). */
-            details?: components["schemas"]["PayoutDetailsIO"] | null;
-        };
-        /** AdminPayoutPage */
-        AdminPayoutPage: {
-            /** Items */
-            items: components["schemas"]["AdminPayoutOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** AdminPayoutReviewOut */
-        AdminPayoutReviewOut: {
-            payout: components["schemas"]["AdminPayoutOut"];
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            /** Ledger */
-            ledger: components["schemas"]["LedgerEntryOut"][];
-        };
-        /** AffiliateBalanceOut */
-        AffiliateBalanceOut: {
-            /**
-             * Currency Code
-             * @default USD
-             */
-            currency_code: string;
-            /**
-             * Available Minor
-             * @description Can be requested now. Negative after a refund clawback.
-             */
-            available_minor: number;
-            /**
-             * Held Minor
-             * @description In an open payout request.
-             */
-            held_minor: number;
-            /**
-             * Pending Minor
-             * @description Commissions Tolt has not approved yet.
-             */
-            pending_minor: number;
-            /** Lifetime Earned Minor */
-            lifetime_earned_minor: number;
-            /** Paid Total Minor */
-            paid_total_minor: number;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
-        /** LedgerEntryOut */
-        LedgerEntryOut: {
-            /** Entry Id */
-            entry_id: number;
-            /** Entry Type */
-            entry_type: string;
-            /** Amount Minor */
-            amount_minor: number;
-            /** Tolt Commission Id */
-            tolt_commission_id: string | null;
-            /** Payout Id */
-            payout_id: string | null;
-            /** Note */
-            note: string | null;
-            /** Created At */
-            created_at: string | null;
-        };
-        /** LedgerPage */
-        LedgerPage: {
-            /** Items */
-            items: components["schemas"]["LedgerEntryOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /**
-         * MyAffiliateEarningsOut
-         * @description The marketer's earnings card: balance, whether a payout can be requested, and where it goes.
-         */
-        MyAffiliateEarningsOut: {
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            /** Can Request */
-            can_request: boolean;
-            /** Blocked Reason */
-            blocked_reason: ("partner_inactive" | "request_open" | "missing_details" | "below_minimum") | null;
-            open_payout: components["schemas"]["PayoutOut"] | null;
-            /** Payout Method */
-            payout_method: string | null;
-            /** Destination */
-            destination: string | null;
-            /** Payout Terms */
-            payout_terms: string;
-        };
-        /** PartnerBalanceOut */
-        PartnerBalanceOut: {
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            details: components["schemas"]["PayoutDetailsIO"] | null;
-        };
-        /** PartnerConversionOut */
-        PartnerConversionOut: {
-            /**
-             * Conversion Id
-             * Format: uuid
-             */
-            conversion_id: string;
-            /**
-             * Order Id
-             * Format: uuid
-             */
-            order_id: string;
-            /** Order Total Minor */
-            order_total_minor: number;
-            /**
-             * Currency
-             * @default USD
-             */
-            currency: string;
-            /** Status */
-            status: string;
-            /**
-             * Created At
-             * Format: date-time
-             */
-            created_at: string;
-            /**
-             * Is First Purchase
-             * @default false
-             */
-            is_first_purchase: boolean;
-            /** Commission Minor */
-            commission_minor?: number | null;
-            /** Commission Status */
-            commission_status?: string | null;
-            /** Reward Minor */
-            reward_minor?: number | null;
-            /** Reward Status */
-            reward_status?: string | null;
-        };
-        /** PayoutApproveIn */
-        PayoutApproveIn: {
-            /** Note */
-            note?: string | null;
-        };
-        /** PayoutDetailsIO */
-        PayoutDetailsIO: {
-            /**
-             * Method
-             * @enum {string}
-             */
-            method: "paypal" | "bank_transfer" | "wise" | "other";
-            /** Email */
-            email?: string | null;
-            /** Account Name */
-            account_name?: string | null;
-            /** Iban */
-            iban?: string | null;
-            /** Bank Name */
-            bank_name?: string | null;
-            /** Swift */
-            swift?: string | null;
-            /** Country */
-            country?: string | null;
-            /** Instructions */
-            instructions?: string | null;
-        };
-        /** PayoutOut */
-        PayoutOut: {
-            /**
-             * Payout Id
-             * Format: uuid
-             */
-            payout_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Currency Code */
-            currency_code: string;
-            /** Requested Minor */
-            requested_minor: number;
-            /** Paid Minor */
-            paid_minor: number | null;
-            /**
-             * Returned Minor
-             * @description Back in the available balance after a partial payment, rejection or cancel.
-             */
-            returned_minor: number;
-            /** Status */
-            status: string;
-            /** Method */
-            method: string;
-            /**
-             * Destination
-             * @description Masked payout destination.
-             */
-            destination: string | null;
-            /** Payment Reference */
-            payment_reference: string | null;
-            /** Reject Reason */
-            reject_reason: string | null;
-            /** Requested At */
-            requested_at: string | null;
-            /** Reviewed At */
-            reviewed_at: string | null;
-            /** Paid At */
-            paid_at: string | null;
-            /** Cancelled At */
-            cancelled_at: string | null;
-        };
-        /** PayoutPage */
-        PayoutPage: {
-            /** Items */
-            items: components["schemas"]["PayoutOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /**
-         * PayoutPayIn
-         * @description Record a payment made outside the platform. Give either the amount or a percentage of the request.
-         */
-        PayoutPayIn: {
-            /** Amount Minor */
-            amount_minor?: number | null;
-            /** Percent */
-            percent?: number | string | null;
-            /**
-             * Payment Reference
-             * @description Transfer id / PayPal transaction.
-             */
-            payment_reference: string;
-            /** Note */
-            note?: string | null;
-        };
-        /** PayoutRejectIn */
-        PayoutRejectIn: {
-            /**
-             * Reason
-             * @description Shown to the marketer.
-             */
-            reason: string;
-        };
-        /** PayoutRequestIn */
-        PayoutRequestIn: {
-            /**
-             * Amount Minor
-             * @description USD minor units, at most the available balance.
-             */
-            amount_minor: number;
-        };
-        /** PayoutSummaryOut */
-        PayoutSummaryOut: {
-            /** Requested Count */
-            requested_count: number;
-            /** Approved Count */
-            approved_count: number;
-            /** Open Minor */
-            open_minor: number;
-            /** Paid 30D Minor */
-            paid_30d_minor: number;
-        };
-        /** ReferralResolveOut */
-        ReferralResolveOut: {
-            /** Valid */
-            valid: boolean;
-            /** Referral Code */
-            referral_code: string;
-            /** Partner Kind */
-            partner_kind?: string | null;
-            /** Partner Name */
-            partner_name?: string | null;
-            /**
-             * Discount Percent
-             * @default 10.00
-             */
-            discount_percent: string;
-            /** Coupon Code */
-            coupon_code?: string | null;
-            /** Message */
-            message?: string | null;
-        };
-        /** AffiliatePolicyOut */
-        AffiliatePolicyOut: {
-            /**
-             * Version
-             * @description Send it back as `policy_version` when applying.
-             */
-            version: string;
-            /** Sections */
-            sections: components["schemas"]["AffiliatePolicySectionOut"][];
-        };
-        /** AffiliatePolicySectionOut */
-        AffiliatePolicySectionOut: {
-            /** Id */
-            id: number;
-            /** Order */
-            order: number;
-            /** Title */
-            title: string | null;
-            /**
-             * Body Html
-             * @description Legacy rich text (HTML); render as text, never as raw HTML.
-             */
-            body_html: string | null;
-        };
-        /** MarketerCommissionOut */
-        MarketerCommissionOut: {
-            /** Commission Id */
-            commission_id: string;
-            /** Order Ref */
-            order_ref: string | null;
-            /**
-             * Customer Email
-             * @description Masked.
-             */
-            customer_email: string | null;
-            /** Amount Minor */
-            amount_minor: number;
-            /**
-             * Status
-             * @description pending | approved | paid | rejected | refunded (paid once a payout settled it).
-             */
-            status: string;
-            /** Created At */
-            created_at: string | null;
-            /** Settled At */
-            settled_at: string | null;
-        };
-        /** MarketerCommissionPage */
-        MarketerCommissionPage: {
-            /** Items */
-            items: components["schemas"]["MarketerCommissionOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** MarketerCouponOut */
-        MarketerCouponOut: {
-            /**
-             * Promotion Id
-             * Format: uuid
-             */
-            promotion_id: string;
-            /** Code */
-            code: string;
-            /** Name */
-            name: string | null;
-            /** Discount Type */
-            discount_type: string;
-            /** Discount Value */
-            discount_value: string;
-            /** Max Discount Minor */
-            max_discount_minor: number | null;
-            /** Min Subtotal Minor */
-            min_subtotal_minor: number | null;
-            /** First Purchase Only */
-            first_purchase_only: boolean;
-            /** Usage Limit */
-            usage_limit: number | null;
-            /** Per Customer Limit */
-            per_customer_limit: number | null;
-            /** Starts At */
-            starts_at: string | null;
-            /** Ends At */
-            ends_at: string | null;
-            /** Is Active */
-            is_active: boolean;
-            /** Is Referral Code */
-            is_referral_code: boolean;
-            /** Uses */
-            uses: number;
-            /** Customers */
-            customers: number;
-            /** Discount Given Minor */
-            discount_given_minor: number;
-            /** Sales Minor */
-            sales_minor: number;
-        };
-        /** MarketerCustomerOut */
-        MarketerCustomerOut: {
-            /** First Name */
-            first_name: string | null;
-            /**
-             * Email
-             * @description Masked.
-             */
-            email: string | null;
-            /** Joined At */
-            joined_at: string | null;
-            /** Source */
-            source: string;
-            /** Orders */
-            orders: number;
-            /** Revenue Minor */
-            revenue_minor: number;
-        };
-        /** MarketerCustomerPage */
-        MarketerCustomerPage: {
-            /** Items */
-            items: components["schemas"]["MarketerCustomerOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** MarketerDayOut */
-        MarketerDayOut: {
-            /**
-             * Day
-             * Format: date
-             */
-            day: string;
-            /** Signups */
-            signups: number;
-            /** Orders */
-            orders: number;
-            /** Revenue Minor */
-            revenue_minor: number;
-            /** Commission Minor */
-            commission_minor: number;
-        };
-        /**
-         * MarketerOverviewOut
-         * @description Everything the dashboard home needs. Stats, balance, series and Tolt are absent while pending.
-         */
-        MarketerOverviewOut: {
-            partner: components["schemas"]["MarketerPartnerOut"];
-            program: components["schemas"]["MarketerProgramOut"];
-            stats?: components["schemas"]["MarketerStatsOut"] | null;
-            balance?: components["schemas"]["AffiliateBalanceOut"] | null;
-            tolt?: components["schemas"]["MarketerToltOut"] | null;
-            /**
-             * Series
-             * @default []
-             */
-            series: components["schemas"]["MarketerDayOut"][];
-        };
-        /** MarketerPartnerOut */
-        MarketerPartnerOut: {
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Full Name */
-            full_name: string | null;
-            /** Email */
-            email: string;
-            /** Status */
-            status: string;
-            /** Referral Code */
-            referral_code: string;
-            /** Link */
-            link: string;
-            /** Phone */
-            phone: string | null;
-            /** Country Code */
-            country_code: string | null;
-            /** Joined At */
-            joined_at: string | null;
-        };
-        /**
-         * MarketerProfileIn
-         * @description Contact details. Email and referral code are fixed (Tolt identity and live links).
-         */
-        MarketerProfileIn: {
-            /** Full Name */
-            full_name: string;
-            /** Phone */
-            phone?: string | null;
-            /** Country Code */
-            country_code?: string | null;
-            /** City */
-            city?: string | null;
-            /** Channels */
-            channels?: string | null;
-            /** Audience Size */
-            audience_size?: string | null;
-        };
-        /** MarketerProfileOut */
-        MarketerProfileOut: {
-            partner: components["schemas"]["MarketerPartnerOut"];
-            /** City */
-            city?: string | null;
-            /** Channels */
-            channels?: string | null;
-            /** Audience Size */
-            audience_size?: string | null;
-        };
-        /** MarketerProgramOut */
-        MarketerProgramOut: {
-            /** Commission Percent */
-            commission_percent: string;
-            /** Cookie Days */
-            cookie_days: number;
-            /** Payout Terms */
-            payout_terms: string;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
-        /** MarketerSaleOut */
-        MarketerSaleOut: {
-            /**
-             * Order Ref
-             * @description Short order reference.
-             */
-            order_ref: string;
-            /** Created At */
-            created_at: string | null;
-            /** Product Name */
-            product_name: string | null;
-            /**
-             * Customer Email
-             * @description Masked.
-             */
-            customer_email: string | null;
-            /** Amount Minor */
-            amount_minor: number;
-            /** Is First Purchase */
-            is_first_purchase: boolean;
-            /** Status */
-            status: string;
-            /** Commission Minor */
-            commission_minor: number | null;
-            /** Commission Status */
-            commission_status: string | null;
-        };
-        /** MarketerSalePage */
-        MarketerSalePage: {
-            /** Items */
-            items: components["schemas"]["MarketerSaleOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** MarketerStatsOut */
-        MarketerStatsOut: {
-            /** Customers */
-            customers: number;
-            /** Paying Customers */
-            paying_customers: number;
-            /**
-             * Conversion Rate
-             * @description Paying customers / attributed customers, percent.
-             */
-            conversion_rate: number | null;
-            /** Orders */
-            orders: number;
-            /** Revenue Minor */
-            revenue_minor: number;
-            /** Commission Pending Minor */
-            commission_pending_minor: number;
-            /** Commission Approved Minor */
-            commission_approved_minor: number;
-            /** Commission Paid Minor */
-            commission_paid_minor: number;
-        };
-        /** MarketerToltOut */
-        MarketerToltOut: {
-            /** Connected */
-            connected: boolean;
-            /** Sync Status */
-            sync_status: string;
-            /**
-             * Clicks
-             * @description Link clicks counted by Tolt (null when Tolt did not answer).
-             */
-            clicks: number | null;
-            /** Customers */
-            customers: number | null;
         };
     };
     responses: never;
@@ -25846,6 +25979,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminInstructorPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_instructor_api_v1_admin_catalog_instructors_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInstructorRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInstructorDetail"];
                 };
             };
             /** @description Validation Error */
@@ -33612,6 +33781,39 @@ export interface operations {
             };
         };
     };
+    save_company_draft_api_v1_requests_company_training_draft_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompanyDraftProgress"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestReceipt"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     submit_trainer_request_api_v1_requests_trainer_applications_post: {
         parameters: {
             query?: never;
@@ -35756,6 +35958,1990 @@ export interface operations {
             };
         };
     };
+    list_partners_api_v1_admin_affiliates_partners_get: {
+        parameters: {
+            query?: {
+                query?: string | null;
+                status?: ("pending" | "active" | "suspended" | "rejected") | null;
+                kind?: ("marketer" | "student") | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_partner_api_v1_admin_affiliates_partners_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_partner_api_v1_admin_affiliates_partners__partner_id__get: {
+        parameters: {
+            query?: {
+                include_tolt_stats?: boolean;
+            };
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_partner_api_v1_admin_affiliates_partners__partner_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_partner_api_v1_admin_affiliates_partners__partner_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_partner_status_api_v1_admin_affiliates_partners__partner_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resync_partner_api_v1_admin_affiliates_partners__partner_id__resync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partner_customers_api_v1_admin_affiliates_partners__partner_id__customers_get: {
+        parameters: {
+            query?: {
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partner_coupons_api_v1_admin_affiliates_partners__partner_id__coupons_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CouponOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_partner_coupon_api_v1_admin_affiliates_partners__partner_id__coupons_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CouponIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CouponOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tolt_groups_api_v1_admin_affiliates_groups_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ToltGroupOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    customer_attribution_api_v1_admin_affiliates_attributions__customer_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                customer_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributionOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unassign_customer_api_v1_admin_affiliates_attributions__customer_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                customer_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    customer_referrals_api_v1_admin_affiliates_customers__customer_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                customer_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerReferralsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assign_customer_api_v1_admin_affiliates_attributions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_conversions_api_v1_admin_affiliates_conversions_get: {
+        parameters: {
+            query?: {
+                partner_id?: string | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_commissions_api_v1_admin_affiliates_commissions_get: {
+        parameters: {
+            query?: {
+                partner_id?: string | null;
+                status?: string | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommissionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_commission_api_v1_admin_affiliates_commissions__commission_id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commission_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommissionActionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sync_now_api_v1_admin_affiliates_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_referral_program_api_v1_admin_affiliates_referral_program_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralSettingsIO-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_referral_program_api_v1_admin_affiliates_referral_program_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferralSettingsIO-Input"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralSettingsIO-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_affiliate_program_settings_api_v1_admin_affiliates_program_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_affiliate_program_settings_api_v1_admin_affiliates_program_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AffiliateProgramIO-Input"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_referral_rewards_api_v1_admin_affiliates_referral_rewards_get: {
+        parameters: {
+            query?: {
+                status?: ("pending" | "granted" | "revoked") | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralRewardPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grant_referral_reward_api_v1_admin_affiliates_referral_rewards__reward_id__grant_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reward_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    legacy_preview_api_v1_admin_affiliates_import_legacy_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegacyImportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegacyPreviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    legacy_import_api_v1_admin_affiliates_import_legacy_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegacyImportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegacyImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    legacy_push_api_v1_admin_affiliates_import_legacy_push_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegacyPushIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegacyPushOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    affiliate_analytics_api_v1_admin_affiliates_analytics_get: {
+        parameters: {
+            query?: {
+                start?: string | null;
+                end?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalyticsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_payouts_api_v1_admin_affiliates_payouts_get: {
+        parameters: {
+            query?: {
+                /** @description A status, or `open`. */
+                status?: string | null;
+                partner_id?: string | null;
+                query?: string | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPayoutPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    payouts_summary_api_v1_admin_affiliates_payouts_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutSummaryOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_payout_api_v1_admin_affiliates_payouts__payout_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payout_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payout_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayoutApproveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payout_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayoutRejectIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payout_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayoutPayIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerBalanceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get: {
+        parameters: {
+            query?: {
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                partner_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LedgerPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_referrals_api_v1_me_referrals_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyReferralsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    join_referrals_api_v1_me_referrals_join_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyReferralsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_invites_api_v1_me_referrals_invites_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttributionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_earnings_api_v1_me_affiliate_earnings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyAffiliateEarningsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_payouts_api_v1_me_affiliate_payouts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_payout_api_v1_me_affiliate_payouts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayoutRequestIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payout_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_payout_details_api_v1_me_affiliate_payout_details_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutDetailsIO"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_payout_details_api_v1_me_affiliate_payout_details_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayoutDetailsIO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayoutDetailsIO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_overview_api_v1_me_affiliate_overview_get: {
+        parameters: {
+            query?: {
+                /** @description Chart range ending today. */
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerOverviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_customers_api_v1_me_affiliate_customers_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerCustomerPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_sales_api_v1_me_affiliate_sales_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerSalePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_commissions_api_v1_me_affiliate_commissions_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerCommissionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_coupons_api_v1_me_affiliate_coupons_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerCouponOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    marketer_profile_api_v1_me_affiliate_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerProfileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_marketer_profile_api_v1_me_affiliate_profile_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarketerProfileIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarketerProfileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tolt_webhook_api_v1_affiliates_webhooks_tolt_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: boolean;
+                    };
+                };
+            };
+        };
+    };
+    affiliate_program_api_v1_affiliates_program_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
+                };
+            };
+        };
+    };
+    affiliate_policy_api_v1_affiliates_policy_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AffiliatePolicyOut"];
+                };
+            };
+        };
+    };
+    apply_as_marketer_api_v1_affiliates_applications_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AffiliateApplicationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: boolean;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resolve_referral_code_api_v1_affiliates_referrals_resolve_get: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralResolveOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_vouchers_api_v1_admin_vouchers_get: {
         parameters: {
             query?: {
@@ -36354,7 +38540,9 @@ export interface operations {
     cancel_my_subscription_api_v1_subscriptions_me__subscription_id__cancel_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 subscription_id: string;
             };
@@ -36367,6 +38555,41 @@ export interface operations {
                 "application/json": components["schemas"]["CancelSubscriptionRequest"] | null;
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerSubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resume_my_subscription_api_v1_subscriptions_me__subscription_id__resume_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                subscription_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -37601,7 +39824,10 @@ export interface operations {
     admin_cancel_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__cancel_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional; a retried request with the same key repeats the Stripe call safely. */
+                "Idempotency-Key"?: string | null;
+            };
             path: {
                 subscription_id: string;
             };
@@ -37613,6 +39839,129 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": components["schemas"]["CancelSubscriptionRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerSubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_resume_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__resume_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional; a retried request with the same key repeats the Stripe call safely. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                subscription_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ResumeSubscriptionRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerSubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_extend_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__extend_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional; a retried request with the same key repeats the Stripe call safely. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                subscription_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExtendSubscriptionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerSubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_revoke_customer_subscription_api_v1_admin_subscriptions_customer_subscriptions__subscription_id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional; a retried request with the same key repeats the Stripe call safely. */
+                "Idempotency-Key"?: string | null;
+            };
+            path: {
+                subscription_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeSubscriptionRequest"];
             };
         };
         responses: {
@@ -38651,2023 +41000,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_partners_api_v1_admin_affiliates_partners_get: {
-        parameters: {
-            query?: {
-                query?: string | null;
-                status?: ("pending" | "active" | "suspended" | "rejected") | null;
-                kind?: ("marketer" | "student") | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_partner_api_v1_admin_affiliates_partners_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PartnerIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_partner_api_v1_admin_affiliates_partners__partner_id__get: {
-        parameters: {
-            query?: {
-                include_tolt_stats?: boolean;
-            };
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    update_partner_api_v1_admin_affiliates_partners__partner_id__put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PartnerIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    archive_partner_api_v1_admin_affiliates_partners__partner_id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    set_partner_status_api_v1_admin_affiliates_partners__partner_id__status_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PartnerStatusIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    resync_partner_api_v1_admin_affiliates_partners__partner_id__resync_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_customers_api_v1_admin_affiliates_partners__partner_id__customers_get: {
-        parameters: {
-            query?: {
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AttributionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_coupons_api_v1_admin_affiliates_partners__partner_id__coupons_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CouponOut"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    create_partner_coupon_api_v1_admin_affiliates_partners__partner_id__coupons_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CouponIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CouponOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    tolt_groups_api_v1_admin_affiliates_groups_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ToltGroupOut"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    customer_attribution_api_v1_admin_affiliates_attributions__customer_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                customer_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AttributionOut"] | null;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    unassign_customer_api_v1_admin_affiliates_attributions__customer_id__delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                customer_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    customer_referrals_api_v1_admin_affiliates_customers__customer_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                customer_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CustomerReferralsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    assign_customer_api_v1_admin_affiliates_attributions_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AssignIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_conversions_api_v1_admin_affiliates_conversions_get: {
-        parameters: {
-            query?: {
-                partner_id?: string | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConversionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_commissions_api_v1_admin_affiliates_commissions_get: {
-        parameters: {
-            query?: {
-                partner_id?: string | null;
-                status?: string | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CommissionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    set_commission_api_v1_admin_affiliates_commissions__commission_id__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                commission_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CommissionActionIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    sync_now_api_v1_admin_affiliates_sync_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: number;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_referral_program_api_v1_admin_affiliates_referral_program_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReferralSettingsIO-Output"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_referral_program_api_v1_admin_affiliates_referral_program_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReferralSettingsIO-Input"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReferralSettingsIO-Output"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_affiliate_program_settings_api_v1_admin_affiliates_program_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_affiliate_program_settings_api_v1_admin_affiliates_program_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AffiliateProgramIO-Input"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_referral_rewards_api_v1_admin_affiliates_referral_rewards_get: {
-        parameters: {
-            query?: {
-                status?: ("pending" | "granted" | "revoked") | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReferralRewardPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    grant_referral_reward_api_v1_admin_affiliates_referral_rewards__reward_id__grant_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                reward_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: number;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    legacy_preview_api_v1_admin_affiliates_import_legacy_preview_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LegacyImportIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LegacyPreviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    legacy_import_api_v1_admin_affiliates_import_legacy_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LegacyImportIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LegacyImportOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    legacy_push_api_v1_admin_affiliates_import_legacy_push_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LegacyPushIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LegacyPushOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    affiliate_analytics_api_v1_admin_affiliates_analytics_get: {
-        parameters: {
-            query?: {
-                start?: string | null;
-                end?: string | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AnalyticsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_referrals_api_v1_me_referrals_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MyReferralsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    join_referrals_api_v1_me_referrals_join_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MyReferralsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_invites_api_v1_me_referrals_invites_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AttributionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    tolt_webhook_api_v1_affiliates_webhooks_tolt_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: boolean;
-                    };
-                };
-            };
-        };
-    };
-    affiliate_program_api_v1_affiliates_program_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AffiliateProgramIO-Output"];
-                };
-            };
-        };
-    };
-    apply_as_marketer_api_v1_affiliates_applications_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AffiliateApplicationIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: boolean;
-                    };
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_company_draft_api_v1_requests_company_training_draft_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompanyDraftProgress"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RequestReceipt"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_payouts_api_v1_admin_affiliates_payouts_get: {
-        parameters: {
-            query?: {
-                /** @description A status, or `open`. */
-                status?: string | null;
-                partner_id?: string | null;
-                query?: string | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    payouts_summary_api_v1_admin_affiliates_payouts_summary_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutSummaryOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_payout_api_v1_admin_affiliates_payouts__payout_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutApproveIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutRejectIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutPayIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerBalanceOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get: {
-        parameters: {
-            query?: {
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LedgerPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_earnings_api_v1_me_affiliate_earnings_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MyAffiliateEarningsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_payouts_api_v1_me_affiliate_payouts_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    request_payout_api_v1_me_affiliate_payouts_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutRequestIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_payout_details_api_v1_me_affiliate_payout_details_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutDetailsIO"] | null;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_payout_details_api_v1_me_affiliate_payout_details_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutDetailsIO"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutDetailsIO"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    resolve_referral_code_api_v1_affiliates_referrals_resolve_get: {
-        parameters: {
-            query: {
-                code: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReferralResolveOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_overview_api_v1_me_affiliate_overview_get: {
-        parameters: {
-            query?: {
-                /** @description Chart range ending today. */
-                days?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerOverviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_customers_api_v1_me_affiliate_customers_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerCustomerPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_sales_api_v1_me_affiliate_sales_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerSalePage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_commissions_api_v1_me_affiliate_commissions_get: {
-        parameters: {
-            query?: {
-                status?: string | null;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerCommissionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_coupons_api_v1_me_affiliate_coupons_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerCouponOut"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    marketer_profile_api_v1_me_affiliate_profile_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerProfileOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_marketer_profile_api_v1_me_affiliate_profile_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["MarketerProfileIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MarketerProfileOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    affiliate_policy_api_v1_affiliates_policy_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AffiliatePolicyOut"];
                 };
             };
         };

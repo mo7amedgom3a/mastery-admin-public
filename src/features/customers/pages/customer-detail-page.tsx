@@ -24,6 +24,7 @@ import { SourceBadge } from "@/components/ui/source-badge";
 import { can } from "@/lib/permissions";
 import { isLegacy, productHref } from "@/lib/refs";
 import { CustomerEntitlementsCard } from "@/features/entitlements/components/entitlement-lists";
+import { CustomerSubscriptionsCard } from "@/features/subscriptions/components/customer-subscriptions-card";
 import {
   CustomerAvatarCard,
   CustomerGrantsCard,
@@ -172,6 +173,9 @@ export default function CustomerDetailPage() {
 
             {!readOnly ? <CustomerGrantsCard customerRef={profile.ref} /> : null}
             <RecentOrders orders={customer360.data?.recent_orders} loading={customer360.isLoading} />
+            {!readOnly && profile.customer_id && can("subscribers.read") ? (
+              <CustomerSubscriptionsCard customerId={profile.customer_id} />
+            ) : null}
             {!readOnly && can("subscribers.read") ? (
               <CustomerEntitlementsCard customerRef={profile.ref} />
             ) : (

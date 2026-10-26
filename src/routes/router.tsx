@@ -66,6 +66,7 @@ import ConsultationDetailPage from "@/features/learning/pages/consultation-detai
 import ConsultantsPage from "@/features/learning/pages/consultants-page";
 import ConsultantDetailPage from "@/features/learning/pages/consultant-detail-page";
 import InstructorsPage from "@/features/learning/pages/instructors-page";
+import InstructorNewPage from "@/features/learning/pages/instructor-new-page";
 import ExpertStudioPage from "@/features/learning/expert-profile/expert-studio-page";
 import InstructorDetailPage from "@/features/learning/pages/instructor-detail-page";
 import AnalyticsSalesPage, {
@@ -161,6 +162,8 @@ export const ROUTER = createBrowserRouter([
       { path: "learning/consultants", element: <ConsultantsPage /> },
       { path: "learning/consultants/:id", element: <ConsultantDetailPage /> },
       { path: "learning/instructors", element: <InstructorsPage /> },
+      // Literal `new` before the catch-all (`/:trainerId` would otherwise swallow it).
+      { path: "learning/instructors/new", element: <InstructorNewPage /> },
       { path: "learning/instructors/:trainerId", element: <InstructorDetailPage /> },
       { path: "learning/instructors/:trainerId/studio", element: <ExpertStudioPage />, handle: { studio: true } },
       { path: "learning/instructors/:trainerId/:tab", element: <InstructorDetailPage /> },
