@@ -1,9 +1,9 @@
 const API_PREFIX = "/api/v1";
 
 /**
- * Everything goes same-origin: the dev server proxies `/api` to the backend, and in production
- * the admin app is served behind a reverse proxy on the backend's domain. This is what makes the
- * backend's httpOnly admin cookies (`b2c_admin_access_token` / `b2c_admin_refresh_token`) work.
+ * Everything goes same-origin: Vite proxies `/api` in development and a Pages Function proxies it
+ * in production. This makes the backend's httpOnly admin cookies
+ * (`b2c_admin_access_token` / `b2c_admin_refresh_token`) work.
  */
 
 type QueryValue = string | number | boolean | null | undefined;

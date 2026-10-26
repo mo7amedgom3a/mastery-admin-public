@@ -16,7 +16,12 @@ npm run dev        # http://localhost:5173 (or any free port)
 - The dashboard has **one backend API**: the admin module (`/api/v1/admin/*`), which serves B2C and
   legacy-platform data together (items carry `source` and a `ref`). How the two sides talk, and why,
   is in [ADMIN_API.md](ADMIN_API.md).
-- Production: serve behind a reverse proxy on the backend's domain.
+- Cloudflare Pages: set the project root to this directory, build with `npm run build`, and use
+  `dist` as the output directory. The Pages Function in `functions/api/[[path]].js` proxies
+  `/api/*` to the runtime `API_PROXY_TARGET` binding (for example,
+  `https://masteryacademy.site`). Publish with Git integration or Wrangler so Pages deploys
+  the Function alongside the static assets. The `public/_routes.json` file limits Function
+  invocations to API requests.
 - Sign in at `/login` (`admin@masteryacademy.site` / `Admin@12345` in dev). Session store:
   `src/lib/auth/store.ts` (zustand, silent refresh, cross-tab BroadcastChannel).
 
