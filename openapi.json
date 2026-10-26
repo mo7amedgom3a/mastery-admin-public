@@ -1022,7 +1022,7 @@
           "Admin"
         ],
         "summary": "Audit log",
-        "description": "Admin write history from `b2c.audit_logs`, newest first: who (`actor_id`) did what (`action`) to which entity, with before/after values. Legacy-layer writes use `entity_type` `legacy.<TABLE>`. Requires `*` or `admin:operations:read`.",
+        "description": "Admin write history from `b2c.audit_logs`, newest first: who (`actor_id`) did what (`action`) to which entity, with before/after values. Rows written by the admin trace middleware have `entity_type` `admin_api` plus the request context (`request_id`, `ip_hash`, `path`, `status_code`). Legacy-layer writes use `entity_type` `legacy.<TABLE>`. Requires `*`, `admin:audit:read` or `admin:operations:read`.",
         "operationId": "list_audit_logs_api_v1_admin_audit_logs_get",
         "security": [
           {
@@ -1095,6 +1095,135 @@
             "description": "Filter by the admin who made the change."
           },
           {
+            "name": "actor_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by actor type, e.g. `admin`.",
+              "title": "Actor Type"
+            },
+            "description": "Filter by actor type, e.g. `admin`."
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact action code, e.g. `admin.role_created`.",
+              "title": "Action"
+            },
+            "description": "Exact action code, e.g. `admin.role_created`."
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by the affected entity id.",
+              "title": "Entity Id"
+            },
+            "description": "Filter by the affected entity id."
+          },
+          {
+            "name": "request_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by request id (correlates with logs).",
+              "title": "Request Id"
+            },
+            "description": "Filter by request id (correlates with logs)."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Free-text search over action, path and entity type.",
+              "title": "Search"
+            },
+            "description": "Free-text search over action, path and entity type."
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only rows created at/after this UTC instant.",
+              "title": "Start"
+            },
+            "description": "Only rows created at/after this UTC instant."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only rows created before this UTC instant.",
+              "title": "End"
+            },
+            "description": "Only rows created before this UTC instant."
+          },
+          {
             "name": "b2c_admin_access_token",
             "in": "cookie",
             "required": false,
@@ -1120,6 +1249,160 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminAuditLogPageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-logs/stats": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Audit activity stats",
+        "description": "Volume of audit rows per day plus the busiest actions and actors for the last `days`. Requires `*`, `admin:audit:read` or `admin:operations:read`.",
+        "operationId": "audit_log_stats_api_v1_admin_audit_logs_stats_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "Look-back window in days.",
+              "default": 30,
+              "title": "Days"
+            },
+            "description": "Look-back window in days."
+          },
+          {
+            "name": "top_n",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Rows in each top list.",
+              "default": 10,
+              "title": "Top N"
+            },
+            "description": "Rows in each top list."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAuditStatsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/audit-logs/{audit_log_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Audit log entry",
+        "description": "One audit row, including before/after state and the request context for traced admin calls. Requires `*`, `admin:audit:read` or `admin:operations:read`.",
+        "operationId": "get_audit_log_api_v1_admin_audit_logs__audit_log_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "audit_log_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Audit log id.",
+              "title": "Audit Log Id"
+            },
+            "description": "Audit log id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAuditLogResponse"
                 }
               }
             }
@@ -9387,6 +9670,85 @@
         }
       }
     },
+    "/api/v1/admin/catalog/instructors/{key}/expertise": {
+      "put": {
+        "tags": [
+          "Admin catalog"
+        ],
+        "summary": "Save the expert's fields and skills",
+        "description": "Replaces the fields (categories) and skills the expert page shows, in the order given. Send both lists empty to go back to their published items' categories and skills.",
+        "operationId": "put_instructor_expertise_api_v1_admin_catalog_instructors__key__expertise_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 64,
+              "description": "Legacy trainer id, `c{id}`, or the instructor uuid.",
+              "title": "Key"
+            },
+            "description": "Legacy trainer id, `c{id}`, or the instructor uuid."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExpertiseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminInstructorDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/catalog/instructors/{key}/merge": {
       "post": {
         "tags": [
@@ -16656,6 +17018,93 @@
         }
       }
     },
+    "/api/v1/admin/analytics/timeseries": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "Behavior daily trends",
+        "description": "Events and distinct visitors per UTC day from `b2c.behavior_events`, zero-filled for empty days. Requires `admin:analytics:read` or `admin:operations:read`. A *visitor* is a `fingerprint_hash`; a *known visitor* is one whose events carried a customer id. Windows are half-open `[start, end)` in UTC.",
+        "operationId": "behavior_timeseries_api_v1_admin_analytics_timeseries_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BehaviorTrendsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/analytics/events": {
       "get": {
         "tags": [
@@ -16915,6 +17364,577 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ContentViewsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/overview": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog overview",
+        "description": "Visitors, pageviews, sessions and returning-visitor rate for the window, plus the top pages, countries and device types.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_overview_api_v1_admin_analytics_posthog_overview_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "top_n",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 25,
+              "minimum": 1,
+              "description": "Rows for each top list.",
+              "default": 5,
+              "title": "Top N"
+            },
+            "description": "Rows for each top list."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogOverviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/trends": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog daily trends",
+        "description": "One point per UTC day: events, visitors, pageviews, product views, searches, checkouts and completed payments. Empty days are zero-filled so charts stay continuous.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_trends_api_v1_admin_analytics_posthog_trends_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogTrendsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/funnels": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog funnel",
+        "description": "Distinct PostHog persons per step using the storefront event names (default: page view → search → checkout started → payment completed). Pass `steps` to override.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_funnel_api_v1_admin_analytics_posthog_funnels_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "steps",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Ordered storefront event names, e.g. `$pageview`, `course_viewed`, `checkout_started`.",
+              "title": "Steps"
+            },
+            "description": "Ordered storefront event names, e.g. `$pageview`, `course_viewed`, `checkout_started`."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogFunnelResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/pages": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog website pages",
+        "description": "Top website pages by pageviews, the pages a session lands on first (landing pages), and the key conversion pages (login, register, cart, checkout, checkout success/failure, onboarding) grouped by area.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_pages_api_v1_admin_analytics_posthog_pages_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Rows in each top list.",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Rows in each top list."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogPagesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/audience": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog audience & signups",
+        "description": "Daily/weekly/monthly active users (DAU/WAU/MAU) and stickiness as of the window end, signup growth (daily and by country), and recurring-active bands (how many days a visitor was active). Uses `signed_up` when the storefront emits it, otherwise falls back to `$identify` and says so in `signup_basis`.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_audience_api_v1_admin_analytics_posthog_audience_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogAudienceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/analytics/posthog/conversion": {
+      "get": {
+        "tags": [
+          "Admin analytics"
+        ],
+        "summary": "PostHog conversion & drop-off",
+        "description": "Distinct visitors through visit → product view → cart → checkout → payment, with the absolute and percentage drop-off at each step, plus checkout conversion, overall conversion and payment failure rate.\n\nRequires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.",
+        "operationId": "posthog_conversion_api_v1_admin_analytics_posthog_conversion_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`.",
+              "examples": [
+                "2026-10-01"
+              ],
+              "title": "Start"
+            },
+            "description": "Range start (ISO date or date-time, UTC), e.g. `2026-10-01`."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Range end, exclusive (ISO date or date-time, UTC).",
+              "examples": [
+                "2026-10-14"
+              ],
+              "title": "End"
+            },
+            "description": "Range end, exclusive (ISO date or date-time, UTC)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogConversionResponse"
                 }
               }
             }
@@ -42167,6 +43187,73 @@
         ],
         "title": "AdminAssignTicketRequest"
       },
+      "AdminAuditActionCount": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "count"
+        ],
+        "title": "AdminAuditActionCount"
+      },
+      "AdminAuditActorCount": {
+        "properties": {
+          "actor_type": {
+            "type": "string",
+            "title": "Actor Type"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "actor_type",
+          "count"
+        ],
+        "title": "AdminAuditActorCount"
+      },
+      "AdminAuditDailyPoint": {
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Day"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day",
+          "count"
+        ],
+        "title": "AdminAuditDailyPoint"
+      },
       "AdminAuditLogPageResponse": {
         "properties": {
           "items": {
@@ -42256,6 +43343,94 @@
             ],
             "title": "After State Json"
           },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "ip_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip Hash"
+          },
+          "fingerprint_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fingerprint Hash"
+          },
+          "user_agent_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Agent Hash"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "status_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Code"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -42272,6 +43447,49 @@
           "created_at"
         ],
         "title": "AdminAuditLogResponse"
+      },
+      "AdminAuditStatsResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "daily": {
+            "items": {
+              "$ref": "#/components/schemas/AdminAuditDailyPoint"
+            },
+            "type": "array",
+            "title": "Daily"
+          },
+          "top_actions": {
+            "items": {
+              "$ref": "#/components/schemas/AdminAuditActionCount"
+            },
+            "type": "array",
+            "title": "Top Actions"
+          },
+          "top_actors": {
+            "items": {
+              "$ref": "#/components/schemas/AdminAuditActorCount"
+            },
+            "type": "array",
+            "title": "Top Actors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "total",
+          "daily",
+          "top_actions",
+          "top_actors"
+        ],
+        "title": "AdminAuditStatsResponse"
       },
       "AdminAuthResponse": {
         "properties": {
@@ -44560,6 +45778,37 @@
               }
             ],
             "title": "Updated At"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/ExpertiseCategory"
+            },
+            "type": "array",
+            "title": "Categories",
+            "description": "Fields saved for the page; empty → it shows their published items' categories."
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/ExpertiseSkill"
+            },
+            "type": "array",
+            "title": "Skills",
+            "description": "Skills saved for the page, same fallback."
+          },
+          "suggested_categories": {
+            "items": {
+              "$ref": "#/components/schemas/ExpertiseCategory"
+            },
+            "type": "array",
+            "title": "Suggested Categories",
+            "description": "Most common categories across all their non-archived items (drafts included)."
+          },
+          "suggested_skills": {
+            "items": {
+              "$ref": "#/components/schemas/ExpertiseSkill"
+            },
+            "type": "array",
+            "title": "Suggested Skills"
           },
           "cover_url": {
             "anyOf": [
@@ -49088,6 +50337,24 @@
         ],
         "title": "AttributionPage"
       },
+      "AudienceBandResponse": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "users": {
+            "type": "integer",
+            "title": "Users"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "users"
+        ],
+        "title": "AudienceBandResponse"
+      },
       "AuthResponse": {
         "properties": {
           "customer": {
@@ -50429,6 +51696,56 @@
         ],
         "title": "BehaviorOverviewResponse"
       },
+      "BehaviorTrendPointResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "events": {
+            "type": "integer",
+            "title": "Events"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "events",
+          "visitors"
+        ],
+        "title": "BehaviorTrendPointResponse"
+      },
+      "BehaviorTrendsResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/BehaviorTrendPointResponse"
+            },
+            "type": "array",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "BehaviorTrendsResponse"
+      },
       "BookingCheckoutRequest": {
         "properties": {
           "product_id": {
@@ -50936,6 +52253,24 @@
           "cancelled"
         ],
         "title": "BookingStatus"
+      },
+      "BreakdownItemResponse": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "count"
+        ],
+        "title": "BreakdownItemResponse"
       },
       "BulkApplyRequest": {
         "properties": {
@@ -52452,6 +53787,13 @@
               }
             ],
             "title": "Extension Duration Days"
+          },
+          "instructors": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogItemInstructor"
+            },
+            "type": "array",
+            "title": "Instructors"
           }
         },
         "type": "object",
@@ -52465,6 +53807,65 @@
           "prices"
         ],
         "title": "CatalogItemDetail"
+      },
+      "CatalogItemInstructor": {
+        "properties": {
+          "instructor_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Instructor Id"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "headline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "is_lead": {
+            "type": "boolean",
+            "title": "Is Lead"
+          }
+        },
+        "type": "object",
+        "required": [
+          "instructor_id",
+          "key",
+          "name",
+          "avatar_url",
+          "headline",
+          "sort_order",
+          "is_lead"
+        ],
+        "title": "CatalogItemInstructor",
+        "description": "An expert assigned to the product (`b2c.product_instructors`), in display order."
       },
       "CatalogItemPrice": {
         "properties": {
@@ -56067,6 +57468,44 @@
           "offset"
         ],
         "title": "ConversionPage"
+      },
+      "ConversionStepResponse": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          },
+          "conversion_from_previous": {
+            "type": "number",
+            "title": "Conversion From Previous"
+          },
+          "dropout": {
+            "type": "integer",
+            "title": "Dropout"
+          },
+          "dropout_rate": {
+            "type": "number",
+            "title": "Dropout Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "visitors",
+          "conversion_from_previous",
+          "dropout",
+          "dropout_rate"
+        ],
+        "title": "ConversionStepResponse"
       },
       "Country": {
         "properties": {
@@ -61119,7 +62558,7 @@
             },
             "type": "array",
             "title": "Categories",
-            "description": "The fields they teach in, most items first."
+            "description": "The fields they teach in: as saved in the admin, else most items first."
           },
           "cover_image": {
             "anyOf": [
@@ -61529,6 +62968,49 @@
         ],
         "title": "ExpertTopicResponse",
         "description": "A skill or tag across the expert's items; `slug` is null for tags."
+      },
+      "ExpertiseCategory": {
+        "properties": {
+          "category_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Category Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category_id",
+          "name"
+        ],
+        "title": "ExpertiseCategory"
+      },
+      "ExpertiseSkill": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Skill Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "slug",
+          "name"
+        ],
+        "title": "ExpertiseSkill"
       },
       "ExtendBody": {
         "properties": {
@@ -62595,6 +64077,29 @@
           "answer"
         ],
         "title": "LandingFaqResponse"
+      },
+      "LandingPageResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "sessions",
+          "group"
+        ],
+        "title": "LandingPageResponse"
       },
       "LandingResponse": {
         "properties": {
@@ -67149,6 +68654,34 @@
         "type": "object",
         "title": "PageDocumentResponse"
       },
+      "PageMetricResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "pageviews": {
+            "type": "integer",
+            "title": "Pageviews"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "pageviews",
+          "visitors",
+          "group"
+        ],
+        "title": "PageMetricResponse"
+      },
       "PartnerBalanceOut": {
         "properties": {
           "balance": {
@@ -69019,6 +70552,421 @@
           "revenue_in_range"
         ],
         "title": "PlanStatsOut"
+      },
+      "PostHogAudienceResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "signup_basis": {
+            "type": "string",
+            "title": "Signup Basis"
+          },
+          "signups": {
+            "type": "integer",
+            "title": "Signups"
+          },
+          "signup_points": {
+            "items": {
+              "$ref": "#/components/schemas/SignupPointResponse"
+            },
+            "type": "array",
+            "title": "Signup Points"
+          },
+          "signups_by_country": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemResponse"
+            },
+            "type": "array",
+            "title": "Signups By Country"
+          },
+          "daily_active": {
+            "type": "integer",
+            "title": "Daily Active"
+          },
+          "weekly_active": {
+            "type": "integer",
+            "title": "Weekly Active"
+          },
+          "monthly_active": {
+            "type": "integer",
+            "title": "Monthly Active"
+          },
+          "stickiness": {
+            "type": "number",
+            "title": "Stickiness"
+          },
+          "total_active_users": {
+            "type": "integer",
+            "title": "Total Active Users"
+          },
+          "recurring_users": {
+            "type": "integer",
+            "title": "Recurring Users"
+          },
+          "recurring_rate": {
+            "type": "number",
+            "title": "Recurring Rate"
+          },
+          "bands": {
+            "items": {
+              "$ref": "#/components/schemas/AudienceBandResponse"
+            },
+            "type": "array",
+            "title": "Bands"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available",
+          "signup_basis",
+          "signups",
+          "daily_active",
+          "weekly_active",
+          "monthly_active",
+          "stickiness",
+          "total_active_users",
+          "recurring_users",
+          "recurring_rate"
+        ],
+        "title": "PostHogAudienceResponse"
+      },
+      "PostHogConversionResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          },
+          "product_viewers": {
+            "type": "integer",
+            "title": "Product Viewers"
+          },
+          "carts": {
+            "type": "integer",
+            "title": "Carts"
+          },
+          "checkouts": {
+            "type": "integer",
+            "title": "Checkouts"
+          },
+          "payments": {
+            "type": "integer",
+            "title": "Payments"
+          },
+          "payment_failed": {
+            "type": "integer",
+            "title": "Payment Failed"
+          },
+          "checkout_conversion": {
+            "type": "number",
+            "title": "Checkout Conversion"
+          },
+          "overall_conversion": {
+            "type": "number",
+            "title": "Overall Conversion"
+          },
+          "payment_failure_rate": {
+            "type": "number",
+            "title": "Payment Failure Rate"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionStepResponse"
+            },
+            "type": "array",
+            "title": "Steps"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available",
+          "visitors",
+          "product_viewers",
+          "carts",
+          "checkouts",
+          "payments",
+          "payment_failed",
+          "checkout_conversion",
+          "overall_conversion",
+          "payment_failure_rate"
+        ],
+        "title": "PostHogConversionResponse"
+      },
+      "PostHogFunnelResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/FunnelStepResponse"
+            },
+            "type": "array",
+            "title": "Steps"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available"
+        ],
+        "title": "PostHogFunnelResponse"
+      },
+      "PostHogOverviewResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          },
+          "pageviews": {
+            "type": "integer",
+            "title": "Pageviews"
+          },
+          "sessions": {
+            "type": "integer",
+            "title": "Sessions"
+          },
+          "returning_visitors": {
+            "type": "integer",
+            "title": "Returning Visitors"
+          },
+          "returning_rate": {
+            "type": "number",
+            "title": "Returning Rate"
+          },
+          "top_pages": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemResponse"
+            },
+            "type": "array",
+            "title": "Top Pages"
+          },
+          "countries": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemResponse"
+            },
+            "type": "array",
+            "title": "Countries"
+          },
+          "devices": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemResponse"
+            },
+            "type": "array",
+            "title": "Devices"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available",
+          "visitors",
+          "pageviews",
+          "sessions",
+          "returning_visitors",
+          "returning_rate"
+        ],
+        "title": "PostHogOverviewResponse"
+      },
+      "PostHogPagesResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "top_pages": {
+            "items": {
+              "$ref": "#/components/schemas/PageMetricResponse"
+            },
+            "type": "array",
+            "title": "Top Pages"
+          },
+          "landing_pages": {
+            "items": {
+              "$ref": "#/components/schemas/LandingPageResponse"
+            },
+            "type": "array",
+            "title": "Landing Pages"
+          },
+          "key_pages": {
+            "items": {
+              "$ref": "#/components/schemas/PageMetricResponse"
+            },
+            "type": "array",
+            "title": "Key Pages"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available"
+        ],
+        "title": "PostHogPagesResponse"
+      },
+      "PostHogTrendsResponse": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPointResponse"
+            },
+            "type": "array",
+            "title": "Points"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "available"
+        ],
+        "title": "PostHogTrendsResponse"
       },
       "PreviewBaseResponse": {
         "properties": {
@@ -75527,6 +77475,24 @@
         ],
         "title": "SetPlanStatusRequest"
       },
+      "SignupPointResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "signups": {
+            "type": "integer",
+            "title": "Signups"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "signups"
+        ],
+        "title": "SignupPointResponse"
+      },
       "SkillPoint": {
         "properties": {
           "label": {
@@ -79703,6 +81669,59 @@
         ],
         "title": "TrainerApplicationRequest"
       },
+      "TrendPointResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "events": {
+            "type": "integer",
+            "title": "Events"
+          },
+          "visitors": {
+            "type": "integer",
+            "title": "Visitors"
+          },
+          "pageviews": {
+            "type": "integer",
+            "title": "Pageviews"
+          },
+          "product_views": {
+            "type": "integer",
+            "title": "Product Views"
+          },
+          "searches": {
+            "type": "integer",
+            "title": "Searches"
+          },
+          "checkouts": {
+            "type": "integer",
+            "title": "Checkouts"
+          },
+          "payments": {
+            "type": "integer",
+            "title": "Payments"
+          },
+          "signups": {
+            "type": "integer",
+            "title": "Signups",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "events",
+          "visitors",
+          "pageviews",
+          "product_views",
+          "searches",
+          "checkouts",
+          "payments"
+        ],
+        "title": "TrendPointResponse"
+      },
       "TwoFactorCheckRequest": {
         "properties": {
           "email": {
@@ -79966,6 +81985,32 @@
         "type": "object",
         "title": "UpdateExpertServiceRequest",
         "description": "Only the fields sent change. An empty string clears a description."
+      },
+      "UpdateExpertiseRequest": {
+        "properties": {
+          "category_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Category Ids",
+            "description": "In display order."
+          },
+          "skill_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Skill Ids",
+            "description": "In display order."
+          }
+        },
+        "type": "object",
+        "title": "UpdateExpertiseRequest"
       },
       "UpdateInstructorReadmeRequest": {
         "properties": {
@@ -81828,7 +83873,7 @@
             },
             "type": "array",
             "title": "Categories",
-            "description": "The fields they teach in, most items first."
+            "description": "The fields they teach in: as saved in the admin, else most items first."
           }
         },
         "type": "object",

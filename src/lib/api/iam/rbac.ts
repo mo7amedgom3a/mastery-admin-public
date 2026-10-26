@@ -11,6 +11,8 @@ type AssignAdminRoleOp = "assign_admin_role_api_v1_admin_admin_users__admin_user
 type RemoveAdminRoleOp = "remove_admin_role_api_v1_admin_admin_users__admin_user_id__roles__role_id__delete";
 type CreateRoleOp = "create_role_api_v1_admin_roles_post";
 type AuditLogsOp = "list_audit_logs_api_v1_admin_audit_logs_get";
+type AuditLogOp = "get_audit_log_api_v1_admin_audit_logs__audit_log_id__get";
+type AuditStatsOp = "audit_log_stats_api_v1_admin_audit_logs_stats_get";
 
 export type AdminUser = SuccessResponse<CreateAdminUserOp>;
 export type AdminUserPage = SuccessResponse<ListAdminUsersOp>;
@@ -23,6 +25,9 @@ export type AssignRoleRequest = RequestBody<AssignAdminRoleOp>;
 export type AuditLog = SuccessResponse<AuditLogsOp>["items"][number];
 export type AuditLogPage = SuccessResponse<AuditLogsOp>;
 export type AuditLogsParams = QueryParams<AuditLogsOp>;
+export type AuditLogDetail = SuccessResponse<AuditLogOp>;
+export type AuditStats = SuccessResponse<AuditStatsOp>;
+export type AuditStatsParams = QueryParams<AuditStatsOp>;
 
 /** All of these require the super-admin scope `*`. */
 export const iamPaths = {
@@ -32,6 +37,8 @@ export const iamPaths = {
   adminUserRole: "admin/admin-users/{admin_user_id}/roles/{role_id}",
   roles: "admin/roles",
   auditLogs: "admin/audit-logs",
+  auditLog: "admin/audit-logs/{audit_log_id}",
+  auditStats: "admin/audit-logs/stats",
 } as const;
 
 export const iamKeys = {
@@ -40,6 +47,8 @@ export const iamKeys = {
   adminUserRoles: (adminUserId: string) => [...iamKeys.all, "admin-user-roles", adminUserId] as const,
   roles: () => [...iamKeys.all, "roles"] as const,
   auditLogs: (params?: AuditLogsParams) => [...iamKeys.all, "audit-logs", params ?? {}] as const,
+  auditLog: (auditLogId: string) => [...iamKeys.all, "audit-log", auditLogId] as const,
+  auditStats: (params?: AuditStatsParams) => [...iamKeys.all, "audit-stats", params ?? {}] as const,
 };
 
 export function listAdminUsers(params: AdminUsersParams = {}): Promise<AdminUserPage> {
@@ -89,6 +98,16 @@ export function listAuditLogs(params: AuditLogsParams = {}): Promise<AuditLogPag
   return apiGet(iamPaths.auditLogs, { query: params });
 }
 
+export function getAuditLog(
+  audit_log_id: PathParams<AuditLogOp>["audit_log_id"],
+): Promise<AuditLogDetail> {
+  return apiGet(iamPaths.auditLog, { path: { audit_log_id } });
+}
+
+export function auditLogStats(params: AuditStatsParams = {}): Promise<AuditStats> {
+  return apiGet(iamPaths.auditStats, { query: params });
+}
+
 export const iamQueries = {
   adminUsers: (params?: AdminUsersParams) =>
     queryOptions({ queryKey: iamKeys.adminUsers(params), queryFn: () => listAdminUsers(params) }),
@@ -97,4 +116,8 @@ export const iamQueries = {
   roles: () => queryOptions({ queryKey: iamKeys.roles(), queryFn: listRoles }),
   auditLogs: (params?: AuditLogsParams) =>
     queryOptions({ queryKey: iamKeys.auditLogs(params), queryFn: () => listAuditLogs(params) }),
+  auditLog: (auditLogId: string) =>
+    queryOptions({ queryKey: iamKeys.auditLog(auditLogId), queryFn: () => getAuditLog(auditLogId) }),
+  auditStats: (params?: AuditStatsParams) =>
+    queryOptions({ queryKey: iamKeys.auditStats(params), queryFn: () => auditLogStats(params) }),
 };

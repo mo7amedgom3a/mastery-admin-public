@@ -273,9 +273,49 @@ export interface paths {
         };
         /**
          * Audit log
-         * @description Admin write history from `b2c.audit_logs`, newest first: who (`actor_id`) did what (`action`) to which entity, with before/after values. Legacy-layer writes use `entity_type` `legacy.<TABLE>`. Requires `*` or `admin:operations:read`.
+         * @description Admin write history from `b2c.audit_logs`, newest first: who (`actor_id`) did what (`action`) to which entity, with before/after values. Rows written by the admin trace middleware have `entity_type` `admin_api` plus the request context (`request_id`, `ip_hash`, `path`, `status_code`). Legacy-layer writes use `entity_type` `legacy.<TABLE>`. Requires `*`, `admin:audit:read` or `admin:operations:read`.
          */
         get: operations["list_audit_logs_api_v1_admin_audit_logs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit-logs/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit activity stats
+         * @description Volume of audit rows per day plus the busiest actions and actors for the last `days`. Requires `*`, `admin:audit:read` or `admin:operations:read`.
+         */
+        get: operations["audit_log_stats_api_v1_admin_audit_logs_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit-logs/{audit_log_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit log entry
+         * @description One audit row, including before/after state and the request context for traced admin calls. Requires `*`, `admin:audit:read` or `admin:operations:read`.
+         */
+        get: operations["get_audit_log_api_v1_admin_audit_logs__audit_log_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1785,6 +1825,26 @@ export interface paths {
         get: operations["get_instructor_readme_api_v1_admin_catalog_instructors__key__readme_get"];
         /** Save the expert's page README */
         put: operations["put_instructor_readme_api_v1_admin_catalog_instructors__key__readme_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/instructors/{key}/expertise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save the expert's fields and skills
+         * @description Replaces the fields (categories) and skills the expert page shows, in the order given. Send both lists empty to go back to their published items' categories and skills.
+         */
+        put: operations["put_instructor_expertise_api_v1_admin_catalog_instructors__key__expertise_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -3413,6 +3473,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/analytics/timeseries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Behavior daily trends
+         * @description Events and distinct visitors per UTC day from `b2c.behavior_events`, zero-filled for empty days. Requires `admin:analytics:read` or `admin:operations:read`. A *visitor* is a `fingerprint_hash`; a *known visitor* is one whose events carried a customer id. Windows are half-open `[start, end)` in UTC.
+         */
+        get: operations["behavior_timeseries_api_v1_admin_analytics_timeseries_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/analytics/events": {
         parameters: {
             query?: never;
@@ -3449,6 +3529,138 @@ export interface paths {
          *     Requires `admin:analytics:read` or `admin:operations:read`. A *visitor* is a `fingerprint_hash`; a *known visitor* is one whose events carried a customer id. Windows are half-open `[start, end)` in UTC.
          */
         get: operations["content_views_api_v1_admin_analytics_content_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog overview
+         * @description Visitors, pageviews, sessions and returning-visitor rate for the window, plus the top pages, countries and device types.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_overview_api_v1_admin_analytics_posthog_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/trends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog daily trends
+         * @description One point per UTC day: events, visitors, pageviews, product views, searches, checkouts and completed payments. Empty days are zero-filled so charts stay continuous.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_trends_api_v1_admin_analytics_posthog_trends_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/funnels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog funnel
+         * @description Distinct PostHog persons per step using the storefront event names (default: page view → search → checkout started → payment completed). Pass `steps` to override.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_funnel_api_v1_admin_analytics_posthog_funnels_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog website pages
+         * @description Top website pages by pageviews, the pages a session lands on first (landing pages), and the key conversion pages (login, register, cart, checkout, checkout success/failure, onboarding) grouped by area.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_pages_api_v1_admin_analytics_posthog_pages_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog audience & signups
+         * @description Daily/weekly/monthly active users (DAU/WAU/MAU) and stickiness as of the window end, signup growth (daily and by country), and recurring-active bands (how many days a visitor was active). Uses `signed_up` when the storefront emits it, otherwise falls back to `$identify` and says so in `signup_basis`.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_audience_api_v1_admin_analytics_posthog_audience_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/analytics/posthog/conversion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * PostHog conversion & drop-off
+         * @description Distinct visitors through visit → product view → cart → checkout → payment, with the absolute and percentage drop-off at each step, plus checkout conversion, overall conversion and payment failure rate.
+         *
+         *     Requires `admin:analytics:read` or `admin:operations:read`. Reads the storefront's PostHog project through the server-side query API (the API key never reaches the browser). Results are cached briefly. When PostHog is unconfigured or unreachable the response has `available=false` and an `error` message instead of failing the request.
+         */
+        get: operations["posthog_conversion_api_v1_admin_analytics_posthog_conversion_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -8857,6 +9069,32 @@ export interface components {
             /** Reason */
             reason?: string | null;
         };
+        /** AdminAuditActionCount */
+        AdminAuditActionCount: {
+            /** Action */
+            action: string;
+            /** Count */
+            count: number;
+        };
+        /** AdminAuditActorCount */
+        AdminAuditActorCount: {
+            /** Actor Type */
+            actor_type: string;
+            /** Actor Id */
+            actor_id?: string | null;
+            /** Count */
+            count: number;
+        };
+        /** AdminAuditDailyPoint */
+        AdminAuditDailyPoint: {
+            /**
+             * Day
+             * Format: date-time
+             */
+            day: string;
+            /** Count */
+            count: number;
+        };
         /** AdminAuditLogPageResponse */
         AdminAuditLogPageResponse: {
             /** Items */
@@ -8892,11 +9130,43 @@ export interface components {
             before_state_json?: string | null;
             /** After State Json */
             after_state_json?: string | null;
+            /** Request Id */
+            request_id?: string | null;
+            /** Ip Hash */
+            ip_hash?: string | null;
+            /** Fingerprint Hash */
+            fingerprint_hash?: string | null;
+            /** User Agent Hash */
+            user_agent_hash?: string | null;
+            /** Method */
+            method?: string | null;
+            /** Path */
+            path?: string | null;
+            /** Status Code */
+            status_code?: number | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
             /**
              * Created At
              * Format: date-time
              */
             created_at: string;
+        };
+        /** AdminAuditStatsResponse */
+        AdminAuditStatsResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /** Total */
+            total: number;
+            /** Daily */
+            daily: components["schemas"]["AdminAuditDailyPoint"][];
+            /** Top Actions */
+            top_actions: components["schemas"]["AdminAuditActionCount"][];
+            /** Top Actors */
+            top_actors: components["schemas"]["AdminAuditActorCount"][];
         };
         /** AdminAuthResponse */
         AdminAuthResponse: {
@@ -9604,6 +9874,23 @@ export interface components {
             merged_into_key?: string | null;
             /** Updated At */
             updated_at?: string | null;
+            /**
+             * Categories
+             * @description Fields saved for the page; empty → it shows their published items' categories.
+             */
+            categories?: components["schemas"]["ExpertiseCategory"][];
+            /**
+             * Skills
+             * @description Skills saved for the page, same fallback.
+             */
+            skills?: components["schemas"]["ExpertiseSkill"][];
+            /**
+             * Suggested Categories
+             * @description Most common categories across all their non-archived items (drafts included).
+             */
+            suggested_categories?: components["schemas"]["ExpertiseCategory"][];
+            /** Suggested Skills */
+            suggested_skills?: components["schemas"]["ExpertiseSkill"][];
             /** Cover Url */
             cover_url?: string | null;
             /**
@@ -11028,6 +11315,13 @@ export interface components {
             /** Offset */
             offset: number;
         };
+        /** AudienceBandResponse */
+        AudienceBandResponse: {
+            /** Label */
+            label: string;
+            /** Users */
+            users: number;
+        };
         /** AuthResponse */
         AuthResponse: {
             customer: components["schemas"]["CustomerAuthResponse"];
@@ -11486,6 +11780,30 @@ export interface components {
             /** Top Content */
             top_content: components["schemas"]["ContentViewResponse"][];
         };
+        /** BehaviorTrendPointResponse */
+        BehaviorTrendPointResponse: {
+            /** Date */
+            date: string;
+            /** Events */
+            events: number;
+            /** Visitors */
+            visitors: number;
+        };
+        /** BehaviorTrendsResponse */
+        BehaviorTrendsResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Points */
+            points?: components["schemas"]["BehaviorTrendPointResponse"][];
+        };
         /** BookingCheckoutRequest */
         BookingCheckoutRequest: {
             /**
@@ -11624,6 +11942,13 @@ export interface components {
          * @enum {string}
          */
         BookingStatus: "pending_payment" | "expired" | "awaiting_approval" | "confirmed" | "in_progress" | "completed" | "rejected" | "refund_pending" | "refunded" | "no_show_customer" | "no_show_expert" | "cancelled";
+        /** BreakdownItemResponse */
+        BreakdownItemResponse: {
+            /** Key */
+            key: string;
+            /** Count */
+            count: number;
+        };
         /** BulkApplyRequest */
         BulkApplyRequest: {
             selector: components["schemas"]["BulkSelector"];
@@ -12155,6 +12480,31 @@ export interface components {
             cpd_eligible: boolean;
             /** Extension Duration Days */
             extension_duration_days?: number | null;
+            /** Instructors */
+            instructors?: components["schemas"]["CatalogItemInstructor"][];
+        };
+        /**
+         * CatalogItemInstructor
+         * @description An expert assigned to the product (`b2c.product_instructors`), in display order.
+         */
+        CatalogItemInstructor: {
+            /**
+             * Instructor Id
+             * Format: uuid
+             */
+            instructor_id: string;
+            /** Key */
+            key: string;
+            /** Name */
+            name: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /** Headline */
+            headline: string | null;
+            /** Sort Order */
+            sort_order: number;
+            /** Is Lead */
+            is_lead: boolean;
         };
         /** CatalogItemPrice */
         CatalogItemPrice: {
@@ -13300,6 +13650,21 @@ export interface components {
             limit: number;
             /** Offset */
             offset: number;
+        };
+        /** ConversionStepResponse */
+        ConversionStepResponse: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Visitors */
+            visitors: number;
+            /** Conversion From Previous */
+            conversion_from_previous: number;
+            /** Dropout */
+            dropout: number;
+            /** Dropout Rate */
+            dropout_rate: number;
         };
         /** Country */
         Country: {
@@ -15104,7 +15469,7 @@ export interface components {
             featured_order?: number | null;
             /**
              * Categories
-             * @description The fields they teach in, most items first.
+             * @description The fields they teach in: as saved in the admin, else most items first.
              */
             categories?: string[];
             /** Cover Image */
@@ -15240,6 +15605,28 @@ export interface components {
              * @default 1
              */
             count: number;
+        };
+        /** ExpertiseCategory */
+        ExpertiseCategory: {
+            /**
+             * Category Id
+             * Format: uuid
+             */
+            category_id: string;
+            /** Name */
+            name: string;
+        };
+        /** ExpertiseSkill */
+        ExpertiseSkill: {
+            /**
+             * Skill Id
+             * Format: uuid
+             */
+            skill_id: string;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
         };
         /** ExtendBody */
         ExtendBody: {
@@ -15638,6 +16025,15 @@ export interface components {
             question: string;
             /** Answer */
             answer: string;
+        };
+        /** LandingPageResponse */
+        LandingPageResponse: {
+            /** Path */
+            path: string;
+            /** Sessions */
+            sessions: number;
+            /** Group */
+            group: string;
         };
         /** LandingResponse */
         LandingResponse: {
@@ -17259,6 +17655,17 @@ export interface components {
              */
             revalidated: boolean;
         };
+        /** PageMetricResponse */
+        PageMetricResponse: {
+            /** Path */
+            path: string;
+            /** Pageviews */
+            pageviews: number;
+            /** Visitors */
+            visitors: number;
+            /** Group */
+            group: string;
+        };
         /** PartnerBalanceOut */
         PartnerBalanceOut: {
             balance: components["schemas"]["AffiliateBalanceOut"];
@@ -17869,6 +18276,178 @@ export interface components {
             mrr: string;
             /** Revenue In Range */
             revenue_in_range: string;
+        };
+        /** PostHogAudienceResponse */
+        PostHogAudienceResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Signup Basis */
+            signup_basis: string;
+            /** Signups */
+            signups: number;
+            /** Signup Points */
+            signup_points?: components["schemas"]["SignupPointResponse"][];
+            /** Signups By Country */
+            signups_by_country?: components["schemas"]["BreakdownItemResponse"][];
+            /** Daily Active */
+            daily_active: number;
+            /** Weekly Active */
+            weekly_active: number;
+            /** Monthly Active */
+            monthly_active: number;
+            /** Stickiness */
+            stickiness: number;
+            /** Total Active Users */
+            total_active_users: number;
+            /** Recurring Users */
+            recurring_users: number;
+            /** Recurring Rate */
+            recurring_rate: number;
+            /** Bands */
+            bands?: components["schemas"]["AudienceBandResponse"][];
+            /** Error */
+            error?: string | null;
+        };
+        /** PostHogConversionResponse */
+        PostHogConversionResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Visitors */
+            visitors: number;
+            /** Product Viewers */
+            product_viewers: number;
+            /** Carts */
+            carts: number;
+            /** Checkouts */
+            checkouts: number;
+            /** Payments */
+            payments: number;
+            /** Payment Failed */
+            payment_failed: number;
+            /** Checkout Conversion */
+            checkout_conversion: number;
+            /** Overall Conversion */
+            overall_conversion: number;
+            /** Payment Failure Rate */
+            payment_failure_rate: number;
+            /** Steps */
+            steps?: components["schemas"]["ConversionStepResponse"][];
+            /** Error */
+            error?: string | null;
+        };
+        /** PostHogFunnelResponse */
+        PostHogFunnelResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Steps */
+            steps?: components["schemas"]["FunnelStepResponse"][];
+            /** Error */
+            error?: string | null;
+        };
+        /** PostHogOverviewResponse */
+        PostHogOverviewResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Visitors */
+            visitors: number;
+            /** Pageviews */
+            pageviews: number;
+            /** Sessions */
+            sessions: number;
+            /** Returning Visitors */
+            returning_visitors: number;
+            /** Returning Rate */
+            returning_rate: number;
+            /** Top Pages */
+            top_pages?: components["schemas"]["BreakdownItemResponse"][];
+            /** Countries */
+            countries?: components["schemas"]["BreakdownItemResponse"][];
+            /** Devices */
+            devices?: components["schemas"]["BreakdownItemResponse"][];
+            /** Error */
+            error?: string | null;
+        };
+        /** PostHogPagesResponse */
+        PostHogPagesResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Top Pages */
+            top_pages?: components["schemas"]["PageMetricResponse"][];
+            /** Landing Pages */
+            landing_pages?: components["schemas"]["LandingPageResponse"][];
+            /** Key Pages */
+            key_pages?: components["schemas"]["PageMetricResponse"][];
+            /** Error */
+            error?: string | null;
+        };
+        /** PostHogTrendsResponse */
+        PostHogTrendsResponse: {
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Available */
+            available: boolean;
+            /** Points */
+            points?: components["schemas"]["TrendPointResponse"][];
+            /** Error */
+            error?: string | null;
         };
         /**
          * PreviewBaseResponse
@@ -20010,6 +20589,13 @@ export interface components {
              */
             status: "draft" | "published" | "archived";
         };
+        /** SignupPointResponse */
+        SignupPointResponse: {
+            /** Date */
+            date: string;
+            /** Signups */
+            signups: number;
+        };
         /** SkillPoint */
         SkillPoint: {
             /** Label */
@@ -21467,6 +22053,30 @@ export interface components {
             /** Portfolioattachmentids */
             portfolioAttachmentIds?: string[];
         };
+        /** TrendPointResponse */
+        TrendPointResponse: {
+            /** Date */
+            date: string;
+            /** Events */
+            events: number;
+            /** Visitors */
+            visitors: number;
+            /** Pageviews */
+            pageviews: number;
+            /** Product Views */
+            product_views: number;
+            /** Searches */
+            searches: number;
+            /** Checkouts */
+            checkouts: number;
+            /** Payments */
+            payments: number;
+            /**
+             * Signups
+             * @default 0
+             */
+            signups: number;
+        };
         /** TwoFactorCheckRequest */
         TwoFactorCheckRequest: {
             /** Email */
@@ -21520,6 +22130,19 @@ export interface components {
             currency_code?: string | null;
             /** Is Active */
             is_active?: boolean | null;
+        };
+        /** UpdateExpertiseRequest */
+        UpdateExpertiseRequest: {
+            /**
+             * Category Ids
+             * @description In display order.
+             */
+            category_ids?: string[];
+            /**
+             * Skill Ids
+             * @description In display order.
+             */
+            skill_ids?: string[];
         };
         /** UpdateInstructorReadmeRequest */
         UpdateInstructorReadmeRequest: {
@@ -22083,7 +22706,7 @@ export interface components {
             featured_order?: number | null;
             /**
              * Categories
-             * @description The fields they teach in, most items first.
+             * @description The fields they teach in: as saved in the admin, else most items first.
              */
             categories?: string[];
         };
@@ -22733,6 +23356,20 @@ export interface operations {
                 entity_type?: string | null;
                 /** @description Filter by the admin who made the change. */
                 actor_id?: string | null;
+                /** @description Filter by actor type, e.g. `admin`. */
+                actor_type?: string | null;
+                /** @description Exact action code, e.g. `admin.role_created`. */
+                action?: string | null;
+                /** @description Filter by the affected entity id. */
+                entity_id?: string | null;
+                /** @description Filter by request id (correlates with logs). */
+                request_id?: string | null;
+                /** @description Free-text search over action, path and entity type. */
+                search?: string | null;
+                /** @description Only rows created at/after this UTC instant. */
+                start?: string | null;
+                /** @description Only rows created before this UTC instant. */
+                end?: string | null;
             };
             header?: never;
             path?: never;
@@ -22750,6 +23387,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminAuditLogPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_log_stats_api_v1_admin_audit_logs_stats_get: {
+        parameters: {
+            query?: {
+                /** @description Look-back window in days. */
+                days?: number;
+                /** @description Rows in each top list. */
+                top_n?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAuditStatsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_audit_log_api_v1_admin_audit_logs__audit_log_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Audit log id. */
+                audit_log_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAuditLogResponse"];
                 };
             };
             /** @description Validation Error */
@@ -26246,6 +26955,45 @@ export interface operations {
             };
         };
     };
+    put_instructor_expertise_api_v1_admin_catalog_instructors__key__expertise_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Legacy trainer id, `c{id}`, or the instructor uuid. */
+                key: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateExpertiseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInstructorDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     merge_instructor_into_api_v1_admin_catalog_instructors__key__merge_post: {
         parameters: {
             query?: never;
@@ -29440,6 +30188,43 @@ export interface operations {
             };
         };
     };
+    behavior_timeseries_api_v1_admin_analytics_timeseries_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BehaviorTrendsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     behavior_events_api_v1_admin_analytics_events_get: {
         parameters: {
             query: {
@@ -29512,6 +30297,234 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ContentViewsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_overview_api_v1_admin_analytics_posthog_overview_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+                /** @description Rows for each top list. */
+                top_n?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogOverviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_trends_api_v1_admin_analytics_posthog_trends_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogTrendsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_funnel_api_v1_admin_analytics_posthog_funnels_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+                /** @description Ordered storefront event names, e.g. `$pageview`, `course_viewed`, `checkout_started`. */
+                steps?: string[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogFunnelResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_pages_api_v1_admin_analytics_posthog_pages_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+                /** @description Rows in each top list. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogPagesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_audience_api_v1_admin_analytics_posthog_audience_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogAudienceResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    posthog_conversion_api_v1_admin_analytics_posthog_conversion_get: {
+        parameters: {
+            query: {
+                /** @description Range start (ISO date or date-time, UTC), e.g. `2026-10-01`. */
+                start: string;
+                /** @description Range end, exclusive (ISO date or date-time, UTC). */
+                end: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostHogConversionResponse"];
                 };
             };
             /** @description Validation Error */

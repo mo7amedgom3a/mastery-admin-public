@@ -26,6 +26,16 @@ export function percentDelta(current: number, previous: number): number {
   return Math.round(((current - previous) / previous) * 100);
 }
 
+/** `2026-10-01` → `2026-10-01T00:00:00` for inclusive day ranges. */
+export function dayStartIso(day: string): string {
+  return `${day.slice(0, 10)}T00:00:00`;
+}
+
+/** `2026-10-26` → `2026-10-26T23:59:59` for inclusive day ranges. */
+export function dayEndIso(day: string): string {
+  return `${day.slice(0, 10)}T23:59:59`;
+}
+
 const DAY_MS = 86_400_000;
 
 export const toDay = (date: Date): string => {

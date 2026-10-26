@@ -12,6 +12,7 @@ import { toast } from "@/components/ui/toast";
 import { PageState } from "@/components/ui/primitives";
 import { ExpertPreview } from "@/features/learning/expert-profile/expert-preview";
 import { expertPublicUrl } from "@/features/learning/expert-profile/urls";
+import { ExpertExpertiseCard } from "@/features/learning/expert-profile/expert-expertise-card";
 import { ExpertProductsCard } from "@/features/learning/expert-profile/expert-products-card";
 import { ExpertProfileForm } from "@/features/learning/expert-profile/expert-profile-form";
 import type { PreviewDevice } from "@/features/learning/studio/preview/use-preview-channel";
@@ -79,6 +80,7 @@ export default function InstructorDetailPage() {
               <div className="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
                 <ExpertProfileForm key={expert.updated_at ?? expert.key} expert={expert} />
                 <div className="grid content-start gap-4">
+                  <ExpertExpertiseCard key={expert.updated_at ?? expert.key} expert={expert} />
                   <ConsultationsCard expert={expert} />
                   <Card title={t("السجل", "Record")}>
                     <Dl

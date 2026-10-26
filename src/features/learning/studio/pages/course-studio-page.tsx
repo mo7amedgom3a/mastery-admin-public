@@ -265,8 +265,13 @@ function StudioWorkspace({ productRef, initial }: { productRef: string; initial:
         units: mappedUnits,
       };
     }
+    // The storefront previews a consultation as its real page, found by the product slug (`consultation-21`).
+    if (payload.kind === "consultation" && !payload.base) {
+      const slug = productQuery.data?.product.slug;
+      return slug ? { slug } : null;
+    }
     return payload.base ?? null;
-  }, [base.data, unitsQuery.data]);
+  }, [base.data, unitsQuery.data, productQuery.data]);
 
   const edit = (nextMeta: StudioMeta, nextBlocks: unknown[]) => {
     if (!editable) return;

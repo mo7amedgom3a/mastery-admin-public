@@ -5,6 +5,7 @@ import { CartesianGrid, Bar, BarChart, Line, LineChart, XAxis, YAxis } from "rec
 
 import {
   affiliatesQueries,
+  behaviorQueries,
   dashboardSummary,
   listOrders,
   listReferralPayouts,
@@ -16,7 +17,7 @@ import {
   type ProductSalesRow,
   type SalesPoint,
 } from "@/lib/api";
-import { formatAmount, formatCompact, formatDate, formatDayMonth, formatMonth, formatNumber, formatShortDay } from "@/lib/format";
+import { formatAmount, formatCompact, formatDate, formatDayMonth, formatMonth, formatNumber, formatPercent, formatShortDay } from "@/lib/format";
 import { buildWindows, percentDelta } from "@/lib/dates";
 import { formatByCurrency, monthlyFromDays, netOf } from "@/lib/sales";
 import { useReportCurrency } from "@/lib/report-currency";
@@ -61,6 +62,9 @@ export default function DashboardPage() {
   const prevSales = useQuery({ queryKey: ["dashboard", "sales-prev", previous], queryFn: () => salesReport(previous) });
   const products = useQuery({ queryKey: ["dashboard", "products", current], queryFn: () => productSalesReport(current) });
   const orders = useQuery({ queryKey: ["dashboard", "orders"], queryFn: () => listOrders({ limit: 20 }) });
+  const posthog = useQuery(
+    behaviorQueries.posthogOverview({ start: windows.current.start, end: windows.current.end, top_n: 5 }),
+  );
 
   const chartData = alignSeries(sales.data?.days, prevSales.data?.days);
   const months = monthlyFromDays(sales.data?.days ?? []);
@@ -161,6 +165,38 @@ export default function DashboardPage() {
         />
         <Kpi label={t("الطلبات المدفوعة", "Paid orders")} value={<CountUp value={orderCount} />} delta={percentDelta(orderCount, prevOrderCount)} meta={t(`+ ${formatNumber(totals?.free_orders ?? 0)} تسجيل مجاني`, `+ ${formatNumber(totals?.free_orders ?? 0)} free enrolments`)} />
         <Kpi label={t("متوسط قيمة الطلب", "Average order value")} value={money(aov)} delta={percentDelta(aov, prevAov)} meta={t("مقارنة بالفترة السابقة", "vs previous period")} />
+      </div>
+
+      <div className="ma-section-gap">
+        <Card
+          title={
+            <span className="ma-chart-title">
+              {t("حركة المتجر", "Storefront traffic")}
+              <InfoHint label={t("ما معنى هذه الأرقام؟", "What do these numbers mean?")} title={t("حركة المتجر (PostHog)", "Storefront traffic (PostHog)")}>
+                {t(
+                  "الزوّار والجلسات ومشاهدات الصفحات من مشروع PostHog لمتجر الواجهة خلال الفترة المحددة.",
+                  "Visitors, sessions and pageviews from the storefront's PostHog project for the selected period.",
+                )}
+              </InfoHint>
+            </span>
+          }
+          actions={<ViewAllLink to="/analytics/posthog" label={t("تحليلات PostHog", "PostHog analytics")} />}
+        >
+          {posthog.data && !posthog.data.available ? (
+            <ErrorAlert error={posthog.data.error ?? t("PostHog غير متاح حاليًا.", "PostHog is unavailable right now.")} />
+          ) : posthog.data ? (
+            <div className="ma-kpis">
+              <Kpi label={t("الزوّار", "Visitors")} value={<span className="ma-num">{formatNumber(posthog.data.visitors)}</span>} icon="users" field="var(--coral)" />
+              <Kpi label={t("مشاهدات الصفحات", "Pageviews")} value={<span className="ma-num">{formatNumber(posthog.data.pageviews)}</span>} icon="history" field="var(--yellow)" />
+              <Kpi label={t("الجلسات", "Sessions")} value={<span className="ma-num">{formatNumber(posthog.data.sessions)}</span>} icon="clock" field="var(--sky)" />
+              <Kpi label={t("زوّار عائدون", "Returning visitors")} value={<span className="ma-num">{formatPercent(posthog.data.returning_rate)}</span>} icon="refresh" field="var(--teal)" />
+            </div>
+          ) : posthog.isLoading ? (
+            <Loading />
+          ) : (
+            <Empty text={t("لا بيانات.", "No data.")} />
+          )}
+        </Card>
       </div>
       <FxNote fx={sales.data?.fx} original={totals?.net_by_currency} />
 

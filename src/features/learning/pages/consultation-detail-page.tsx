@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
   consultationsQueries,
+  productQueries,
   type AvailabilitySlot,
   type ConsultationMilestone,
   type ConsultationRevenue,
@@ -12,7 +13,9 @@ import {
 } from "@/lib/api";
 import { formatAmount, formatDateTime, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { productHref } from "@/lib/refs";
 import { initialsOf } from "@/lib/status";
+import { AppLink } from "@/components/ui/app-link";
 import { Avatar, Badge, Card, Dl, Empty, Loading, PageHead } from "@/components/ui/kit";
 import { DataTable, type Column } from "@/components/ui/data-table";
 import { PageState } from "@/components/ui/primitives";
@@ -38,6 +41,13 @@ export default function ConsultationDetailPage() {
 
   const title = service.data && typeof service.data.title === "string" ? service.data.title : `${t("استشارة", "Consultation")} #${idParam}`;
   const bookingLink = service.data?.booking_link;
+  // The B2C catalog product of this legacy consultation (slug `consultation-<legacy id>`).
+  const slug = `consultation-${idParam}`;
+  const products = useQuery({
+    ...productQueries.list({ source: "b2c", product_type: "consultation", query: slug }),
+    enabled: valid,
+  });
+  const product = products.data?.items.find((row) => row.slug === slug);
 
   return (
     <>
@@ -45,6 +55,13 @@ export default function ConsultationDetailPage() {
         back={{ href: "/learning/consultations", label: t("الاستشارات", "Consultations") }}
         title={title}
         sub={`#${idParam}`}
+        actions={
+          product ? (
+            <AppLink className="ma-btn ma-btn--soft" to={productHref(product.ref ?? `b2c:${product.product_id}`)}>
+              {t("فتح في الكتالوج", "Open in catalog")}
+            </AppLink>
+          ) : null
+        }
       />
 
       <PageState error={service.error}>

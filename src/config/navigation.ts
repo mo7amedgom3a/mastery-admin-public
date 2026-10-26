@@ -272,6 +272,7 @@ export const navigation: NavModule[] = [
         items: [
           { title: { ar: "سلوك المستخدمين", en: "User behavior" }, href: "/analytics/behavior", permission: "reports.sales" },
           { title: { ar: "المسار التحويلي", en: "Conversion funnel" }, href: "/analytics/funnels", permission: "reports.sales" },
+          { title: { ar: "تحليلات PostHog", en: "PostHog analytics" }, href: "/analytics/posthog", permission: "reports.sales" },
           { title: { ar: "مخطط السلوك", en: "Behavior map" }, href: "/analytics/behavior-map", permission: "reports.sales" },
         ],
       },

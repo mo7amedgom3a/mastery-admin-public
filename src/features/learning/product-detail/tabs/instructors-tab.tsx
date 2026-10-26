@@ -5,7 +5,8 @@ import { Icon } from "@/components/ui/icon";
 import type { ProductView, SearchProductDetail } from "@/lib/api";
 
 interface InstructorItem {
-  id: number | null;
+  /** Expert key for `/learning/instructors/{key}`: legacy trainer id, `c{id}` or uuid. */
+  id: number | string | null;
   name: string;
   role?: string;
   coursesCount?: number;
@@ -23,9 +24,21 @@ export function InstructorsTab({ productRef, data, searchDetail }: InstructorsTa
 
   const instructors: InstructorItem[] = [];
   const searchObj = searchDetail as Record<string, unknown> | undefined;
+  const b2cInstructors = data.b2c?.instructors ?? [];
 
-  // Extract from search product details
-  if (Array.isArray(searchObj?.instructors) && searchObj.instructors.length) {
+  // B2C products: the assigned experts (`b2c.product_instructors`), lead first.
+  if (b2cInstructors.length) {
+    b2cInstructors.forEach((inst, index) => {
+      instructors.push({
+        id: inst.key,
+        name: inst.name || t("مدرب", "Instructor"),
+        role:
+          inst.headline ||
+          (inst.is_lead || index === 0 ? t("مدرب رئيسي", "Lead instructor") : t("مدرب مشارك", "Co-instructor")),
+        image: inst.avatar_url,
+      });
+    });
+  } else if (Array.isArray(searchObj?.instructors) && searchObj.instructors.length) {
     for (const item of searchObj.instructors) {
       const rec = (typeof item === "object" && item !== null ? item : {}) as Record<string, unknown>;
       const inst = (typeof rec.instructor === "object" && rec.instructor !== null ? rec.instructor : rec) as Record<string, unknown>;
@@ -49,15 +62,16 @@ export function InstructorsTab({ productRef, data, searchDetail }: InstructorsTa
     }
   }
 
-  // Fallback if no instructors listed
+  // Fallback: the product's lead instructor (shown on the overview too), then legacy metadata.
   if (instructors.length === 0) {
-    // Check if product has an instructor name in metadata
-    const metaTrainer = searchObj?.trainer_name || (data.product as Record<string, unknown>)?.trainer_name;
+    const metaTrainer =
+      data.product.instructor || searchObj?.trainer_name || (data.product as Record<string, unknown>)?.trainer_name;
     if (metaTrainer) {
       instructors.push({
         id: null,
         name: String(metaTrainer),
         role: t("مدرب رئيسي", "Lead instructor"),
+        image: data.product.instructor_avatar,
       });
     }
   }
@@ -121,7 +135,11 @@ export function InstructorsTab({ productRef, data, searchDetail }: InstructorsTa
         {/* Add Instructor Prompt */}
         <AppLink className="cd-addtile" to={studioHref(productRef)}>
           <Icon name="plus" />
-          <strong>{t("إدارة المدربين في الاستوديو", "Manage instructors in Studio")}</strong>
+          <strong>
+            {instructors.length
+              ? t("إدارة المدربين في الاستوديو", "Manage instructors in Studio")
+              : t("لا مدربين بعد — أضفهم في الاستوديو", "No instructors yet — add them in Studio")}
+          </strong>
         </AppLink>
       </div>
     </div>

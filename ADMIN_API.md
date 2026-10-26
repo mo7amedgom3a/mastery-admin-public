@@ -107,7 +107,7 @@ The product's analytics panels read `/admin/catalog/products/{ref}/{sales,behavi
 
 | Module (`src/lib/api/`) | Backend | Notes |
 | --- | --- | --- |
-| `auth/admin-auth.ts`, `iam/rbac.ts` | `/admin/auth/*`, `/admin/me`, `/admin/admin-users`, `/admin/roles`, `/admin/audit-logs` | Identity and access |
+| `auth/admin-auth.ts`, `iam/rbac.ts` | `/admin/auth/*`, `/admin/me`, `/admin/admin-users`, `/admin/roles`, `/admin/audit-logs[/stats/{id}]` | Identity and access |
 | `dashboard/dashboard.ts` | `/admin/dashboard/{summary,sales}` | KPIs over both systems |
 | `analytics/reports.ts` | `/admin/reports/*?source=` | Rows carry `ref` and `sources`; `SalesReport.sources` splits totals |
 | `sales/orders.ts`, `sales/payments.ts` | `/admin/orders`, `/admin/payments` | Merged; refs in paths |
@@ -120,7 +120,7 @@ The product's analytics panels read `/admin/catalog/products/{ref}/{sales,behavi
 | `subscriptions/admin.ts` | `/admin/subscriptions/*` | Plans (products = what a plan grants, features, benefits, discount), stats, team leads, and customer subscriptions: list, detail and the lifecycle actions `cancel` (`{immediate, reason?}`), `resume`, `extend` (`{days, reason}`), `revoke` (`{reason}`). Lifecycle calls reach Stripe and send an `Idempotency-Key` |
 | `entitlements/admin.ts` | `/admin/entitlements/*`, `/admin/customers/{ref}/entitlements` | Per-access extend / suspend / reinstate / revoke with a reason |
 | `settings/settings.ts` | `/admin/settings/*` | |
-| `learning/bundles.ts`, `system/fx.ts`, `analytics/behavior.ts` | `/admin/bundles`, `/admin/fx`, `/admin/analytics` | Pure-B2C module APIs |
+| `learning/bundles.ts`, `system/fx.ts`, `analytics/behavior.ts` | `/admin/bundles`, `/admin/fx`, `/admin/analytics` (+ `/admin/analytics/posthog/*`) | Pure-B2C module APIs |
 | `search/search.ts`, `system/health.ts`, `learning/experts.ts` | `/search`, `/health`, `/legacy/*` | Public read APIs |
 
 Each module follows the same pattern: `<area>Paths`, `<area>Keys` (React Query keys) and `<area>Queries` (`queryOptions`), plus service functions.

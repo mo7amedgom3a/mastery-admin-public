@@ -78,6 +78,7 @@ import BannersPage from "@/features/marketing/pages/banners-page";
 import PoliciesPage from "@/features/marketing/pages/policies-page";
 import BehaviorOverviewPage from "@/features/analytics/pages/behavior-page";
 import FunnelsPage from "@/features/analytics/pages/funnels-page";
+import PostHogAnalyticsPage from "@/features/analytics/pages/posthog-page";
 import BehaviorMapPage from "@/features/analytics/pages/behavior-map-page";
 import SearchPage from "@/features/dashboard/pages/search-page";
 import {
@@ -240,6 +241,7 @@ export const ROUTER = createBrowserRouter([
       { path: "analytics/certificates", element: <CertificatesPage /> },
       { path: "analytics/behavior", element: <BehaviorOverviewPage /> },
       { path: "analytics/funnels", element: <FunnelsPage /> },
+      { path: "analytics/posthog", element: <PostHogAnalyticsPage /> },
       { path: "analytics/behavior-map", element: <BehaviorMapPage /> },
 
       // Settings

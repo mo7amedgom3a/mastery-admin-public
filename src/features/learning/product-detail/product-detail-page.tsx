@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  consultationAdminQueries,
   productKeys,
   productQueries,
   searchQueries,
@@ -27,7 +28,12 @@ import { OrdersTab } from "./tabs/orders-tab";
 import { RelatedTab } from "./tabs/related-tab";
 import { LegacyTab } from "./tabs/legacy-tab";
 import { BundleTab } from "./tabs/bundle-tab";
-import { ConsultationTab } from "./tabs/consultation-tab";
+import {
+  ConsultationAvailabilityTab,
+  ConsultationBookingsTab,
+  ConsultationExpertTab,
+  ConsultationTab,
+} from "./tabs/consultation-tab";
 import { LiveDiplomaTab } from "./tabs/live-diploma-tab";
 import { PackageTab } from "./tabs/package-tab";
 import { EntitlementDirectory } from "@/features/entitlements/components/entitlement-lists";
@@ -107,6 +113,10 @@ export function ProductDetailPage() {
   });
 
   const item = productData?.product;
+  // A consultation's expert (its bookings and slots live on them); shares the cache with the consultation tabs.
+  const consultantId = item?.product_type === "consultation" ? (item.consultant_id ?? null) : null;
+  const expertQuery = useQuery({ ...consultationAdminQueries.expert(consultantId ?? ""), enabled: consultantId != null, retry: false });
+  const consultationService = (expertQuery.data?.services ?? []).find((row) => row.product_id === item?.product_id);
   const productType = (item?.product_type ?? "course") as ProductType;
   const legacyKind =
     productData?.links.legacy_kind === "package"
@@ -151,7 +161,16 @@ export function ProductDetailPage() {
       case "bundle":
         return [overview, { id: "bundle", labelAr: "باقة الدورات", labelEn: "Bundle contents" }, orders, ...access, related];
       case "consultation":
-        return [overview, { id: "consultation", labelAr: "الاستشارة", labelEn: "Consultation" }, orders, ...access, related];
+        return [
+          overview,
+          { id: "consultation", labelAr: "تفاصيل الاستشارة", labelEn: "Details" },
+          { id: "expert", labelAr: "الخبير", labelEn: "Expert" },
+          { id: "bookings", labelAr: "الحجوزات", labelEn: "Bookings", count: consultationService?.bookings_count },
+          { id: "availability", labelAr: "المواعيد المتاحة", labelEn: "Availability", count: expertQuery.data?.free_slots },
+          orders,
+          ...access,
+          related,
+        ];
       case "live_diploma":
         return [overview, { id: "live_diploma", labelAr: "الدبلوم المباشر", labelEn: "Live diploma" }, orders, ...access, related];
       default: {
@@ -165,11 +184,15 @@ export function ProductDetailPage() {
           id: "instructors",
           labelAr: "المدربون",
           labelEn: "Instructors",
-          count: Array.isArray(searchObj?.instructors)
-            ? searchObj.instructors.length
-            : Array.isArray(searchObj?.trainers)
-              ? searchObj.trainers.length
-              : 1,
+          count: productData?.b2c?.instructors?.length
+            ? productData.b2c.instructors.length
+            : Array.isArray(searchObj?.instructors)
+              ? searchObj.instructors.length
+              : Array.isArray(searchObj?.trainers)
+                ? searchObj.trainers.length
+                : productData?.product?.instructor
+                  ? 1
+                  : 0,
         };
         return [
           overview,
@@ -183,7 +206,7 @@ export function ProductDetailPage() {
         ];
       }
     }
-  }, [productType, hasLegacy, isB2c, units, totalOrdersCount, searchDetail, searchObj]);
+  }, [productType, hasLegacy, isB2c, units, totalOrdersCount, searchDetail, searchObj, productData?.b2c?.instructors, productData?.product?.instructor, consultationService?.bookings_count, expertQuery.data?.free_slots]);
 
   useEffect(() => {
     if (!tabs.some((tab) => tab.id === activeTab)) {
@@ -276,6 +299,12 @@ export function ProductDetailPage() {
           )}
 
           {activeTab === "consultation" && <ConsultationTab data={productData} productRef={productRef} />}
+
+          {activeTab === "expert" && <ConsultationExpertTab data={productData} />}
+
+          {activeTab === "bookings" && <ConsultationBookingsTab data={productData} />}
+
+          {activeTab === "availability" && <ConsultationAvailabilityTab data={productData} />}
 
           {activeTab === "live_diploma" && <LiveDiplomaTab slug={item.slug} />}
 

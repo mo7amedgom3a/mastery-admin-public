@@ -108,13 +108,15 @@ export function ProductStatsPanels({ productRef }: { productRef: string }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16 }}>
-        <MetricCard icon="eye" label={t("المشاهدات", "Views")} value={behavior?.views} loading={behaviorQuery.isLoading} />
-        <MetricCard icon="users" label={t("زوار مميزون", "Unique viewers")} value={behavior?.unique_viewers} loading={behaviorQuery.isLoading} />
-        <MetricCard icon="star" label={t("أُضيف للمفضلة", "Wishlist adds")} value={behavior?.wishlist_adds} loading={behaviorQuery.isLoading} />
-        <MetricCard icon="cart" label={t("أُضيف للسلة", "Cart adds")} value={behavior?.cart_adds} loading={behaviorQuery.isLoading} />
-        <MetricCard icon="receipt" label={t("طلبات مدفوعة", "Paid orders")} value={sales?.total_paid_orders} loading={salesQuery.isLoading} />
-        <MetricCard icon="tag" label={t("الإيراد", "Revenue")} money={revenueOf(sales)} loading={salesQuery.isLoading} />
+      <div className="cd-kpi-host">
+        <div className="cd-kpi-grid">
+          <MetricCard icon="eye" label={t("المشاهدات", "Views")} value={behavior?.views} loading={behaviorQuery.isLoading} />
+          <MetricCard icon="users" label={t("زوار مميزون", "Unique viewers")} value={behavior?.unique_viewers} loading={behaviorQuery.isLoading} />
+          <MetricCard icon="star" label={t("أُضيف للمفضلة", "Wishlist adds")} value={behavior?.wishlist_adds} loading={behaviorQuery.isLoading} />
+          <MetricCard icon="cart" label={t("أُضيف للسلة", "Cart adds")} value={behavior?.cart_adds} loading={behaviorQuery.isLoading} />
+          <MetricCard icon="receipt" label={t("طلبات مدفوعة", "Paid orders")} value={sales?.total_paid_orders} loading={salesQuery.isLoading} />
+          <MetricCard icon="tag" label={t("الإيراد", "Revenue")} money={revenueOf(sales)} loading={salesQuery.isLoading} />
+  </div>
       </div>
 
       <section className="cd-card">
@@ -125,25 +127,25 @@ export function ProductStatsPanels({ productRef }: { productRef: string }) {
           </h2>
           {rangeControls}
         </div>
-        <div className="cd-card__b">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 28 }}>
-            <div style={{ minWidth: 0 }}>
+        <div className="cd-card__b cd-chart-host">
+          <div className="cd-chart-grid">
+            <div>
               <PanelTitle t={t} titleAr="قمع التحويل" titleEn="Conversion funnel" info={PANEL_INFO.funnel} />
               <FunnelChart behavior={behavior} sales={sales} loading={behaviorQuery.isLoading || salesQuery.isLoading} error={behaviorQuery.error ?? salesQuery.error} t={t} />
             </div>
-            <div style={{ minWidth: 0 }}>
+            <div>
               <PanelTitle t={t} titleAr="تاريخ الطلبات" titleEn="Orders history" info={PANEL_INFO.orders} />
               <OrdersHistoryChart sales={sales} loading={salesQuery.isLoading} error={salesQuery.error} t={t} />
             </div>
-            <div style={{ minWidth: 0 }}>
+            <div>
               <PanelTitle t={t} titleAr="حركة المشاهدات والسلة" titleEn="Views, wishlist & cart" info={PANEL_INFO.behavior} />
               <BehaviorTrendChart behavior={behavior} loading={behaviorQuery.isLoading} error={behaviorQuery.error} t={t} />
             </div>
-            <div style={{ minWidth: 0 }}>
+            <div>
               <PanelTitle t={t} titleAr="تاريخ المبيعات" titleEn="Sales history" info={PANEL_INFO.sales} />
               <SalesHistoryChart sales={sales} loading={salesQuery.isLoading} error={salesQuery.error} t={t} />
             </div>
-            <div style={{ minWidth: 0 }}>
+            <div>
               <PanelTitle t={t} titleAr="الحركات الدفعية" titleEn="Payment transactions" info={PANEL_INFO.transactions} />
               <TransactionsChart transactions={transactions} loading={transactionsQuery.isLoading} error={transactionsQuery.error} t={t} />
             </div>

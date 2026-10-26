@@ -216,8 +216,41 @@
 /* Records in data tables read as plain text: no link underline until hovered. */
 .cd-table a { text-decoration: none; color: var(--text); }
 .cd-table a:hover, .cd-table a:focus-visible { color: var(--accent); }
-.cd-table td { padding-block: 12px; }
-.cd-table th { padding-block: 10px; }
+.cd-tablewrap { overflow-x: auto; }
+.cd-table { width: 100%; border-collapse: collapse; }
+.cd-table th, .cd-table td { padding-inline: 12px; text-align: start; vertical-align: middle; white-space: nowrap; }
+.cd-table th:first-child, .cd-table td:first-child { padding-inline-start: 20px; }
+.cd-table th:last-child, .cd-table td:last-child { padding-inline-end: 20px; }
+.cd-table td { padding-block: 12px; border-block-start: 1px solid var(--line); }
+.cd-table th { padding-block: 10px; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+.cd-table .cd-num-col { text-align: end; }
+/* Long text (emails) is cut with an ellipsis; the full value is in the title tooltip. */
+.cd-table .cd-wrap { max-width: 220px; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+.cd-table .cd-wrap > * { overflow: hidden; text-overflow: ellipsis; display: block; }
+/* A record ref with its secondary facts (source, order, method) underneath. */
+.cd-cell-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.cd-cell-sub { font-size: 12px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px; }
+
+/* Card table toolbars and pagers line up with the table's 20px edge. */
+.cd-toolbar { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; flex-wrap: wrap; }
+.cd-toolbar .cd-input { width: auto; height: 32px; padding: 0 10px; font-size: 13px; }
+.cd-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-block-start: 1px solid var(--line); }
+.cd-pager__btns { display: flex; gap: 6px; }
+
+/* KPI row: 2 / 3 / 6 columns so six tiles never wrap 5 + 1. */
+.cd-kpi-host { container-type: inline-size; }
+.cd-kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@container (min-width: 520px) { .cd-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (min-width: 1040px) { .cd-kpi-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+/* Chart panels: two columns; an odd last panel takes the full row instead of leaving a hole. */
+.cd-chart-host { container-type: inline-size; }
+.cd-chart-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px 32px; }
+@container (min-width: 720px) {
+  .cd-chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd-chart-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+.cd-chart-grid > * { min-width: 0; }
 
 /* KPI cards: more air around the label and the number. */
 .cd-stat-kpi { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; }

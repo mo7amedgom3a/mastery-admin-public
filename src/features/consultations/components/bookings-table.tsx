@@ -10,8 +10,16 @@ import type { Column } from "@/components/ui/data-table";
 import { PagedList, type ListFilter } from "@/components/ui/paged-list";
 import { formatUtc } from "../lib";
 
-/** Cross-expert booking list; pass `consultantId` to scope it to one expert. */
-export function BookingsTable({ consultantId, hideExpert }: { consultantId?: string; hideExpert?: boolean }) {
+/** Cross-expert booking list; pass `consultantId` to scope it to one expert, `serviceId` to one of their consultations. */
+export function BookingsTable({
+  consultantId,
+  serviceId,
+  hideExpert,
+}: {
+  consultantId?: string;
+  serviceId?: string;
+  hideExpert?: boolean;
+}) {
   const t = useT();
   const columns: Column<B2cBookingRow>[] = [
     {
@@ -82,13 +90,14 @@ export function BookingsTable({ consultantId, hideExpert }: { consultantId?: str
 
   return (
     <PagedList
-      queryKeyBase={consultationAdminKeys.bookings({ consultantId })}
+      queryKeyBase={consultationAdminKeys.bookings({ consultantId, serviceId })}
       fetchPage={({ query, offset, limit, filters: selected }) =>
         listB2cBookings({
           customer: query,
           offset,
           limit,
           consultant_id: consultantId,
+          service_id: serviceId,
           status: selected.status ? [selected.status as (typeof B2C_BOOKING_STATUSES)[number]] : undefined,
         })}
       columns={columns}

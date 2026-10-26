@@ -80,18 +80,17 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
       {/* Orders List Card */}
       <section className="cd-card">
         <div className="cd-card__h" style={{ flexWrap: "wrap", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 32 }}>
             <Icon name="cart" />
             <h2 style={{ margin: 0 }}>{t("طلبات الشراء لهذا المنتج", "Purchased Orders")}</h2>
             <span className="cd-chip cd-chip--plain cd-num">{formatNumber(totalCount)}</span>
           </div>
 
           {/* Filters */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginInlineStart: "auto" }}>
+          <div className="cd-toolbar">
             {/* Status Filter */}
             <select
               className="cd-input"
-              style={{ width: "auto", height: 32, padding: "0 10px", fontSize: 13 }}
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
@@ -109,7 +108,6 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
             {/* Source Filter */}
             <select
               className="cd-input"
-              style={{ width: "auto", height: 32, padding: "0 10px", fontSize: 13 }}
               value={sourceFilter}
               onChange={(e) => {
                 setSourceFilter(e.target.value);
@@ -148,9 +146,8 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                     <th>{t("رقم الطلب", "Order")}</th>
                     <th>{t("العميل / الطالب", "Customer")}</th>
                     <th>{t("تاريخ الشراء", "Date")}</th>
-                    <th>{t("المصدر", "Source")}</th>
                     <th>{t("الحالة", "Status")}</th>
-                    <th style={{ textAlign: "end" }}>{t("المبلغ", "Amount")}</th>
+                    <th className="cd-num-col">{t("المبلغ", "Amount")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -159,15 +156,18 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                     return (
                       <tr key={order.ref}>
                         <td>
-                          <AppLink
-                            to={orderHref(order.ref)}
-                            className="cd-link cd-ltr cd-num"
-                            style={{ fontWeight: 600 }}
-                          >
-                            {shortRef(order.ref)}
-                          </AppLink>
+                          <div className="cd-cell-stack">
+                            <AppLink
+                              to={orderHref(order.ref)}
+                              className="cd-link cd-ltr cd-num"
+                              style={{ fontWeight: 600 }}
+                            >
+                              {shortRef(order.ref)}
+                            </AppLink>
+                            <SourceBadge source={order.source} />
+                          </div>
                         </td>
-                        <td>
+                        <td className="cd-wrap" title={order.customer_email ?? undefined}>
                           {order.customer_ref ? (
                             <AppLink to={customerHref(order.customer_ref)} className="cd-link">
                               {order.customer_email || shortRef(order.customer_ref)}
@@ -184,14 +184,11 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                           </span>
                         </td>
                         <td>
-                          <SourceBadge source={order.source} />
-                        </td>
-                        <td>
                           <span className={`cd-chip ${statusBadgeClass(order.status || "")}`}>
                             {order.status || "—"}
                           </span>
                         </td>
-                        <td style={{ textAlign: "end", fontWeight: 600 }} className="cd-num">
+                        <td className="cd-num cd-num-col" style={{ fontWeight: 600 }}>
                           {formatAmount(amountMajor, order.currency_code || "USD")}
                         </td>
                       </tr>
@@ -204,22 +201,14 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "12px 16px",
-                borderTop: "1px solid var(--border)",
-              }}
-            >
+            <div className="cd-pager">
               <span className="cd-muted" style={{ fontSize: 13 }}>
                 {t(
                   `صفحة ${page} من ${totalPages}`,
                   `Page ${page} of ${totalPages}`
                 )}
               </span>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div className="cd-pager__btns">
                 <button
                   type="button"
                   className="ma-btn ma-btn--sm ma-btn--soft"
@@ -245,13 +234,13 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
       {/* Transactions (payment attempts) */}
       <section className="cd-card">
         <div className="cd-card__h" style={{ flexWrap: "wrap", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 32 }}>
             <Icon name="card" />
             <h2 style={{ margin: 0 }}>{t("حركات الدفع لهذا المنتج", "Payment Transactions")}</h2>
             <span className="cd-chip cd-chip--plain cd-num">{formatNumber(txTotal)}</span>
           </div>
           {transactions && Object.keys(transactions.amount ?? {}).length > 0 && (
-            <span className="cd-muted" style={{ fontSize: 13, marginInlineStart: "auto" }}>
+            <span className="cd-muted cd-num" style={{ fontSize: 13, marginInlineStart: "auto" }}>
               {t("الإجمالي", "Total")}:{" "}
               {Object.entries(transactions.amount)
                 .map(([currency, amount]) => formatAmount(amount as number, currency))
@@ -284,11 +273,9 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                   <tr>
                     <th>{t("التاريخ", "Date")}</th>
                     <th>{t("الحركة", "Transaction")}</th>
-                    <th>{t("الطلب", "Order")}</th>
                     <th>{t("العميل", "Customer")}</th>
-                    <th>{t("الطريقة", "Method")}</th>
                     <th>{t("الحالة", "Status")}</th>
-                    <th style={{ textAlign: "end" }}>{t("المبلغ", "Amount")}</th>
+                    <th className="cd-num-col">{t("المبلغ", "Amount")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -302,21 +289,24 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                           </span>
                         </td>
                         <td>
-                          <AppLink to={paymentHref(ref)} className="cd-link cd-ltr cd-num" style={{ fontWeight: 600 }}>
-                            {shortRef(ref)}
-                          </AppLink>
-                          {tx.failure_code && (
-                            <div className="cd-muted" style={{ fontSize: 11 }}>
-                              {tx.failure_code}
-                            </div>
-                          )}
+                          <div className="cd-cell-stack">
+                            <AppLink to={paymentHref(ref)} className="cd-link cd-ltr cd-num" style={{ fontWeight: 600 }}>
+                              {shortRef(ref)}
+                            </AppLink>
+                            <span className="cd-cell-sub">
+                              {t("طلب", "Order")}
+                              <AppLink to={orderHref(`b2c:${tx.order_id}`)} className="cd-link cd-ltr cd-num">
+                                {shortRef(`b2c:${tx.order_id}`)}
+                              </AppLink>
+                              <span>
+                                · {tx.provider}
+                                {tx.method ? ` · ${tx.method}` : ""}
+                              </span>
+                            </span>
+                            {tx.failure_code && <span className="cd-cell-sub">{tx.failure_code}</span>}
+                          </div>
                         </td>
-                        <td>
-                          <AppLink to={orderHref(`b2c:${tx.order_id}`)} className="cd-link cd-ltr cd-num">
-                            {shortRef(`b2c:${tx.order_id}`)}
-                          </AppLink>
-                        </td>
-                        <td>
+                        <td className="cd-wrap" title={tx.customer_email ?? undefined}>
                           {tx.customer_email ? (
                             <span className="cd-muted">{tx.customer_email}</span>
                           ) : (
@@ -324,17 +314,11 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
                           )}
                         </td>
                         <td>
-                          <span className="cd-muted" style={{ fontSize: 13 }}>
-                            {tx.provider}
-                            {tx.method ? ` · ${tx.method}` : ""}
-                          </span>
-                        </td>
-                        <td>
                           <span className={`cd-chip ${statusBadgeClass(tx.status || "")}`}>
                             {tx.order_status || tx.status || "—"}
                           </span>
                         </td>
-                        <td style={{ textAlign: "end", fontWeight: 600 }} className="cd-num">
+                        <td className="cd-num cd-num-col" style={{ fontWeight: 600 }}>
                           {formatAmount(tx.amount_minor / 100, tx.currency_code || "USD")}
                         </td>
                       </tr>
@@ -346,19 +330,11 @@ export function OrdersTab({ productRef }: OrdersTabProps) {
           )}
 
           {txPages > 1 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "12px 16px",
-                borderTop: "1px solid var(--border)",
-              }}
-            >
+            <div className="cd-pager">
               <span className="cd-muted" style={{ fontSize: 13 }}>
                 {t(`صفحة ${txPage} من ${txPages}`, `Page ${txPage} of ${txPages}`)}
               </span>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div className="cd-pager__btns">
                 <button
                   type="button"
                   className="ma-btn ma-btn--sm ma-btn--soft"

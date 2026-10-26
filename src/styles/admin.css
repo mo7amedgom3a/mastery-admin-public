@@ -801,3 +801,25 @@ a.ma-list__title:hover { text-decoration: underline; text-decoration-color: var(
 .ma-sblock__tile img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .ma-sblock__add { display: grid; place-items: center; align-content: center; gap: 4px; color: var(--text-muted); font: inherit; font-size: 12px; cursor: pointer; }
 .ma-sblock__remove { position: absolute; inset-block-start: 4px; inset-inline-end: 4px; display: grid; place-items: center; inline-size: 24px; block-size: 24px; border: 0; border-radius: var(--radius-soft); background: var(--surface); color: var(--danger); cursor: pointer; }
+
+/* ---------- Audit entry (before/after diff) ---------- */
+.ma-diff-title { margin: 0 0 var(--space-2); font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.ma-code {
+  margin: 0;
+  padding: var(--space-3);
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--fill-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  direction: ltr;
+  text-align: left;
+}
+
+/* Small colour square used to key list rows to chart series. */
+.ma-legend__dot { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--text-muted); }

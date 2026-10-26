@@ -16,6 +16,7 @@ type CreateOp = "create_instructor_api_v1_admin_catalog_instructors_post";
 type ImageOp = "upload_instructor_image_api_v1_admin_catalog_instructors__key__images_post";
 type ReadmeOp = "get_instructor_readme_api_v1_admin_catalog_instructors__key__readme_get";
 type PutReadmeOp = "put_instructor_readme_api_v1_admin_catalog_instructors__key__readme_put";
+type ExpertiseOp = "put_instructor_expertise_api_v1_admin_catalog_instructors__key__expertise_put";
 type ProductsOp = "list_instructor_products_api_v1_admin_catalog_instructors__key__products_get";
 type OptionsOp = "instructor_product_options_api_v1_admin_catalog_instructors__key__product_options_get";
 
@@ -27,6 +28,7 @@ export type ExpertProfileUpdate = RequestBody<UpdateOp>;
 export type ExpertProfileCreate = RequestBody<CreateOp>;
 export type ExpertImageResult = SuccessResponse<ImageOp>;
 export type ExpertReadme = SuccessResponse<ReadmeOp>;
+export type ExpertExpertiseUpdate = RequestBody<ExpertiseOp>;
 export type ExpertProduct = SuccessResponse<ProductsOp>[number];
 export type ExpertProductOptionsParams = Omit<QueryParams<OptionsOp>, "key">;
 
@@ -35,6 +37,7 @@ export const expertProfilesPaths = {
   detail: "admin/catalog/instructors/{key}",
   images: "admin/catalog/instructors/{key}/images",
   readme: "admin/catalog/instructors/{key}/readme",
+  expertise: "admin/catalog/instructors/{key}/expertise",
   products: "admin/catalog/instructors/{key}/products",
   product: "admin/catalog/instructors/{key}/products/{product_id}",
   options: "admin/catalog/instructors/{key}/product-options",
@@ -84,6 +87,11 @@ export function getExpertReadme(key: string): Promise<ExpertReadme> {
 
 export function putExpertReadme(key: string, markdown: string): Promise<SuccessResponse<PutReadmeOp>> {
   return apiPut(expertProfilesPaths.readme, { path: { key }, body: { markdown } });
+}
+
+/** Replaces the fields and skills the expert page shows (in order); both empty → their items' categories and skills. */
+export function putExpertExpertise(key: string, body: ExpertExpertiseUpdate): Promise<ExpertProfileDetail> {
+  return apiPut(expertProfilesPaths.expertise, { path: { key }, body });
 }
 
 export function listExpertProducts(key: string): Promise<ExpertProduct[]> {
