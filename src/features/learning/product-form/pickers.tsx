@@ -20,6 +20,8 @@ export function CheckPicker({
   required,
   searchPlaceholder,
   emptyText,
+  onCreate,
+  createLabel,
 }: {
   id: string;
   label: ReactNode;
@@ -31,6 +33,9 @@ export function CheckPicker({
   required?: boolean;
   searchPlaceholder?: string;
   emptyText?: ReactNode;
+  /** Offers "+ create" for a search with no exact match; called with the trimmed query. */
+  onCreate?: (query: string) => void;
+  createLabel?: (query: string) => string;
 }) {
   const t = useT();
   const [query, setQuery] = useState("");
@@ -42,7 +47,10 @@ export function CheckPicker({
     return options.filter((option) => option.label.toLowerCase().includes(needle));
   }, [options, query]);
 
-  const many = options.length > 8;
+  const many = options.length > 8 || onCreate != null;
+  const trimmed = query.trim();
+  const canCreate =
+    onCreate != null && trimmed !== "" && !options.some((option) => option.label.toLowerCase() === trimmed.toLowerCase());
 
   return (
     <div className="ma-field">
@@ -51,7 +59,7 @@ export function CheckPicker({
         {required ? <span aria-hidden="true" className="ma-req"> *</span> : null}
       </label>
 
-      {options.length === 0 ? (
+      {options.length === 0 && onCreate == null ? (
         <span className="ma-help">{emptyText ?? hint ?? "—"}</span>
       ) : (
         <div className="ma-picker">
@@ -63,11 +71,32 @@ export function CheckPicker({
               value={query}
               placeholder={searchPlaceholder ?? t("ابحث…", "Search…")}
               onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && canCreate) {
+                  event.preventDefault();
+                  onCreate?.(trimmed);
+                  setQuery("");
+                }
+              }}
             />
+          ) : null}
+          {canCreate ? (
+            <button
+              type="button"
+              className="ma-link ma-picker__create"
+              onClick={() => {
+                onCreate?.(trimmed);
+                setQuery("");
+              }}
+            >
+              + {createLabel ? createLabel(trimmed) : t(`إضافة «${trimmed}»`, `Add “${trimmed}”`)}
+            </button>
           ) : null}
           <div className="ma-picker__list" role="group" aria-label={typeof label === "string" ? label : id}>
             {filtered.length === 0 ? (
-              <span className="ma-picker__empty">{t("لا نتائج مطابقة.", "No matches.")}</span>
+              <span className="ma-picker__empty">
+                {options.length === 0 ? emptyText ?? t("لا عناصر بعد.", "Nothing yet.") : t("لا نتائج مطابقة.", "No matches.")}
+              </span>
             ) : (
               filtered.map((option) => (
                 <label key={option.value} className="ma-check">

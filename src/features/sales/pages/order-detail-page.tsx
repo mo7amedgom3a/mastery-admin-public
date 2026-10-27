@@ -25,6 +25,7 @@ import { SearchBox } from "@/components/ui/paged-list";
 import { SourceBadge } from "@/components/ui/source-badge";
 import { customerHref, isLegacy, paymentHref, productHref, refParam, refundCaseHref, shortRef } from "@/lib/refs";
 import { createRefundCase, refundCasesQueries } from "@/lib/api/sales/refund-cases";
+import { useCan } from "@/lib/permissions";
 
 export default function OrderDetailPage() {
   const t = useT();
@@ -34,6 +35,8 @@ export default function OrderDetailPage() {
   const id = refParam(rawId);
   const queryClient = useQueryClient();
   const order = useQuery(ordersQueries.detail(id));
+  const canCancel = useCan("orders.write");
+  const canRefund = useCan("payments.refund");
 
   const cancel = useMutation({
     mutationFn: () => cancelOrder(id),
@@ -95,7 +98,7 @@ export default function OrderDetailPage() {
             {data ? (
               <ExportActions onExportExcel={exporter.exportExcel} onExportPdf={exporter.exportPdf} isExportingExcel={exporter.busy === "xlsx"} isExportingPdf={exporter.busy === "pdf"} />
             ) : null}
-            {cancellable ? (
+            {cancellable && canCancel ? (
             <Button
               kind="secondary"
               icon="x"
@@ -162,7 +165,7 @@ export default function OrderDetailPage() {
             </div>
 
             <Lines lines={data.lines ?? []} />
-            {!isLegacy(data) && ["paid", "partially_refunded"].includes(data.status) ? <RefundCreator lines={data.lines ?? []} /> : null}
+            {canRefund && !isLegacy(data) && ["paid", "partially_refunded"].includes(data.status) ? <RefundCreator lines={data.lines ?? []} /> : null}
             {isLegacy(data) ? null : (
               <>
                 <Invoices invoices={data.invoices ?? []} />

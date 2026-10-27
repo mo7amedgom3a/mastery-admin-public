@@ -29,6 +29,7 @@
 .cd-chip--b2c { --c: var(--sky); }
 .cd-chip--warn { --c: var(--yellow); }
 .cd-chip--off { --c: var(--text-muted); }
+.cd-chip--danger { --c: var(--danger); }
 .cd-chip--plain::before { display: none; }
 
 /* KPI strip */

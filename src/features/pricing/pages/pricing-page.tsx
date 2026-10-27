@@ -20,6 +20,7 @@ import {
 } from "@/lib/api";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import { productHref } from "@/lib/refs";
 import { productStatusBadge } from "@/lib/status";
 import { AppLink } from "@/components/ui/app-link";
@@ -87,7 +88,8 @@ function bulkFilter(filters: Filters): BulkPriceFilter {
   const params = listParams(filters, 0);
   return {
     product_type: params.product_type,
-    status: params.status,
+    // Deleted products are never re-priced in bulk.
+    status: params.status === "deleted" ? undefined : params.status,
     query: params.query,
     category: params.category ? [params.category] : [],
     tags: params.tag ? params.tag.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
@@ -127,6 +129,7 @@ export default function PricingPage() {
 
 function ProductPricing() {
   const t = useT();
+  const canWrite = useCan("pricing.write");
   const [filters, setFilters] = useState<Filters>(EMPTY);
   const [offset, setOffset] = useState(0);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -150,7 +153,7 @@ function ProductPricing() {
       return next;
     });
 
-  const columns: Column<CatalogItem>[] = [
+  const allColumns: Column<CatalogItem>[] = [
     {
       key: "select",
       header: t("تحديد", "Select"),
@@ -192,6 +195,8 @@ function ProductPricing() {
       cell: (row) => (productIdOf(row) ? <Button sm kind="ghost" icon="edit" label={t("تعديل السعر", "Edit price")} onClick={() => setEditing(row)} /> : null),
     },
   ];
+  // Read-only admins see prices without the selection and edit controls.
+  const columns = canWrite ? allColumns : allColumns.filter((column) => column.key !== "select" && column.key !== "actions");
 
   const typeOptions = [{ value: ALL, label: t("كل الأنواع", "All types") }, ...(facets.data?.product_types ?? []).map((o) => ({ value: o.value, label: `${o.label} (${o.count})` }))];
   const categoryOptions = [{ value: ALL, label: t("كل التصنيفات", "All categories") }, ...(facets.data?.categories ?? []).map((o) => ({ value: o.value, label: `${o.label} (${o.count})` }))];
@@ -228,15 +233,15 @@ function ProductPricing() {
         </div>
       </Card>
 
-      <BulkPanel filters={filters} selectedIds={[...selected]} matching={products.data?.total ?? 0} onApplied={() => setSelected(new Set())} />
+      {canWrite ? <BulkPanel filters={filters} selectedIds={[...selected]} matching={products.data?.total ?? 0} onApplied={() => setSelected(new Set())} /> : null}
 
       <Card className="ma-section-gap" title={t(`المنتجات (${formatNumber(products.data?.total ?? 0)})`, `Products (${formatNumber(products.data?.total ?? 0)})`)}
         actions={
-          <span className="ma-cell-flex" style={{ gap: "6px" }}>
+          canWrite ? <span className="ma-cell-flex" style={{ gap: "6px" }}>
             <Button sm kind="ghost" label={allOnPage ? t("إلغاء تحديد الصفحة", "Unselect page") : t("تحديد الصفحة", "Select page")}
               onClick={() => pageIds.forEach((id) => toggle(id, !allOnPage))} disabled={pageIds.length === 0} />
             {selected.size > 0 ? <Button sm kind="ghost" label={t(`مسح التحديد (${selected.size})`, `Clear selection (${selected.size})`)} onClick={() => setSelected(new Set())} /> : null}
-          </span>
+          </span> : undefined
         }>
         <DataTable rows={rows} columns={columns} loading={products.isLoading} error={products.error} exportConfig={false}
           empty={t("لا منتجات مطابقة.", "No matching products.")}
@@ -415,6 +420,7 @@ function PreviewModal({ preview, applying, error, onApply, onClose }: {
 
 function BatchHistory() {
   const t = useT();
+  const canWrite = useCan("pricing.write");
   const queryClient = useQueryClient();
   const [offset, setOffset] = useState(0);
   const [reverting, setReverting] = useState<string | null>(null);
@@ -460,7 +466,7 @@ function BatchHistory() {
             key: "actions",
             header: "",
             align: "end",
-            cell: (row) => (row.reverted_at ? null : <Button sm kind="ghost" icon="refresh" label={t("تراجع", "Revert")} onClick={() => setReverting(row.batch_id)} />),
+            cell: (row) => (row.reverted_at || !canWrite ? null : <Button sm kind="ghost" icon="refresh" label={t("تراجع", "Revert")} onClick={() => setReverting(row.batch_id)} />),
           },
         ]}
       />

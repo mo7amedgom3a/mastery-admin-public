@@ -16,6 +16,10 @@ export interface DetailHeaderProps {
   sales?: ProductSalesSeries;
   onTogglePublish: () => void;
   isPublishing?: boolean;
+  /** Soft delete (B2C products only); omitted when the product can't be deleted. */
+  onDelete?: () => void;
+  onRestore?: () => void;
+  isRestoring?: boolean;
 }
 
 export function DetailHeader({
@@ -26,10 +30,14 @@ export function DetailHeader({
   sales,
   onTogglePublish,
   isPublishing,
+  onDelete,
+  onRestore,
+  isRestoring,
 }: DetailHeaderProps) {
   const t = useT();
   const item = data.product;
   const published = item.status === "published";
+  const deleted = item.status === "deleted";
   const b2c = data.b2c;
   const isPackage = item.product_type === "package";
 
@@ -71,8 +79,8 @@ export function DetailHeader({
         <div className="cd-title">
           <div className="cd-title__line">
             <h1>{item.title || item.slug || productRef}</h1>
-            <span className={`cd-chip ${published ? "cd-chip--ok" : "cd-chip--off"}`}>
-              {published ? t("منشور", "Published") : t("مسودة", "Draft")}
+            <span className={`cd-chip ${deleted ? "cd-chip--danger" : published ? "cd-chip--ok" : "cd-chip--off"}`}>
+              {deleted ? t("محذوف", "Deleted") : published ? t("منشور", "Published") : t("مسودة", "Draft")}
             </span>
             <span className="cd-chip cd-chip--b2c">{audience}</span>
           </div>
@@ -92,17 +100,59 @@ export function DetailHeader({
             <Icon name="edit" className="cd-ic--sm" />
             <span>{t("فتح الاستوديو", "Open studio")}</span>
           </AppLink>
-          <button
-            type="button"
-            className={`ma-btn ${published ? "ma-btn--danger-soft" : "ma-btn--primary"}`}
-            disabled={isPublishing}
-            onClick={onTogglePublish}
-          >
-            <Icon name={published ? "x" : "check"} className="cd-ic--sm" />
-            <span>{published ? t("إلغاء النشر", "Unpublish") : t("نشر", "Publish")}</span>
-          </button>
+          {deleted ? (
+            onRestore ? (
+              <button type="button" className="ma-btn ma-btn--primary" disabled={isRestoring} onClick={onRestore}>
+                <Icon name="refresh" className="cd-ic--sm" />
+                <span>{isRestoring ? t("جارٍ الاستعادة…", "Restoring…") : t("استعادة", "Restore")}</span>
+              </button>
+            ) : null
+          ) : (
+            <>
+              <button
+                type="button"
+                className={`ma-btn ${published ? "ma-btn--danger-soft" : "ma-btn--primary"}`}
+                disabled={isPublishing}
+                onClick={onTogglePublish}
+              >
+                <Icon name={published ? "x" : "check"} className="cd-ic--sm" />
+                <span>{published ? t("إلغاء النشر", "Unpublish") : t("نشر", "Publish")}</span>
+              </button>
+              {onDelete ? (
+                <button type="button" className="ma-btn ma-btn--danger-soft" onClick={onDelete}>
+                  <Icon name="trash" className="cd-ic--sm" />
+                  <span>{t("حذف", "Delete")}</span>
+                </button>
+              ) : null}
+            </>
+          )}
         </div>
       </div>
+
+      {deleted ? (
+        <div className="ma-alert ma-alert--danger" role="status" style={{ marginBlock: "var(--space-3)" }}>
+          <strong>{t("هذا المنتج محذوف", "This product is deleted")}</strong>
+          <span>
+            {" "}
+            {t(
+              "لا يظهر في المتجر أو البحث، وتبقى الطلبات والوصول والمحتوى محفوظة. يمكنك استعادته في أي وقت.",
+              "It is hidden from the store and search; orders, access and content are kept. You can restore it at any time.",
+            )}
+          </span>
+          <span className="ma-help" style={{ display: "block", marginBlockStart: 4 }}>
+            {[
+              item.deleted_at ? `${t("حُذف في", "Deleted")} ${formatDateTime(item.deleted_at)}` : null,
+              data.b2c?.deleted_by ? `${t("بواسطة", "by")} ${data.b2c.deleted_by}` : null,
+              item.deleted_reason ? `${t("السبب", "Reason")}: ${item.deleted_reason}` : null,
+              data.b2c?.status_before_delete
+                ? `${t("يعود إلى", "Restores to")}: ${data.b2c.status_before_delete}`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
+        </div>
+      ) : null}
 
       <div className="cd-kpis" role="list">
         {/* KPI 1: Price */}

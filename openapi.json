@@ -1186,6 +1186,25 @@
             "description": "Free-text search over action, path and entity type."
           },
           {
+            "name": "group_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only actions by members of this admin group (team).",
+              "title": "Group Id"
+            },
+            "description": "Only actions by members of this admin group (team)."
+          },
+          {
             "name": "start",
             "in": "query",
             "required": false,
@@ -1403,6 +1422,2712 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminAuditLogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/scopes": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Scope catalog",
+        "description": "Every scope code the policy editor can grant, grouped by area, plus the resource conditions.",
+        "operationId": "scope_catalog_api_v1_admin_iam_scopes_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminScopeCatalogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/directory": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Admin directory",
+        "description": "Admins the caller can add to a team or bind a policy to. A team lead sees only admins within their own access boundary and their current teammates.",
+        "operationId": "admin_directory_api_v1_admin_iam_directory_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminUserResponse"
+                  },
+                  "title": "Response Admin Directory Api V1 Admin Iam Directory Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "List admin users",
+        "description": "Accounts visible to the caller with their effective scopes and teams. Super admins see everyone; a team lead sees the accounts inside their boundary.",
+        "operationId": "list_iam_users_api_v1_admin_iam_users_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserPageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Create an admin and grant access",
+        "description": "One-step provisioning used by the dashboard: create the account, attach direct policies, add it to teams and (super admin only) appoint it as a team lead. A lead can only provision inside their own teams and within their own scopes. Audited.",
+        "operationId": "provision_iam_user_api_v1_admin_iam_users_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserProvisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users/{admin_user_id}": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "One admin",
+        "description": "Profile, effective scopes and teams for one admin. A team lead can open their own teammates; everyone else needs a super admin.",
+        "operationId": "get_iam_user_api_v1_admin_iam_users__admin_user_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "List groups",
+        "description": "Teams visible to the caller: all for a super admin, their own teams for a lead.",
+        "operationId": "list_groups_api_v1_admin_iam_groups_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGroupPageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Create a group",
+        "description": "Creates a team, optionally with a lead who can then manage its members and policies. Super admin only. Audited.",
+        "operationId": "create_group_api_v1_admin_iam_groups_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminGroupCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGroupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Get a group",
+        "operationId": "get_group_api_v1_admin_iam_groups__group_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGroupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Update a group",
+        "description": "A lead can rename their own team; changing the lead or status needs a super admin. Audited.",
+        "operationId": "update_group_api_v1_admin_iam_groups__group_id__patch",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminGroupUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGroupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Delete a group",
+        "description": "Deletes a team and its bindings. Super admin only. Audited.",
+        "operationId": "delete_group_api_v1_admin_iam_groups__group_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/members": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Group members",
+        "operationId": "list_group_members_api_v1_admin_iam_groups__group_id__members_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminUserResponse"
+                  },
+                  "title": "Response List Group Members Api V1 Admin Iam Groups  Group Id  Members Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Add a group member",
+        "description": "Adds an existing admin to the team. A lead cannot add an admin with broader access than their own. Audited.",
+        "operationId": "add_group_member_api_v1_admin_iam_groups__group_id__members_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminGroupMemberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminUserResponse"
+                  },
+                  "title": "Response Add Group Member Api V1 Admin Iam Groups  Group Id  Members Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/members/{admin_user_id}": {
+      "delete": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Remove a group member",
+        "description": "Removes an admin from the team. Audited.",
+        "operationId": "remove_group_member_api_v1_admin_iam_groups__group_id__members__admin_user_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/admin-users": {
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Create an admin inside a team",
+        "description": "Delegated provisioning: the team lead creates a new admin account, adds it to their team and binds the chosen policies. Every policy must stay inside the lead's own scopes. Audited.",
+        "operationId": "create_team_admin_api_v1_admin_iam_groups__group_id__admin_users_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminGroupInviteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/policies": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Policies bound to a group",
+        "operationId": "list_group_policies_api_v1_admin_iam_groups__group_id__policies_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminAttachmentResponse"
+                  },
+                  "title": "Response List Group Policies Api V1 Admin Iam Groups  Group Id  Policies Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Attach a policy to a group",
+        "description": "Binds a policy (usually a template) to the team, with an optional resource condition. Audited.",
+        "operationId": "attach_group_policy_api_v1_admin_iam_groups__group_id__policies_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminAttachmentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAttachmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/policies/{attachment_id}": {
+      "delete": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Detach a policy from a group",
+        "description": "Removes one binding from the team. Audited.",
+        "operationId": "detach_group_policy_api_v1_admin_iam_groups__group_id__policies__attachment_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Binding id.",
+              "title": "Attachment Id"
+            },
+            "description": "Binding id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/policies": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "List policies",
+        "description": "Custom policies plus templates visible to the caller.",
+        "operationId": "list_policies_api_v1_admin_iam_policies_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "template_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Template Only"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPolicyPageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Create a policy",
+        "description": "Creates a custom policy or (super admin only) a template. Audited.",
+        "operationId": "create_policy_api_v1_admin_iam_policies_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminPolicyCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPolicyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/policies/templates": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Policy templates",
+        "description": "The curated policy library the dashboard attaches to teams and admins.",
+        "operationId": "list_policy_templates_api_v1_admin_iam_policies_templates_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminPolicyResponse"
+                  },
+                  "title": "Response List Policy Templates Api V1 Admin Iam Policies Templates Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/policies/{policy_id}": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Get a policy",
+        "operationId": "get_policy_api_v1_admin_iam_policies__policy_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Policy id.",
+              "title": "Policy Id"
+            },
+            "description": "Policy id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPolicyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Update a policy",
+        "description": "Renames a policy or replaces its scopes (boundary-checked). Templates and system policies are read-only. Audited.",
+        "operationId": "update_policy_api_v1_admin_iam_policies__policy_id__patch",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Policy id.",
+              "title": "Policy Id"
+            },
+            "description": "Policy id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminPolicyUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPolicyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Delete a policy",
+        "description": "Deletes a custom policy with no bindings. Templates and system policies cannot be deleted. Audited.",
+        "operationId": "delete_policy_api_v1_admin_iam_policies__policy_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Policy id.",
+              "title": "Policy Id"
+            },
+            "description": "Policy id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/policies/{policy_id}/scopes": {
+      "put": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Replace a policy's scopes",
+        "description": "Convenience route for the scope editor. Audited.",
+        "operationId": "set_policy_scopes_api_v1_admin_iam_policies__policy_id__scopes_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Policy id.",
+              "title": "Policy Id"
+            },
+            "description": "Policy id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminPolicyUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPolicyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/policies": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Policies bound directly to an admin",
+        "operationId": "list_admin_policies_api_v1_admin_iam_admin_users__admin_user_id__policies_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminAttachmentResponse"
+                  },
+                  "title": "Response List Admin Policies Api V1 Admin Iam Admin Users  Admin User Id  Policies Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Attach a policy to an admin",
+        "description": "Binds a policy directly to a person (in addition to their teams). Audited.",
+        "operationId": "attach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminAttachmentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAttachmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/policies/{attachment_id}": {
+      "delete": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Detach a policy from an admin",
+        "description": "Removes one direct binding from a person. Audited.",
+        "operationId": "detach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies__attachment_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Binding id.",
+              "title": "Attachment Id"
+            },
+            "description": "Binding id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/trace": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Admin trace",
+        "description": "Everything one admin did: recent sessions (login/refresh/revoke context) and the audit trail of their actions, newest first. A lead sees only their own team.",
+        "operationId": "admin_trace_api_v1_admin_iam_admin_users__admin_user_id__trace_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminTraceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/audit": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Team audit trail",
+        "description": "Audit rows for one team (or the caller's own team when omitted), respecting the resource condition attached to `admin:audit:read` (`all` | `team` | `own`).",
+        "operationId": "team_audit_api_v1_admin_iam_audit_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Restrict to one team.",
+              "title": "Group Id"
+            },
+            "description": "Restrict to one team."
+          },
+          {
+            "name": "actor_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Restrict to one admin.",
+              "title": "Actor Id"
+            },
+            "description": "Restrict to one admin."
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact action code.",
+              "title": "Action"
+            },
+            "description": "Exact action code."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAuditLogPageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users/{admin_user_id}/inline-policy": {
+      "get": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Individual permissions of an admin",
+        "description": "Scopes granted to this admin one by one (their inline policy), outside any named policy or team, and the record condition they apply with.",
+        "operationId": "get_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminInlinePolicy"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Set an admin's individual permissions",
+        "description": "Replaces the scopes granted to this admin individually, e.g. only `admin:affiliates:manage`. An empty list removes them. A team lead can only add scopes they hold, for members of their teams; the permission boundary still caps the result. Audited.",
+        "operationId": "set_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminInlinePolicy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users/{admin_user_id}/boundary": {
+      "put": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Set an admin's permission boundary",
+        "description": "Caps the admin's effective scopes to the scopes of `policy_id` (AWS-style permissions boundary); `null` clears it. A team lead can set a boundary on members of their teams, only within their own scopes, and cannot clear one. Audited.",
+        "operationId": "set_user_boundary_api_v1_admin_iam_users__admin_user_id__boundary_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminBoundaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/groups/{group_id}/boundary": {
+      "put": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Set a team's default permission boundary",
+        "description": "Admins created inside the team get this boundary. Super admin, or the team lead within their own scopes; only a super admin can clear one. Audited.",
+        "operationId": "set_group_boundary_api_v1_admin_iam_groups__group_id__boundary_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Group id.",
+              "title": "Group Id"
+            },
+            "description": "Group id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminBoundaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGroupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users/{admin_user_id}/status": {
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Suspend or reactivate an admin",
+        "description": "A team lead can suspend or reactivate members of teams they lead (not themselves and not another lead); a super admin can change anyone. A suspended admin's next request is rejected. Audited.",
+        "operationId": "set_member_status_api_v1_admin_iam_users__admin_user_id__status_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminMemberStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/iam/users/{admin_user_id}/revoke": {
+      "post": {
+        "tags": [
+          "Admin IAM"
+        ],
+        "summary": "Revoke an admin's access",
+        "description": "Detaches the admin's direct policies, removes them from the caller's teams (all teams for a super admin) and suspends the account, in one transaction. Audited.",
+        "operationId": "revoke_member_api_v1_admin_iam_users__admin_user_id__revoke_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "admin_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Admin user id.",
+              "title": "Admin User Id"
+            },
+            "description": "Admin user id."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserResponse"
                 }
               }
             }
@@ -2523,7 +5248,8 @@
                     "draft",
                     "published",
                     "unpublished",
-                    "archived"
+                    "archived",
+                    "deleted"
                   ],
                   "type": "string"
                 },
@@ -2531,10 +5257,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Only this status.",
+              "description": "Only this status. Soft-deleted products are left out unless `deleted` is asked for.",
               "title": "Status"
             },
-            "description": "Only this status."
+            "description": "Only this status. Soft-deleted products are left out unless `deleted` is asked for."
           },
           {
             "name": "query",
@@ -3719,6 +6445,94 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Admin catalog"
+        ],
+        "summary": "Delete a product (soft)",
+        "description": "Soft-deletes any B2C product (course, diploma, package, bundle, consultation, live diploma): its status becomes `deleted`, so the storefront, search and the RAG index drop it, while its orders, entitlements, content and media stay. `POST /products/{ref}/restore` brings back the status it had. The product shows in the admin list only under `status=deleted`. Requires `admin:catalog:write`. Audited.",
+        "operationId": "delete_product_api_v1_admin_catalog_products__product_ref__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`.",
+              "examples": [
+                "legacy:course:402"
+              ],
+              "title": "Product Ref"
+            },
+            "description": "Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`."
+          },
+          {
+            "name": "reason",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Why it was deleted (kept for the audit).",
+              "title": "Reason"
+            },
+            "description": "Why it was deleted (kept for the audit)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogProductView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/admin/catalog/products/{product_ref}/status": {
@@ -3778,6 +6592,77 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogProductView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/catalog/products/{product_ref}/restore": {
+      "post": {
+        "tags": [
+          "Admin catalog"
+        ],
+        "summary": "Restore a deleted product",
+        "description": "Undoes a soft delete: the product gets back the status it had (`draft` when unknown) and is re-indexed for search when that status is draft or published. Requires `admin:catalog:write`. Audited.",
+        "operationId": "restore_product_api_v1_admin_catalog_products__product_ref__restore_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`.",
+              "examples": [
+                "legacy:course:402"
+              ],
+              "title": "Product Ref"
+            },
+            "description": "Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -3927,6 +6812,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CategorySuggestionsView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/catalog/skills": {
+      "post": {
+        "tags": [
+          "Admin catalog"
+        ],
+        "summary": "Create a skill",
+        "description": "Adds a B2C skill that products can be tagged with and customers can filter search by. The slug comes from `slug` or `name_en`; an Arabic-only skill gets a generated `skill-xxxxxxxx` code. A skill whose slug already exists is returned unchanged (`created: false`). `category_ids` also add it to those categories' suggestions. Requires `admin:catalog:write`.",
+        "operationId": "create_skill_api_v1_admin_catalog_skills_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkillRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillView"
                 }
               }
             }
@@ -8999,6 +11951,207 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReadmeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/rag/index": {
+      "post": {
+        "tags": [
+          "Admin RAG"
+        ],
+        "summary": "Embed products into the vector index",
+        "description": "Starts the RAG workflow for `product_ids`, every draft/published product of `product_types`, or `all`. Only changed chunks are embedded unless `force`; products that are archived or gone are soft-deleted. Requires `admin:catalog:write`.",
+        "operationId": "index_products_api_v1_admin_rag_index_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RagIndexBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagRunView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/rag/delete": {
+      "post": {
+        "tags": [
+          "Admin RAG"
+        ],
+        "summary": "Soft-delete products from the vector index",
+        "description": "Starts the RAG workflow that removes the products' vectors from S3 Vectors. Their manifest rows are kept with status `deleted`, `deleted_at` and `reason`; indexing the product again restores it. Requires `admin:catalog:write`.",
+        "operationId": "delete_products_api_v1_admin_rag_delete_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RagDeleteBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagRunView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/rag/products/{product_id}": {
+      "get": {
+        "tags": [
+          "Admin RAG"
+        ],
+        "summary": "A product's vector index status",
+        "description": "Chunk counts in the index and soft-deleted, with the last index/delete times. Requires catalog read.",
+        "operationId": "product_status_api_v1_admin_rag_products__product_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagProductStatus"
                 }
               }
             }
@@ -43187,6 +46340,101 @@
         ],
         "title": "AdminAssignTicketRequest"
       },
+      "AdminAttachmentCreateRequest": {
+        "properties": {
+          "policy_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Policy Id"
+          },
+          "resource_scope": {
+            "type": "string",
+            "pattern": "^(all|team|own)$",
+            "title": "Resource Scope",
+            "default": "all"
+          }
+        },
+        "type": "object",
+        "required": [
+          "policy_id"
+        ],
+        "title": "AdminAttachmentCreateRequest"
+      },
+      "AdminAttachmentResponse": {
+        "properties": {
+          "attachment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Attachment Id"
+          },
+          "policy_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Policy Id"
+          },
+          "subject_type": {
+            "type": "string",
+            "title": "Subject Type"
+          },
+          "subject_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Subject Id"
+          },
+          "resource_scope": {
+            "type": "string",
+            "title": "Resource Scope",
+            "default": "all"
+          },
+          "policy_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Code"
+          },
+          "policy_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Name"
+          },
+          "is_template": {
+            "type": "boolean",
+            "title": "Is Template",
+            "default": false
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attachment_id",
+          "policy_id",
+          "subject_type",
+          "subject_id"
+        ],
+        "title": "AdminAttachmentResponse"
+      },
       "AdminAuditActionCount": {
         "properties": {
           "action": {
@@ -44084,6 +47332,25 @@
           "created_at"
         ],
         "title": "AdminBookingRow"
+      },
+      "AdminBoundaryRequest": {
+        "properties": {
+          "policy_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          }
+        },
+        "type": "object",
+        "title": "AdminBoundaryRequest",
+        "description": "Set (`policy_id`) or clear (`null`) a permission boundary."
       },
       "AdminCreateRequest": {
         "properties": {
@@ -45636,6 +48903,318 @@
         ],
         "title": "AdminExpertService"
       },
+      "AdminGroupCreateRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "lead_admin_user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Admin User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "AdminGroupCreateRequest"
+      },
+      "AdminGroupInviteRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 10,
+            "title": "Password"
+          },
+          "policy_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Policy Ids"
+          },
+          "resource_scope": {
+            "type": "string",
+            "pattern": "^(all|team|own)$",
+            "title": "Resource Scope",
+            "default": "all"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "AdminGroupInviteRequest"
+      },
+      "AdminGroupMemberRequest": {
+        "properties": {
+          "admin_user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Admin User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "admin_user_id"
+        ],
+        "title": "AdminGroupMemberRequest"
+      },
+      "AdminGroupPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminGroupResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "AdminGroupPageResponse"
+      },
+      "AdminGroupResponse": {
+        "properties": {
+          "group_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Group Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "lead_admin_user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Admin User Id"
+          },
+          "lead_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "member_count": {
+            "type": "integer",
+            "title": "Member Count",
+            "default": 0
+          },
+          "policy_count": {
+            "type": "integer",
+            "title": "Policy Count",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "boundary_policy_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Policy Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "group_id",
+          "code",
+          "name",
+          "status"
+        ],
+        "title": "AdminGroupResponse"
+      },
+      "AdminGroupUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "lead_admin_user_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Admin User Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "title": "AdminGroupUpdateRequest"
+      },
+      "AdminInlinePolicy": {
+        "properties": {
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "resource_scope": {
+            "type": "string",
+            "pattern": "^(all|team|own)$",
+            "title": "Resource Scope",
+            "default": "all"
+          }
+        },
+        "type": "object",
+        "title": "AdminInlinePolicy",
+        "description": "Scopes granted to one admin individually (their inline policy)."
+      },
       "AdminInstructorDetail": {
         "properties": {
           "instructor_id": {
@@ -46456,6 +50035,61 @@
             },
             "type": "array",
             "title": "Scopes"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "group_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Group Ids"
+          },
+          "resource_conditions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Resource Conditions"
+          },
+          "boundary_policy_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Policy Id"
+          },
+          "boundary_scopes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Scopes"
+          },
+          "granted_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Granted Scopes"
           }
         },
         "type": "object",
@@ -46466,6 +50100,20 @@
           "scopes"
         ],
         "title": "AdminMeResponse"
+      },
+      "AdminMemberStatusRequest": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "pattern": "^(active|suspended)$",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "AdminMemberStatusRequest"
       },
       "AdminMoney": {
         "properties": {
@@ -48127,6 +51775,226 @@
         ],
         "title": "AdminPerson"
       },
+      "AdminPolicyCreateRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 2,
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "is_template": {
+            "type": "boolean",
+            "title": "Is Template",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "AdminPolicyCreateRequest"
+      },
+      "AdminPolicyPageResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminPolicyResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "AdminPolicyPageResponse"
+      },
+      "AdminPolicyResponse": {
+        "properties": {
+          "policy_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Policy Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_template": {
+            "type": "boolean",
+            "title": "Is Template",
+            "default": false
+          },
+          "is_system": {
+            "type": "boolean",
+            "title": "Is System",
+            "default": false
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "attachment_count": {
+            "type": "integer",
+            "title": "Attachment Count",
+            "default": 0
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By"
+          },
+          "can_manage": {
+            "type": "boolean",
+            "title": "Can Manage",
+            "default": false
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "policy_id",
+          "code",
+          "name",
+          "scopes"
+        ],
+        "title": "AdminPolicyResponse"
+      },
+      "AdminPolicyUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_template": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Template"
+          },
+          "scopes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scopes"
+          }
+        },
+        "type": "object",
+        "title": "AdminPolicyUpdateRequest"
+      },
       "AdminRefreshRequest": {
         "properties": {
           "refresh_token": {
@@ -48586,6 +52454,90 @@
         ],
         "title": "AdminRoleResponse"
       },
+      "AdminScopeArea": {
+        "properties": {
+          "area": {
+            "type": "string",
+            "title": "Area"
+          },
+          "label": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Label"
+          },
+          "scopes": {
+            "items": {
+              "$ref": "#/components/schemas/AdminScopeOption"
+            },
+            "type": "array",
+            "title": "Scopes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "area",
+          "label",
+          "scopes"
+        ],
+        "title": "AdminScopeArea"
+      },
+      "AdminScopeCatalogResponse": {
+        "properties": {
+          "areas": {
+            "items": {
+              "$ref": "#/components/schemas/AdminScopeArea"
+            },
+            "type": "array",
+            "title": "Areas"
+          },
+          "resource_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Resource Scopes"
+          },
+          "super_scope": {
+            "type": "string",
+            "title": "Super Scope"
+          }
+        },
+        "type": "object",
+        "required": [
+          "areas",
+          "resource_scopes",
+          "super_scope"
+        ],
+        "title": "AdminScopeCatalogResponse"
+      },
+      "AdminScopeOption": {
+        "properties": {
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "label": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scope",
+          "action",
+          "label"
+        ],
+        "title": "AdminScopeOption"
+      },
       "AdminSearchHit": {
         "properties": {
           "kind": {
@@ -48706,6 +52658,73 @@
           "total"
         ],
         "title": "AdminSearchResponse"
+      },
+      "AdminSessionSummary": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Session Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "rotated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rotated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_id",
+          "status"
+        ],
+        "title": "AdminSessionSummary"
       },
       "AdminSlot": {
         "properties": {
@@ -48960,6 +52979,39 @@
           "revenue"
         ],
         "title": "AdminTopRow"
+      },
+      "AdminTraceResponse": {
+        "properties": {
+          "admin": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/AdminSessionSummary"
+            },
+            "type": "array",
+            "title": "Sessions"
+          },
+          "audit_logs": {
+            "items": {
+              "$ref": "#/components/schemas/AdminAuditLogResponse"
+            },
+            "type": "array",
+            "title": "Audit Logs"
+          },
+          "total_actions": {
+            "type": "integer",
+            "title": "Total Actions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "admin",
+          "sessions",
+          "audit_logs",
+          "total_actions"
+        ],
+        "title": "AdminTraceResponse"
       },
       "AdminUpdateExpertRequest": {
         "properties": {
@@ -49236,6 +53288,83 @@
         ],
         "title": "AdminUserPageResponse"
       },
+      "AdminUserProvisionRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 10,
+            "title": "Password"
+          },
+          "policy_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Policy Ids"
+          },
+          "group_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Group Ids"
+          },
+          "lead_of_group_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Lead Of Group Ids"
+          },
+          "resource_scope": {
+            "type": "string",
+            "pattern": "^(all|team|own)$",
+            "title": "Resource Scope",
+            "default": "all"
+          },
+          "boundary_policy_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Policy Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "AdminUserProvisionRequest",
+        "description": "Create an admin and grant access in one step (dashboard \"Add user\")."
+      },
       "AdminUserResponse": {
         "properties": {
           "admin_user_id": {
@@ -49268,6 +53397,61 @@
             },
             "type": "array",
             "title": "Scopes"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "group_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Group Ids"
+          },
+          "resource_conditions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Resource Conditions"
+          },
+          "boundary_policy_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Policy Id"
+          },
+          "boundary_scopes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundary Scopes"
+          },
+          "granted_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Granted Scopes"
           }
         },
         "type": "object",
@@ -53662,6 +57846,29 @@
               }
             ],
             "title": "Legacy Id"
+          },
+          "deleted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted At"
+          },
+          "deleted_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted Reason"
           }
         },
         "type": "object",
@@ -53794,6 +58001,58 @@
             },
             "type": "array",
             "title": "Instructors"
+          },
+          "category_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Category Ids"
+          },
+          "field_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Field Ids"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogItemSkill"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "admin_tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Admin Tags"
+          },
+          "deleted_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted By"
+          },
+          "status_before_delete": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Before Delete"
           }
         },
         "type": "object",
@@ -53940,6 +58199,30 @@
           "valid_to"
         ],
         "title": "CatalogItemPrice"
+      },
+      "CatalogItemSkill": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Skill Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "slug",
+          "name"
+        ],
+        "title": "CatalogItemSkill"
       },
       "CatalogProduct": {
         "properties": {
@@ -59262,6 +63545,57 @@
           "name"
         ],
         "title": "CreatePromotionRequest"
+      },
+      "CreateSkillRequest": {
+        "properties": {
+          "name_ar": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Name Ar",
+            "description": "Arabic name shown on the storefront."
+          },
+          "name_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name En",
+            "description": "English name; also the slug source."
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug",
+            "description": "URL code; derived from `name_en` when omitted."
+          },
+          "category_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Category Ids",
+            "description": "Categories the skill is suggested for on the admin forms."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name_ar"
+        ],
+        "title": "CreateSkillRequest"
       },
       "CreateSlotsRequest": {
         "properties": {
@@ -72101,6 +76435,22 @@
             "type": "array",
             "title": "Skills"
           },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "description": "Product tags (the search `tag` filter values)."
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/app__modules__catalog__presentation__schemas__CategoryResponse"
+            },
+            "type": "array",
+            "title": "Fields",
+            "description": "Top-level categories (fields) of `categories`."
+          },
           "live_diploma": {
             "anyOf": [
               {
@@ -73825,6 +78175,173 @@
           "amount_minor"
         ],
         "title": "QuotedVoucherResponse"
+      },
+      "RagDeleteBody": {
+        "properties": {
+          "product_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 5000,
+            "minItems": 1,
+            "title": "Product Ids",
+            "description": "Products to take out of the index."
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Reason",
+            "default": "deleted by admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_ids"
+        ],
+        "title": "RagDeleteBody"
+      },
+      "RagIndexBody": {
+        "properties": {
+          "product_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Product Ids",
+            "description": "Products to embed (one or many)."
+          },
+          "product_types": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "course",
+                "diploma",
+                "package",
+                "bundle",
+                "consultation",
+                "live_diploma"
+              ]
+            },
+            "type": "array",
+            "title": "Product Types",
+            "description": "Also every draft/published product of these types."
+          },
+          "all": {
+            "type": "boolean",
+            "title": "All",
+            "description": "Every draft/published product, plus any product still in the index (archived ones are soft-deleted).",
+            "default": false
+          },
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "description": "Re-embed chunks whose text did not change.",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "RagIndexBody"
+      },
+      "RagProductStatus": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Product Id"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "indexed",
+              "deleted",
+              "not_indexed"
+            ],
+            "title": "State",
+            "description": "`indexed`: has vectors; `deleted`: soft-deleted (no vectors, rows kept); `not_indexed`: never embedded."
+          },
+          "indexed_chunks": {
+            "type": "integer",
+            "title": "Indexed Chunks"
+          },
+          "deleted_chunks": {
+            "type": "integer",
+            "title": "Deleted Chunks"
+          },
+          "indexed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indexed At"
+          },
+          "deleted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted At"
+          },
+          "deleted_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "state",
+          "indexed_chunks",
+          "deleted_chunks"
+        ],
+        "title": "RagProductStatus"
+      },
+      "RagRunView": {
+        "properties": {
+          "workflow_id": {
+            "type": "string",
+            "title": "Workflow Id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "index",
+              "delete"
+            ],
+            "title": "Action"
+          },
+          "products": {
+            "type": "integer",
+            "title": "Products"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workflow_id",
+          "action",
+          "products"
+        ],
+        "title": "RagRunView"
       },
       "ReadmeResponse": {
         "properties": {
@@ -76241,6 +80758,41 @@
         ],
         "title": "SaveDraftRequest"
       },
+      "SearchCategoryOptionResponse": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent",
+            "description": "Parent category code; null for a top-level category (a field)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "count"
+        ],
+        "title": "SearchCategoryOptionResponse"
+      },
       "SearchInstructorResponse": {
         "properties": {
           "instructor_id": {
@@ -76429,7 +80981,7 @@
           },
           "categories": {
             "items": {
-              "$ref": "#/components/schemas/SearchOptionResponse"
+              "$ref": "#/components/schemas/SearchCategoryOptionResponse"
             },
             "type": "array",
             "title": "Categories"
@@ -77023,6 +81575,18 @@
               }
             ],
             "title": "Debug"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image",
+            "description": "First product image; card art for B2C-only products."
           },
           "legacy_id": {
             "anyOf": [
@@ -77633,6 +82197,36 @@
           "name"
         ],
         "title": "SkillSummaryResponse"
+      },
+      "SkillView": {
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Skill Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "created": {
+            "type": "boolean",
+            "title": "Created",
+            "description": "False when a skill with this slug already existed and was returned instead."
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill_id",
+          "slug",
+          "name",
+          "created"
+        ],
+        "title": "SkillView"
       },
       "SlaStateResponse": {
         "properties": {

@@ -207,13 +207,30 @@ export function OverviewTab({
               </dd>
             </div>
             <div>
-              <dt>{t("التصنيف الأساسي", "Primary category")}</dt>
+              <dt>{t("المجالات والتصنيفات", "Fields & categories")}</dt>
               <dd>
-                <span className="ma-tag ma-tag--soft">
-                  {item.category || b2c?.categories?.[0] || t("غير مصنف", "Uncategorized")}
-                </span>
+                <ChipRow
+                  items={b2c?.categories?.length ? b2c.categories : item.category ? [item.category] : []}
+                  empty={t("غير مصنف", "Uncategorized")}
+                />
               </dd>
             </div>
+            {b2c ? (
+              <>
+                <div>
+                  <dt>{t("المهارات", "Skills")}</dt>
+                  <dd>
+                    <ChipRow items={(b2c.skills ?? []).map((skill) => skill.name)} empty={t("لا مهارات", "No skills")} />
+                  </dd>
+                </div>
+                <div>
+                  <dt>{t("الوسوم", "Tags")}</dt>
+                  <dd>
+                    <ChipRow items={b2c.admin_tags ?? []} empty={t("لا وسوم", "No tags")} />
+                  </dd>
+                </div>
+              </>
+            ) : null}
           </dl>
         </div>
       </section>
@@ -500,5 +517,18 @@ function PricesList({ prices }: { prices: ProductPrice[] }) {
       )}
       <DataTable rows={filtered} columns={columns} empty={t("لا أسعار مطابقة.", "No matching prices.")} />
     </div>
+  );
+}
+
+function ChipRow({ items, empty }: { items: string[]; empty: string }) {
+  if (items.length === 0) return <span className="cd-unset">{empty}</span>;
+  return (
+    <span className="ma-chips">
+      {items.map((label) => (
+        <span key={label} className="ma-tag ma-tag--soft">
+          {label}
+        </span>
+      ))}
+    </span>
   );
 }

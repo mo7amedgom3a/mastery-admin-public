@@ -11,7 +11,8 @@
     "api:types": "openapi-typescript openapi.json -o src/types/openapi.ts",
     "test:api": "tsx --tsconfig tsconfig.app.json scripts/test-api-layer.ts",
     "test:api:mutations": "tsx --tsconfig tsconfig.app.json scripts/test-api-layer.ts --include-mutations",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:iam": "playwright test e2e/iam-"
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-rc.0",

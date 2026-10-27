@@ -70,6 +70,8 @@ export function SelectField<V extends string>({
   options,
   size = "sm",
   className,
+  showLabel = false,
+  fullWidth = false,
 }: {
   label: string;
   value: V;
@@ -77,10 +79,21 @@ export function SelectField<V extends string>({
   options: { value: V; label: React.ReactNode }[];
   size?: "sm" | "md";
   className?: string;
+  /** Render the label above the trigger (forms); toolbars keep the compact, label-less trigger. */
+  showLabel?: boolean;
+  /** Fill the parent width (forms, filter grids). */
+  fullWidth?: boolean;
 }) {
-  return (
+  const root = (
     <Select value={value} onValueChange={(next) => onChange(next as V)}>
-      <SelectTrigger aria-label={label} className={cn(size === "md" && "ma-select-trigger--lg", className)}>
+      <SelectTrigger
+        aria-label={label}
+        className={cn(
+          size === "md" && "ma-select-trigger--lg",
+          fullWidth && "ma-select-trigger--full",
+          className,
+        )}
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -91,5 +104,14 @@ export function SelectField<V extends string>({
         ))}
       </SelectContent>
     </Select>
+  );
+
+  if (!showLabel) return root;
+
+  return (
+    <div className={cn("ma-field", fullWidth && "ma-field--full")}>
+      <span className="ma-label">{label}</span>
+      {root}
+    </div>
   );
 }

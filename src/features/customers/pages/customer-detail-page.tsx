@@ -21,7 +21,7 @@ import { PageState } from "@/components/ui/primitives";
 import { SearchBox } from "@/components/ui/paged-list";
 import { SelectField } from "@/components/ui/select";
 import { SourceBadge } from "@/components/ui/source-badge";
-import { can } from "@/lib/permissions";
+import { can, useCan } from "@/lib/permissions";
 import { isLegacy, productHref } from "@/lib/refs";
 import { CustomerEntitlementsCard } from "@/features/entitlements/components/entitlement-lists";
 import { CustomerSubscriptionsCard } from "@/features/subscriptions/components/customer-subscriptions-card";
@@ -73,6 +73,7 @@ export default function CustomerDetailPage() {
   const error = statusMutation.error ?? saveMutation.error;
   // Legacy accounts not imported yet are read-only: import them to edit (B2C customers only).
   const readOnly = !profile || isLegacy(profile);
+  const canWrite = useCan("customers.write");
   const name = profile?.full_name || profile?.email || id;
 
   return (
@@ -91,8 +92,8 @@ export default function CustomerDetailPage() {
         sub={profile?.email}
         actions={
           <>
-            <Button kind="secondary" icon="edit" label={t("تعديل", "Edit")} disabled={readOnly} onClick={() => setEditing((value) => !value)} />
-            {STATUS_OPTIONS.map((option) => (
+            {canWrite ? <Button kind="secondary" icon="edit" label={t("تعديل", "Edit")} disabled={readOnly} onClick={() => setEditing((value) => !value)} /> : null}
+            {canWrite && STATUS_OPTIONS.map((option) => (
               <Button
                 key={option.value}
                 sm

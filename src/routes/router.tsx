@@ -1,7 +1,10 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { Shell } from "@/components/layout/shell";
-import { RequireAdmin } from "@/routes/guard";
+import { LandingRedirect, RequireAdmin, RequireScope } from "@/routes/guard";
+import AccessPage from "@/features/iam/pages/access-page";
+import UserDetailPage from "@/features/iam/pages/user-detail-page";
+import TeamDetailPage from "@/features/iam/pages/team-detail-page";
 import DashboardPage from "@/features/dashboard/pages/dashboard-page";
 import InboxPage from "@/features/dashboard/pages/inbox-page";
 import SalesOverviewPage from "@/features/sales/pages/sales-overview-page";
@@ -25,7 +28,6 @@ import EntitlementsPage from "@/features/entitlements/pages/entitlements-page";
 import PricingPage from "@/features/pricing/pages/pricing-page";
 import TicketsPage from "@/features/customers/pages/tickets-page";
 import TicketDetailPage from "@/features/customers/pages/ticket-detail-page";
-import TeamPage from "@/features/settings/pages/team-page";
 import AuditPage from "@/features/settings/pages/audit-page";
 import GeneralSettingsPage from "@/features/settings/pages/general-settings-page";
 import PartnersPage from "@/features/marketing/pages/partners-page";
@@ -113,12 +115,14 @@ export const ROUTER = createBrowserRouter([
     ),
     errorElement: <RouteErrorPage />,
     children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> },
+      { index: true, element: <LandingRedirect /> },
+      // The shell blocks read access through the nav match; write-only pages (`/new`, imports,
+      // studios) sit under read-only nav entries, so they carry their own write guard.
 
       // Home
-      { path: "dashboard", element: <DashboardPage /> },
-      { path: "dashboard/inbox", element: <InboxPage /> },
-      { path: "search", element: <SearchPage /> },
+      { path: "dashboard", element: <RequireScope permission="dashboard.read"><DashboardPage /></RequireScope> },
+      { path: "dashboard/inbox", element: <RequireScope permission="dashboard.read"><InboxPage /></RequireScope> },
+      { path: "search", element: <RequireScope permission="dashboard.read"><SearchPage /></RequireScope> },
 
       // Sales
       { path: "sales/overview", element: <SalesOverviewPage /> },
@@ -130,10 +134,10 @@ export const ROUTER = createBrowserRouter([
       { path: "sales/refunds/:id", element: <RefundCaseDetailPage /> },
       { path: "sales/invoices", element: <InvoicesPage /> },
       { path: "sales/coupons", element: <CouponsPage /> },
-      { path: "sales/coupons/new", element: <CouponNewPage /> },
+      { path: "sales/coupons/new", element: <RequireScope permission="coupons.write"><CouponNewPage /></RequireScope> },
       { path: "sales/coupons/:promotionId", element: <CouponDetailPage /> },
       { path: "sales/vouchers", element: <VouchersPage /> },
-      { path: "sales/vouchers/new", element: <VoucherIssuePage /> },
+      { path: "sales/vouchers/new", element: <RequireScope permission="coupons.write"><VoucherIssuePage /></RequireScope> },
       { path: "sales/vouchers/:voucherId", element: <VoucherDetailPage /> },
       { path: "sales/pricing", element: <PricingPage /> },
       { path: "sales/price-lists", element: <PriceListsPage /> },
@@ -141,32 +145,32 @@ export const ROUTER = createBrowserRouter([
 
       // Learning
       { path: "learning/courses", element: <CatalogPage defaultType="course" /> },
-      { path: "learning/courses/new", element: <CourseNewPage /> },
+      { path: "learning/courses/new", element: <RequireScope permission="catalog.write"><CourseNewPage /></RequireScope> },
       { path: "learning/diplomas", element: <CatalogPage defaultType="diploma" /> },
       { path: "learning/live", element: <CatalogPage defaultType="live_diploma" /> },
       { path: "learning/live-diplomas", element: <Navigate to="/learning/live" replace /> },
-      { path: "learning/live-diplomas/new", element: <LiveDiplomaNewPage /> },
+      { path: "learning/live-diplomas/new", element: <RequireScope permission="catalog.write"><LiveDiplomaNewPage /></RequireScope> },
       { path: "learning/bundles", element: <CatalogPage defaultType="package" /> },
-      { path: "learning/bundles/new", element: <PackageNewPage /> },
+      { path: "learning/bundles/new", element: <RequireScope permission="catalog.write"><PackageNewPage /></RequireScope> },
       { path: "learning/packages", element: <CatalogPage defaultType="bundle" /> },
-      { path: "learning/packages/new", element: <BundleNewPage /> },
+      { path: "learning/packages/new", element: <RequireScope permission="catalog.write"><BundleNewPage /></RequireScope> },
       { path: "learning/catalog", element: <CatalogPage /> },
       { path: "learning/catalog/:productId", element: <ProductDetailPage /> },
       // Full-width workspace: the shell hides its sidebar for routes with `handle.studio`.
-      { path: "learning/catalog/:productId/studio", element: <CourseStudioPage />, handle: { studio: true } },
+      { path: "learning/catalog/:productId/studio", element: <RequireScope permission="studio.edit"><CourseStudioPage /></RequireScope>, handle: { studio: true } },
       { path: "learning/backoffice", element: <Navigate to="/learning/catalog" replace /> },
       { path: "learning/backoffice/:kind/:legacyId", element: <LegacyCatalogRedirect /> },
       { path: "learning/categories", element: <CategoriesPage /> },
       { path: "learning/consultations", element: <ConsultationsPage /> },
-      { path: "learning/consultations/new", element: <ConsultationNewPage /> },
+      { path: "learning/consultations/new", element: <RequireScope permission="catalog.write"><ConsultationNewPage /></RequireScope> },
       { path: "learning/consultations/:id", element: <ConsultationDetailPage /> },
       { path: "learning/consultants", element: <ConsultantsPage /> },
       { path: "learning/consultants/:id", element: <ConsultantDetailPage /> },
       { path: "learning/instructors", element: <InstructorsPage /> },
       // Literal `new` before the catch-all (`/:trainerId` would otherwise swallow it).
-      { path: "learning/instructors/new", element: <InstructorNewPage /> },
+      { path: "learning/instructors/new", element: <RequireScope permission="instructors.write"><InstructorNewPage /></RequireScope> },
       { path: "learning/instructors/:trainerId", element: <InstructorDetailPage /> },
-      { path: "learning/instructors/:trainerId/studio", element: <ExpertStudioPage />, handle: { studio: true } },
+      { path: "learning/instructors/:trainerId/studio", element: <RequireScope permission="instructors.write"><ExpertStudioPage /></RequireScope>, handle: { studio: true } },
       { path: "learning/instructors/:trainerId/:tab", element: <InstructorDetailPage /> },
       { path: "learning/applications", element: <InstructorApplicationsPage /> },
       { path: "learning/applications/:id", element: <InstructorApplicationsPage /> },
@@ -194,7 +198,7 @@ export const ROUTER = createBrowserRouter([
       // Subscriptions (B2C)
       { path: "subscriptions", element: <SubscriptionsOverviewPage /> },
       { path: "subscriptions/plans", element: <SubscriptionPlansPage /> },
-      { path: "subscriptions/plans/new", element: <SubscriptionPlanNewPage /> },
+      { path: "subscriptions/plans/new", element: <RequireScope permission="subscriptionsWrite.write"><SubscriptionPlanNewPage /></RequireScope> },
       { path: "subscriptions/plans/:id", element: <SubscriptionPlanDetailPage /> },
       { path: "subscriptions/features", element: <SubscriptionFeaturesPage /> },
       { path: "subscriptions/subscribers", element: <SubscribersPage /> },
@@ -219,8 +223,8 @@ export const ROUTER = createBrowserRouter([
 
       // Marketing
       { path: "marketing/affiliates", element: <PartnersPage /> },
-      { path: "marketing/affiliates/new", element: <PartnerNewPage /> },
-      { path: "marketing/affiliates/import", element: <AffiliateImportPage /> },
+      { path: "marketing/affiliates/new", element: <RequireScope permission="affiliatesWrite.manage"><PartnerNewPage /></RequireScope> },
+      { path: "marketing/affiliates/import", element: <RequireScope permission="affiliatesWrite.manage"><AffiliateImportPage /></RequireScope> },
       { path: "marketing/affiliates/:partnerId", element: <PartnerDetailPage /> },
       { path: "marketing/commissions", element: <AffiliateCommissionsPage /> },
       { path: "marketing/commissions/legacy", element: <CommissionsPage /> },
@@ -244,9 +248,18 @@ export const ROUTER = createBrowserRouter([
       { path: "analytics/posthog", element: <PostHogAnalyticsPage /> },
       { path: "analytics/behavior-map", element: <BehaviorMapPage /> },
 
+      // Access management (IAM)
+      { path: "access", element: <Navigate to="/access/users" replace /> },
+      { path: "access/users", element: <RequireScope permission="iam.read"><AccessPage /></RequireScope> },
+      { path: "access/users/:adminUserId", element: <RequireScope permission="iam.read"><UserDetailPage /></RequireScope> },
+      { path: "access/teams", element: <RequireScope permission="iam.read"><AccessPage /></RequireScope> },
+      { path: "access/teams/:groupId", element: <RequireScope permission="iam.read"><TeamDetailPage /></RequireScope> },
+      { path: "access/policies", element: <RequireScope permission="iam.read"><AccessPage /></RequireScope> },
+      { path: "access/audit", element: <RequireScope permission="iam.read"><AccessPage /></RequireScope> },
+
       // Settings
       { path: "settings/general", element: <GeneralSettingsPage /> },
-      { path: "settings/team", element: <TeamPage /> },
+      { path: "settings/team", element: <Navigate to="/access/users" replace /> },
       { path: "settings/integrations", element: ph("التكاملات", "Integrations") },
       { path: "settings/notifications", element: <NotificationsPage /> },
       { path: "settings/audit", element: <AuditPage /> },

@@ -3,14 +3,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-import { navigation, flatItems, matchActive, type NavModule } from "@/config/navigation";
+import { navigation, flatItems, type NavModule } from "@/config/navigation";
 import { adminSearch, searchKeys } from "@/lib/api";
 import { cn } from "@/lib/cn";
+import { canSeeModule, canSeeNavItem, resolveActiveItem } from "@/lib/permissions";
 import { useAdminAuth } from "@/lib/auth/store";
 import { useLang, useLangStore, translate, useT } from "@/lib/i18n";
 import { MenuIcon, SearchIcon, type AnimatedIconHandle } from "@/components/icons/animated";
 import { Icon } from "@/components/ui/icon";
-import { IconButton, Avatar } from "@/components/ui/kit";
+import { IconButton, Avatar, Empty } from "@/components/ui/kit";
 import { Button as BaseButton } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
@@ -91,9 +92,42 @@ export function Shell() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const nav = useMemo(() => navigation.filter((m) => m.disabled || m.sections.length), []);
-  const active = useMemo(() => matchActive(location.pathname, flatItems(nav)), [location.pathname, nav]);
+  const nav = useMemo(() => {
+    const visible = navigation
+      .filter((module) => canSeeModule(module, admin?.scopes))
+      .map((module) => ({
+        ...module,
+        sections: module.sections
+          .map((section) => ({
+            ...section,
+            items: section.items
+              .filter((item) => canSeeNavItem(item, admin?.scopes))
+              .map((item) =>
+                item.children
+                  ? {
+                      ...item,
+                      children: item.children.filter((child) =>
+                        canSeeNavItem(child, admin?.scopes),
+                      ),
+                    }
+                  : item,
+              ),
+          }))
+          .filter((section) => section.items.length),
+      }))
+      .filter((module) => module.sections.length);
+    // Always keep one module so the shell (rail + breadcrumbs) has an anchor; an admin with
+    // no domain scopes sees an empty sidebar instead of a crash.
+    return visible.length ? visible : navigation.slice(0, 1);
+  }, [admin]);
+  const active = useMemo(
+    () => resolveActiveItem(location.pathname, admin?.scopes),
+    [location.pathname, admin],
+  );
   const activeModule = nav.find((m) => m.id === (active?.module.id ?? "")) ?? nav[0];
+  const canViewActive = !active
+    ? true
+    : canSeeModule(active.module, admin?.scopes) && canSeeNavItem(active, admin?.scopes);
 
   const crumbs = useMemo(() => {
     if (!active) return [];
@@ -115,7 +149,7 @@ export function Shell() {
       <div className="ma-nav-drawer" id="nav-drawer">
         {/* Rail */}
         <nav className="ma-rail" aria-label={t("المجالات", "Domains")}>
-          <Link className="ma-rail__logo" to="/dashboard" aria-label={t("ماستري أكاديمي - الرئيسية", "Mastery Academy home")}>
+          <Link className="ma-rail__logo" to="/" aria-label={t("ماستري أكاديمي - الرئيسية", "Mastery Academy home")}>
             <svg className="ma-logo" width="44" height="19" aria-hidden="true">
               <use href="#ma-mark" />
             </svg>
@@ -207,7 +241,14 @@ export function Shell() {
           </div>
         </header>
         <main id="main" className={cn("ma-content", studio && "ma-content--wide")} tabIndex={-1}>
-          <Outlet />
+          {canViewActive ? (
+            <Outlet />
+          ) : (
+            <Empty
+              icon="shield"
+              text={t("لا تملك صلاحية فتح هذه الصفحة.", "You do not have permission to open this page.")}
+            />
+          )}
         </main>
       </div>
     </div>
@@ -217,6 +258,7 @@ export function Shell() {
 function Sidebar({ module, activeHref, onCollapse }: { module: NavModule; activeHref?: string; onCollapse?: () => void }) {
   const t = useT();
   const lang = useLang();
+  const admin = useAdminAuth((state) => state.admin);
   const location = useLocation();
   const searchIcon = useRef<AnimatedIconHandle>(null);
   const [query, setQuery] = useState("");
@@ -283,21 +325,22 @@ function Sidebar({ module, activeHref, onCollapse }: { module: NavModule; active
       .map((section, si) => {
         const items = section.items.filter(
           (item) =>
-            !q ||
-            translate(lang, item.title.ar, item.title.en).toLowerCase().includes(q) ||
-            item.title.en.toLowerCase().includes(q) ||
-            item.title.ar.toLowerCase().includes(q) ||
-            item.children?.some(
-              (c) =>
-                translate(lang, c.title.ar, c.title.en).toLowerCase().includes(q) ||
-                c.title.en.toLowerCase().includes(q) ||
-                c.title.ar.toLowerCase().includes(q),
-            ),
+            canSeeNavItem(item, admin?.scopes) &&
+            (!q ||
+              translate(lang, item.title.ar, item.title.en).toLowerCase().includes(q) ||
+              item.title.en.toLowerCase().includes(q) ||
+              item.title.ar.toLowerCase().includes(q) ||
+              item.children?.some(
+                (c) =>
+                  translate(lang, c.title.ar, c.title.en).toLowerCase().includes(q) ||
+                  c.title.en.toLowerCase().includes(q) ||
+                  c.title.ar.toLowerCase().includes(q),
+              )),
         );
         return { section, si, items };
       })
       .filter(({ items }) => !q || items.length > 0);
-  }, [module, q, lang]);
+  }, [module, q, lang, admin]);
 
   // Also check other modules' pages when the query isn't found in the active module
   const otherDomainPages = useMemo(() => {
@@ -306,12 +349,14 @@ function Sidebar({ module, activeHref, onCollapse }: { module: NavModule; active
       .filter(
         (item) =>
           item.module.id !== module.id &&
+          canSeeModule(item.module, admin?.scopes) &&
+          canSeeNavItem(item, admin?.scopes) &&
           (translate(lang, item.title.ar, item.title.en).toLowerCase().includes(q) ||
             item.title.en.toLowerCase().includes(q) ||
             item.title.ar.toLowerCase().includes(q)),
       )
       .slice(0, 5);
-  }, [q, matchingModuleSections.length, module.id, lang]);
+  }, [q, matchingModuleSections.length, module.id, lang, admin]);
 
   const notFoundLocally = Boolean(q && matchingModuleSections.length === 0 && otherDomainPages.length === 0);
 
@@ -589,7 +634,7 @@ function AccountMenu({ email, onSignOut }: { email: string; onSignOut: () => voi
             <DropdownMenuSeparator />
           </>
         ) : null}
-        <DropdownMenuItem onSelect={() => navigate("/settings/team")}>
+        <DropdownMenuItem onSelect={() => navigate("/access/users")}>
           <Icon name="users" />
           {t("الفريق والأدوار", "Team & roles")}
         </DropdownMenuItem>

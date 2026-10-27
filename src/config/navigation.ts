@@ -15,6 +15,12 @@ export type NavModule = {
   href?: string;
   disabled?: boolean;
   note?: Label;
+  /**
+   * Domain-level scopes: the module (and its rail entry) is visible when the admin
+   * holds at least one of them. Item permissions still narrow what shows inside.
+   * This is what keeps a marketer out of Sales and a salesperson out of Marketing.
+   */
+  scopes?: string[];
   sections: NavSection[];
 };
 
@@ -28,6 +34,7 @@ export const navigation: NavModule[] = [
     id: "dashboard",
     title: { ar: "الرئيسية", en: "Home" },
     icon: "home",
+    scopes: ["admin:operations:read"],
     sections: [
       {
         title: { ar: "نظرة عامة", en: "Overview" },
@@ -43,6 +50,7 @@ export const navigation: NavModule[] = [
     id: "sales",
     title: { ar: "المبيعات", en: "Sales" },
     icon: "cart",
+    scopes: ["admin:orders:read", "admin:orders:write", "admin:payments:read", "admin:payments:refund", "admin:operations:read", "admin:operations:manage"],
     sections: [
       {
         title: { ar: "التجارة", en: "Commerce" },
@@ -70,6 +78,7 @@ export const navigation: NavModule[] = [
     id: "learning",
     title: { ar: "التعلم", en: "Learning" },
     icon: "book",
+    scopes: ["admin:catalog:write"],
     sections: [
       {
         title: { ar: "البرامج والمقررات", en: "Courses & Programs" },
@@ -140,6 +149,7 @@ export const navigation: NavModule[] = [
     id: "trainers",
     title: { ar: "المدربون", en: "Trainers" },
     icon: "user",
+    scopes: ["admin:catalog:write"],
     sections: [
       {
         title: { ar: "إدارة المدربين", en: "Trainers management" },
@@ -162,6 +172,7 @@ export const navigation: NavModule[] = [
     id: "consultations",
     title: { ar: "الاستشارات", en: "Consultations" },
     icon: "calendar",
+    scopes: ["admin:consultations:read", "admin:consultations:write"],
     sections: [
       {
         title: { ar: "الجلسات والمواعيد", en: "Sessions & bookings" },
@@ -194,6 +205,7 @@ export const navigation: NavModule[] = [
     id: "subscriptions",
     title: { ar: "الاشتراكات", en: "Subscriptions" },
     icon: "refresh",
+    scopes: ["admin:catalog:write", "admin:entitlements:read", "admin:entitlements:manage"],
     sections: [
       {
         title: { ar: "الاشتراكات", en: "Subscriptions" },
@@ -212,6 +224,7 @@ export const navigation: NavModule[] = [
     id: "customers",
     title: { ar: "العملاء", en: "Customers" },
     icon: "users",
+    scopes: ["admin:customers:read", "admin:customers:write", "admin:operations:read"],
     sections: [
       {
         title: { ar: "الأشخاص", en: "People" },
@@ -232,6 +245,7 @@ export const navigation: NavModule[] = [
     id: "marketing",
     title: { ar: "التسويق", en: "Marketing" },
     icon: "megaphone",
+    scopes: ["admin:marketing:read", "admin:marketing:write", "admin:promotions:read", "admin:promotions:write", "admin:affiliates:read", "admin:affiliates:manage"],
     sections: [
       {
         title: { ar: "الاستقطاب", en: "Acquisition" },
@@ -245,6 +259,14 @@ export const navigation: NavModule[] = [
         ],
       },
       {
+        title: { ar: "الترويج", en: "Promotions" },
+        items: [
+          { title: { ar: "الكوبونات", en: "Coupons" }, href: "/sales/coupons", permission: "coupons.read" },
+          { title: { ar: "قسائم الرصيد", en: "Vouchers" }, href: "/sales/vouchers", permission: "coupons.read" },
+          { title: { ar: "العروض", en: "Offers" }, href: "/sales/offers", permission: "pricing.read" },
+        ],
+      },
+      {
         title: { ar: "الموقع", en: "Website" },
         items: [{ title: { ar: "البانرات والسلايدر", en: "Banners & sliders" }, href: "/marketing/banners", permission: "marketing.read" }],
       },
@@ -254,6 +276,7 @@ export const navigation: NavModule[] = [
     id: "analytics",
     title: { ar: "التقارير", en: "Analytics" },
     icon: "chart",
+    scopes: ["admin:analytics:read", "admin:orders:read", "admin:operations:read"],
     sections: [
       {
         title: { ar: "التقارير", en: "Reports" },
@@ -279,18 +302,36 @@ export const navigation: NavModule[] = [
     ],
   },
   {
+    id: "access",
+    title: { ar: "إدارة الوصول", en: "Access" },
+    icon: "shield",
+    scopes: ["admin:iam:read", "admin:iam:manage"],
+    sections: [
+      {
+        title: { ar: "الفرق والسياسات", en: "Teams & policies" },
+        items: [
+          { title: { ar: "المستخدمون", en: "Users" }, href: "/access/users", permission: "iam.users" },
+          { title: { ar: "الفرق", en: "Teams" }, href: "/access/teams", permission: "iam.teams" },
+          { title: { ar: "السياسات والقوالب", en: "Policies & templates" }, href: "/access/policies", permission: "iam.policies" },
+          { title: { ar: "سجل التدقيق والتتبع", en: "Audit & tracing" }, href: "/access/audit", permission: "iam.audit" },
+        ],
+      },
+    ],
+  },
+  {
     id: "settings",
     title: { ar: "الإعدادات", en: "Settings" },
     icon: "settings",
+    scopes: ["admin:operations:read", "admin:operations:manage"],
     sections: [
       {
         title: { ar: "مساحة العمل", en: "Workspace" },
         items: [
           { title: { ar: "عام", en: "General" }, href: "/settings/general", permission: "settings.read" },
-          { title: { ar: "الفريق والأدوار", en: "Team & roles" }, href: "/settings/team", permission: "settings.read" },
+          { title: { ar: "المستخدمون والفرق", en: "Users & teams" }, href: "/access/users", permission: "iam.users" },
           { title: { ar: "التكاملات", en: "Integrations" }, href: "/settings/integrations", permission: "settings.read" },
           { title: { ar: "الإشعارات", en: "Notifications" }, href: "/settings/notifications", permission: "settings.read" },
-          { title: { ar: "سجل التدقيق", en: "Audit log" }, href: "/settings/audit", permission: "settings.read" },
+          { title: { ar: "سجل التدقيق", en: "Audit log" }, href: "/settings/audit", permission: "audit.read" },
         ],
       },
     ],
@@ -299,6 +340,7 @@ export const navigation: NavModule[] = [
     id: "companies",
     title: { ar: "الشركات", en: "Companies" },
     icon: "building",
+    scopes: ["admin:catalog:write", "admin:entitlements:read"],
     sections: [{
       title: { ar: "الطلبات والاشتراكات", en: "Requests & subscriptions" },
       items: [

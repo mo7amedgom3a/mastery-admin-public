@@ -107,7 +107,7 @@ The product's analytics panels read `/admin/catalog/products/{ref}/{sales,behavi
 
 | Module (`src/lib/api/`) | Backend | Notes |
 | --- | --- | --- |
-| `auth/admin-auth.ts`, `iam/rbac.ts` | `/admin/auth/*`, `/admin/me`, `/admin/admin-users`, `/admin/roles`, `/admin/audit-logs[/stats/{id}]` | Identity and access |
+| `auth/admin-auth.ts`, `iam/rbac.ts`, `iam/access.ts` | `/admin/auth/*`, `/admin/me`, `/admin/admin-users`, `/admin/roles`, `/admin/audit-logs[/stats/{id}]`, `/admin/iam/*` | Identity and access; the IAM module covers groups, policies, bindings, permission boundaries, member status/revoke, team-scoped audit and `can_manage` policy flags (see [the IAM guide](../docs/admin/iam_access_management.md)) |
 | `dashboard/dashboard.ts` | `/admin/dashboard/{summary,sales}` | KPIs over both systems |
 | `analytics/reports.ts` | `/admin/reports/*?source=` | Rows carry `ref` and `sources`; `SalesReport.sources` splits totals |
 | `sales/orders.ts`, `sales/payments.ts` | `/admin/orders`, `/admin/payments` | Merged; refs in paths |

@@ -17,7 +17,8 @@ import {
 } from "@/lib/api";
 import { customerHref, orderHref, productHref } from "@/lib/refs";
 import { translate, useLang } from "@/lib/i18n";
-import { can } from "@/lib/permissions";
+import { useAdminAuth } from "@/lib/auth/store";
+import { can, canSeeModule, canSeeNavItem, resolveActiveItem } from "@/lib/permissions";
 import { SearchIcon, type AnimatedIconHandle } from "@/components/icons/animated";
 import { Icon } from "@/components/ui/icon";
 
@@ -68,7 +69,7 @@ const ACTIONS: { ar: string; en: string; href: string; permission: string; icon:
   { ar: "إصدار استرداد لطلب", en: "Issue a refund", href: "/sales/orders", permission: "refunds.create", icon: "refund", hint: { ar: "اختر الطلب ثم «استرداد»", en: "Pick the order, then Refund" } },
   { ar: "الرد على أسئلة المتدربين", en: "Answer trainee questions", href: "/learning/qa", permission: "qa.read", icon: "message" },
   { ar: "مراجعة طلبات الصرف", en: "Review payout requests", href: "/marketing/payouts", permission: "affiliates.read", icon: "card" },
-  { ar: "دعوة عضو فريق", en: "Invite a team member", href: "/settings/team", permission: "settings.read", icon: "users" },
+  { ar: "إضافة مستخدم أو دعوة عضو فريق", en: "Add a user or invite a teammate", href: "/access/users", permission: "iam.users", icon: "users" },
 ];
 
 type KindMeta = {
@@ -257,7 +258,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     const pages: Result[] =
       activeFilter === "all"
         ? flatItems(navigation)
-            .filter((item) => (!item.permission || can(item.permission)) && match(item.title.ar, item.title.en, item.module.title.ar, item.module.title.en, item.href))
+            .filter(
+              (item) =>
+                canSeeModule(item.module, useAdminAuth.getState().admin?.scopes) &&
+                canSeeNavItem(item, useAdminAuth.getState().admin?.scopes) &&
+                match(item.title.ar, item.title.en, item.module.title.ar, item.module.title.en, item.href),
+            )
             .slice(0, qLower ? 8 : 6)
             .map<Result>((item) => ({
               id: `page:${item.href}`,
@@ -268,9 +274,17 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             }))
         : [];
 
+    const scopes = useAdminAuth.getState().admin?.scopes;
     const actions: Result[] =
       activeFilter === "all"
-        ? ACTIONS.filter((a) => can(a.permission) && match(a.ar, a.en, a.href)).map<Result>((a) => ({
+        ? ACTIONS.filter((action) => {
+            if (!can(action.permission) || !match(action.ar, action.en, action.href)) return false;
+            const target = resolveActiveItem(action.href, scopes);
+            return (
+              !target ||
+              (canSeeModule(target.module, scopes) && canSeeNavItem(target, scopes))
+            );
+          }).map<Result>((a) => ({
             id: `action:${a.href}:${a.en}`,
             label: translate(lang, a.ar, a.en),
             path: a.hint ? translate(lang, a.hint.ar, a.hint.en) : "",

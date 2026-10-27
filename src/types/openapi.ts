@@ -324,6 +324,515 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/iam/scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Scope catalog
+         * @description Every scope code the policy editor can grant, grouped by area, plus the resource conditions.
+         */
+        get: operations["scope_catalog_api_v1_admin_iam_scopes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/directory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Admin directory
+         * @description Admins the caller can add to a team or bind a policy to. A team lead sees only admins within their own access boundary and their current teammates.
+         */
+        get: operations["admin_directory_api_v1_admin_iam_directory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List admin users
+         * @description Accounts visible to the caller with their effective scopes and teams. Super admins see everyone; a team lead sees the accounts inside their boundary.
+         */
+        get: operations["list_iam_users_api_v1_admin_iam_users_get"];
+        put?: never;
+        /**
+         * Create an admin and grant access
+         * @description One-step provisioning used by the dashboard: create the account, attach direct policies, add it to teams and (super admin only) appoint it as a team lead. A lead can only provision inside their own teams and within their own scopes. Audited.
+         */
+        post: operations["provision_iam_user_api_v1_admin_iam_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users/{admin_user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One admin
+         * @description Profile, effective scopes and teams for one admin. A team lead can open their own teammates; everyone else needs a super admin.
+         */
+        get: operations["get_iam_user_api_v1_admin_iam_users__admin_user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List groups
+         * @description Teams visible to the caller: all for a super admin, their own teams for a lead.
+         */
+        get: operations["list_groups_api_v1_admin_iam_groups_get"];
+        put?: never;
+        /**
+         * Create a group
+         * @description Creates a team, optionally with a lead who can then manage its members and policies. Super admin only. Audited.
+         */
+        post: operations["create_group_api_v1_admin_iam_groups_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a group */
+        get: operations["get_group_api_v1_admin_iam_groups__group_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a group
+         * @description Deletes a team and its bindings. Super admin only. Audited.
+         */
+        delete: operations["delete_group_api_v1_admin_iam_groups__group_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a group
+         * @description A lead can rename their own team; changing the lead or status needs a super admin. Audited.
+         */
+        patch: operations["update_group_api_v1_admin_iam_groups__group_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Group members */
+        get: operations["list_group_members_api_v1_admin_iam_groups__group_id__members_get"];
+        put?: never;
+        /**
+         * Add a group member
+         * @description Adds an existing admin to the team. A lead cannot add an admin with broader access than their own. Audited.
+         */
+        post: operations["add_group_member_api_v1_admin_iam_groups__group_id__members_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/members/{admin_user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a group member
+         * @description Removes an admin from the team. Audited.
+         */
+        delete: operations["remove_group_member_api_v1_admin_iam_groups__group_id__members__admin_user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/admin-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create an admin inside a team
+         * @description Delegated provisioning: the team lead creates a new admin account, adds it to their team and binds the chosen policies. Every policy must stay inside the lead's own scopes. Audited.
+         */
+        post: operations["create_team_admin_api_v1_admin_iam_groups__group_id__admin_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Policies bound to a group */
+        get: operations["list_group_policies_api_v1_admin_iam_groups__group_id__policies_get"];
+        put?: never;
+        /**
+         * Attach a policy to a group
+         * @description Binds a policy (usually a template) to the team, with an optional resource condition. Audited.
+         */
+        post: operations["attach_group_policy_api_v1_admin_iam_groups__group_id__policies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/policies/{attachment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Detach a policy from a group
+         * @description Removes one binding from the team. Audited.
+         */
+        delete: operations["detach_group_policy_api_v1_admin_iam_groups__group_id__policies__attachment_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List policies
+         * @description Custom policies plus templates visible to the caller.
+         */
+        get: operations["list_policies_api_v1_admin_iam_policies_get"];
+        put?: never;
+        /**
+         * Create a policy
+         * @description Creates a custom policy or (super admin only) a template. Audited.
+         */
+        post: operations["create_policy_api_v1_admin_iam_policies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/policies/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Policy templates
+         * @description The curated policy library the dashboard attaches to teams and admins.
+         */
+        get: operations["list_policy_templates_api_v1_admin_iam_policies_templates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/policies/{policy_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a policy */
+        get: operations["get_policy_api_v1_admin_iam_policies__policy_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a policy
+         * @description Deletes a custom policy with no bindings. Templates and system policies cannot be deleted. Audited.
+         */
+        delete: operations["delete_policy_api_v1_admin_iam_policies__policy_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update a policy
+         * @description Renames a policy or replaces its scopes (boundary-checked). Templates and system policies are read-only. Audited.
+         */
+        patch: operations["update_policy_api_v1_admin_iam_policies__policy_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/iam/policies/{policy_id}/scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Replace a policy's scopes
+         * @description Convenience route for the scope editor. Audited.
+         */
+        put: operations["set_policy_scopes_api_v1_admin_iam_policies__policy_id__scopes_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Policies bound directly to an admin */
+        get: operations["list_admin_policies_api_v1_admin_iam_admin_users__admin_user_id__policies_get"];
+        put?: never;
+        /**
+         * Attach a policy to an admin
+         * @description Binds a policy directly to a person (in addition to their teams). Audited.
+         */
+        post: operations["attach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/policies/{attachment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Detach a policy from an admin
+         * @description Removes one direct binding from a person. Audited.
+         */
+        delete: operations["detach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies__attachment_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/admin-users/{admin_user_id}/trace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Admin trace
+         * @description Everything one admin did: recent sessions (login/refresh/revoke context) and the audit trail of their actions, newest first. A lead sees only their own team.
+         */
+        get: operations["admin_trace_api_v1_admin_iam_admin_users__admin_user_id__trace_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Team audit trail
+         * @description Audit rows for one team (or the caller's own team when omitted), respecting the resource condition attached to `admin:audit:read` (`all` | `team` | `own`).
+         */
+        get: operations["team_audit_api_v1_admin_iam_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users/{admin_user_id}/inline-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Individual permissions of an admin
+         * @description Scopes granted to this admin one by one (their inline policy), outside any named policy or team, and the record condition they apply with.
+         */
+        get: operations["get_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_get"];
+        /**
+         * Set an admin's individual permissions
+         * @description Replaces the scopes granted to this admin individually, e.g. only `admin:affiliates:manage`. An empty list removes them. A team lead can only add scopes they hold, for members of their teams; the permission boundary still caps the result. Audited.
+         */
+        put: operations["set_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users/{admin_user_id}/boundary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set an admin's permission boundary
+         * @description Caps the admin's effective scopes to the scopes of `policy_id` (AWS-style permissions boundary); `null` clears it. A team lead can set a boundary on members of their teams, only within their own scopes, and cannot clear one. Audited.
+         */
+        put: operations["set_user_boundary_api_v1_admin_iam_users__admin_user_id__boundary_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/groups/{group_id}/boundary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a team's default permission boundary
+         * @description Admins created inside the team get this boundary. Super admin, or the team lead within their own scopes; only a super admin can clear one. Audited.
+         */
+        put: operations["set_group_boundary_api_v1_admin_iam_groups__group_id__boundary_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users/{admin_user_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Suspend or reactivate an admin
+         * @description A team lead can suspend or reactivate members of teams they lead (not themselves and not another lead); a super admin can change anyone. A suspended admin's next request is rejected. Audited.
+         */
+        post: operations["set_member_status_api_v1_admin_iam_users__admin_user_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/iam/users/{admin_user_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke an admin's access
+         * @description Detaches the admin's direct policies, removes them from the caller's teams (all teams for a super admin) and suspends the account, in one transaction. Audited.
+         */
+        post: operations["revoke_member_api_v1_admin_iam_users__admin_user_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/dashboard/summary": {
         parameters: {
             query?: never;
@@ -676,7 +1185,11 @@ export interface paths {
         get: operations["get_product_api_v1_admin_catalog_products__product_ref__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete a product (soft)
+         * @description Soft-deletes any B2C product (course, diploma, package, bundle, consultation, live diploma): its status becomes `deleted`, so the storefront, search and the RAG index drop it, while its orders, entitlements, content and media stay. `POST /products/{ref}/restore` brings back the status it had. The product shows in the admin list only under `status=deleted`. Requires `admin:catalog:write`. Audited.
+         */
+        delete: operations["delete_product_api_v1_admin_catalog_products__product_ref__delete"];
         options?: never;
         head?: never;
         /**
@@ -706,6 +1219,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/catalog/products/{product_ref}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore a deleted product
+         * @description Undoes a soft delete: the product gets back the status it had (`draft` when unknown) and is re-indexed for search when that status is draft or published. Requires `admin:catalog:write`. Audited.
+         */
+        post: operations["restore_product_api_v1_admin_catalog_products__product_ref__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/catalog/categories/{category_id}/suggestions": {
         parameters: {
             query?: never;
@@ -724,6 +1257,26 @@ export interface paths {
          */
         put: operations["set_category_suggestions_api_v1_admin_catalog_categories__category_id__suggestions_put"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a skill
+         * @description Adds a B2C skill that products can be tagged with and customers can filter search by. The slug comes from `slug` or `name_en`; an Arabic-only skill gets a generated `skill-xxxxxxxx` code. A skill whose slug already exists is returned unchanged (`created: false`). `category_ids` also add it to those categories' suggestions. Requires `admin:catalog:write`.
+         */
+        post: operations["create_skill_api_v1_admin_catalog_skills_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1728,6 +2281,66 @@ export interface paths {
         get: operations["get_readme_api_v1_admin_catalog_products__product_ref__readme_get"];
         /** Update product README */
         put: operations["put_readme_api_v1_admin_catalog_products__product_ref__readme_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/rag/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Embed products into the vector index
+         * @description Starts the RAG workflow for `product_ids`, every draft/published product of `product_types`, or `all`. Only changed chunks are embedded unless `force`; products that are archived or gone are soft-deleted. Requires `admin:catalog:write`.
+         */
+        post: operations["index_products_api_v1_admin_rag_index_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/rag/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Soft-delete products from the vector index
+         * @description Starts the RAG workflow that removes the products' vectors from S3 Vectors. Their manifest rows are kept with status `deleted`, `deleted_at` and `reason`; indexing the product again restores it. Requires `admin:catalog:write`.
+         */
+        post: operations["delete_products_api_v1_admin_rag_delete_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/rag/products/{product_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A product's vector index status
+         * @description Chunk counts in the index and soft-deleted, with the last index/delete times. Requires catalog read.
+         */
+        get: operations["product_status_api_v1_admin_rag_products__product_id__get"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -9069,6 +9682,55 @@ export interface components {
             /** Reason */
             reason?: string | null;
         };
+        /** AdminAttachmentCreateRequest */
+        AdminAttachmentCreateRequest: {
+            /**
+             * Policy Id
+             * Format: uuid
+             */
+            policy_id: string;
+            /**
+             * Resource Scope
+             * @default all
+             */
+            resource_scope: string;
+        };
+        /** AdminAttachmentResponse */
+        AdminAttachmentResponse: {
+            /**
+             * Attachment Id
+             * Format: uuid
+             */
+            attachment_id: string;
+            /**
+             * Policy Id
+             * Format: uuid
+             */
+            policy_id: string;
+            /** Subject Type */
+            subject_type: string;
+            /**
+             * Subject Id
+             * Format: uuid
+             */
+            subject_id: string;
+            /**
+             * Resource Scope
+             * @default all
+             */
+            resource_scope: string;
+            /** Policy Code */
+            policy_code?: string | null;
+            /** Policy Name */
+            policy_name?: string | null;
+            /**
+             * Is Template
+             * @default false
+             */
+            is_template: boolean;
+            /** Created At */
+            created_at?: string | null;
+        };
         /** AdminAuditActionCount */
         AdminAuditActionCount: {
             /** Action */
@@ -9318,6 +9980,14 @@ export interface components {
             recording_status: string;
             /** Created At */
             created_at: string | null;
+        };
+        /**
+         * AdminBoundaryRequest
+         * @description Set (`policy_id`) or clear (`null`) a permission boundary.
+         */
+        AdminBoundaryRequest: {
+            /** Policy Id */
+            policy_id?: string | null;
         };
         /** AdminCreateRequest */
         AdminCreateRequest: {
@@ -9805,6 +10475,110 @@ export interface components {
             /** Bookings Count */
             bookings_count: number;
         };
+        /** AdminGroupCreateRequest */
+        AdminGroupCreateRequest: {
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Lead Admin User Id */
+            lead_admin_user_id?: string | null;
+        };
+        /** AdminGroupInviteRequest */
+        AdminGroupInviteRequest: {
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name?: string | null;
+            /** Password */
+            password: string;
+            /** Policy Ids */
+            policy_ids?: string[];
+            /**
+             * Resource Scope
+             * @default all
+             */
+            resource_scope: string;
+        };
+        /** AdminGroupMemberRequest */
+        AdminGroupMemberRequest: {
+            /**
+             * Admin User Id
+             * Format: uuid
+             */
+            admin_user_id: string;
+        };
+        /** AdminGroupPageResponse */
+        AdminGroupPageResponse: {
+            /** Items */
+            items: components["schemas"]["AdminGroupResponse"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** AdminGroupResponse */
+        AdminGroupResponse: {
+            /**
+             * Group Id
+             * Format: uuid
+             */
+            group_id: string;
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Lead Admin User Id */
+            lead_admin_user_id?: string | null;
+            /** Lead Name */
+            lead_name?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * Member Count
+             * @default 0
+             */
+            member_count: number;
+            /**
+             * Policy Count
+             * @default 0
+             */
+            policy_count: number;
+            /** Created At */
+            created_at?: string | null;
+            /** Boundary Policy Id */
+            boundary_policy_id?: string | null;
+        };
+        /** AdminGroupUpdateRequest */
+        AdminGroupUpdateRequest: {
+            /** Name */
+            name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Lead Admin User Id */
+            lead_admin_user_id?: string | null;
+            /** Status */
+            status?: string | null;
+        };
+        /**
+         * AdminInlinePolicy
+         * @description Scopes granted to one admin individually (their inline policy).
+         */
+        AdminInlinePolicy: {
+            /** Scopes */
+            scopes?: string[];
+            /**
+             * Resource Scope
+             * @default all
+             */
+            resource_scope: string;
+        };
         /** AdminInstructorDetail */
         AdminInstructorDetail: {
             /**
@@ -10093,6 +10867,25 @@ export interface components {
             status: string;
             /** Scopes */
             scopes: string[];
+            /** Groups */
+            groups?: string[];
+            /** Group Ids */
+            group_ids?: string[];
+            /** Resource Conditions */
+            resource_conditions?: {
+                [key: string]: string;
+            };
+            /** Boundary Policy Id */
+            boundary_policy_id?: string | null;
+            /** Boundary Scopes */
+            boundary_scopes?: string[] | null;
+            /** Granted Scopes */
+            granted_scopes?: string[];
+        };
+        /** AdminMemberStatusRequest */
+        AdminMemberStatusRequest: {
+            /** Status */
+            status: string;
         };
         /** AdminMoney */
         AdminMoney: {
@@ -10538,6 +11331,84 @@ export interface components {
             /** Country Code */
             country_code: string | null;
         };
+        /** AdminPolicyCreateRequest */
+        AdminPolicyCreateRequest: {
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /** Scopes */
+            scopes?: string[];
+            /**
+             * Is Template
+             * @default false
+             */
+            is_template: boolean;
+        };
+        /** AdminPolicyPageResponse */
+        AdminPolicyPageResponse: {
+            /** Items */
+            items: components["schemas"]["AdminPolicyResponse"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** AdminPolicyResponse */
+        AdminPolicyResponse: {
+            /**
+             * Policy Id
+             * Format: uuid
+             */
+            policy_id: string;
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Is Template
+             * @default false
+             */
+            is_template: boolean;
+            /**
+             * Is System
+             * @default false
+             */
+            is_system: boolean;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Attachment Count
+             * @default 0
+             */
+            attachment_count: number;
+            /** Created By */
+            created_by?: string | null;
+            /**
+             * Can Manage
+             * @default false
+             */
+            can_manage: boolean;
+            /** Created At */
+            created_at?: string | null;
+        };
+        /** AdminPolicyUpdateRequest */
+        AdminPolicyUpdateRequest: {
+            /** Name */
+            name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Is Template */
+            is_template?: boolean | null;
+            /** Scopes */
+            scopes?: string[] | null;
+        };
         /** AdminRefreshRequest */
         AdminRefreshRequest: {
             /** Refresh Token */
@@ -10687,6 +11558,37 @@ export interface components {
             /** Scopes */
             scopes: string[];
         };
+        /** AdminScopeArea */
+        AdminScopeArea: {
+            /** Area */
+            area: string;
+            /** Label */
+            label: {
+                [key: string]: string;
+            };
+            /** Scopes */
+            scopes: components["schemas"]["AdminScopeOption"][];
+        };
+        /** AdminScopeCatalogResponse */
+        AdminScopeCatalogResponse: {
+            /** Areas */
+            areas: components["schemas"]["AdminScopeArea"][];
+            /** Resource Scopes */
+            resource_scopes: string[];
+            /** Super Scope */
+            super_scope: string;
+        };
+        /** AdminScopeOption */
+        AdminScopeOption: {
+            /** Scope */
+            scope: string;
+            /** Action */
+            action: string;
+            /** Label */
+            label: {
+                [key: string]: string;
+            };
+        };
         /** AdminSearchHit */
         AdminSearchHit: {
             /**
@@ -10722,6 +11624,24 @@ export interface components {
             total: number;
             /** Items */
             items?: components["schemas"]["AdminSearchHit"][];
+        };
+        /** AdminSessionSummary */
+        AdminSessionSummary: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Status */
+            status: string;
+            /** Created At */
+            created_at?: string | null;
+            /** Expires At */
+            expires_at?: string | null;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /** Rotated At */
+            rotated_at?: string | null;
         };
         /** AdminSlot */
         AdminSlot: {
@@ -10818,6 +11738,16 @@ export interface components {
             /** Revenue */
             revenue: string | null;
         };
+        /** AdminTraceResponse */
+        AdminTraceResponse: {
+            admin: components["schemas"]["AdminUserResponse"];
+            /** Sessions */
+            sessions: components["schemas"]["AdminSessionSummary"][];
+            /** Audit Logs */
+            audit_logs: components["schemas"]["AdminAuditLogResponse"][];
+            /** Total Actions */
+            total_actions: number;
+        };
         /**
          * AdminUpdateExpertRequest
          * @description Partial update; omitted fields keep their value.
@@ -10895,6 +11825,31 @@ export interface components {
             /** Offset */
             offset: number;
         };
+        /**
+         * AdminUserProvisionRequest
+         * @description Create an admin and grant access in one step (dashboard "Add user").
+         */
+        AdminUserProvisionRequest: {
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name?: string | null;
+            /** Password */
+            password: string;
+            /** Policy Ids */
+            policy_ids?: string[];
+            /** Group Ids */
+            group_ids?: string[];
+            /** Lead Of Group Ids */
+            lead_of_group_ids?: string[];
+            /**
+             * Resource Scope
+             * @default all
+             */
+            resource_scope: string;
+            /** Boundary Policy Id */
+            boundary_policy_id?: string | null;
+        };
         /** AdminUserResponse */
         AdminUserResponse: {
             /**
@@ -10910,6 +11865,20 @@ export interface components {
             status: string;
             /** Scopes */
             scopes: string[];
+            /** Groups */
+            groups?: string[];
+            /** Group Ids */
+            group_ids?: string[];
+            /** Resource Conditions */
+            resource_conditions?: {
+                [key: string]: string;
+            };
+            /** Boundary Policy Id */
+            boundary_policy_id?: string | null;
+            /** Boundary Scopes */
+            boundary_scopes?: string[] | null;
+            /** Granted Scopes */
+            granted_scopes?: string[];
         };
         /**
          * AffiliateApplicationIn
@@ -12451,6 +13420,10 @@ export interface components {
             legacy_kind?: string | null;
             /** Legacy Id */
             legacy_id?: number | null;
+            /** Deleted At */
+            deleted_at?: string | null;
+            /** Deleted Reason */
+            deleted_reason?: string | null;
         };
         /** CatalogItemDetail */
         CatalogItemDetail: {
@@ -12482,6 +13455,18 @@ export interface components {
             extension_duration_days?: number | null;
             /** Instructors */
             instructors?: components["schemas"]["CatalogItemInstructor"][];
+            /** Category Ids */
+            category_ids?: string[];
+            /** Field Ids */
+            field_ids?: string[];
+            /** Skills */
+            skills?: components["schemas"]["CatalogItemSkill"][];
+            /** Admin Tags */
+            admin_tags?: string[];
+            /** Deleted By */
+            deleted_by?: string | null;
+            /** Status Before Delete */
+            status_before_delete?: string | null;
         };
         /**
          * CatalogItemInstructor
@@ -12525,6 +13510,18 @@ export interface components {
             valid_from: string | null;
             /** Valid To */
             valid_to: string | null;
+        };
+        /** CatalogItemSkill */
+        CatalogItemSkill: {
+            /**
+             * Skill Id
+             * Format: uuid
+             */
+            skill_id: string;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
         };
         /** CatalogProduct */
         CatalogProduct: {
@@ -14304,6 +15301,29 @@ export interface components {
              * @default true
              */
             active: boolean;
+        };
+        /** CreateSkillRequest */
+        CreateSkillRequest: {
+            /**
+             * Name Ar
+             * @description Arabic name shown on the storefront.
+             */
+            name_ar: string;
+            /**
+             * Name En
+             * @description English name; also the slug source.
+             */
+            name_en?: string | null;
+            /**
+             * Slug
+             * @description URL code; derived from `name_en` when omitted.
+             */
+            slug?: string | null;
+            /**
+             * Category Ids
+             * @description Categories the skill is suggested for on the admin forms.
+             */
+            category_ids?: string[];
         };
         /** CreateSlotsRequest */
         CreateSlotsRequest: {
@@ -18816,6 +19836,16 @@ export interface components {
             learning_outcomes?: string[];
             /** Skills */
             skills?: components["schemas"]["ProductSkillResponse"][];
+            /**
+             * Tags
+             * @description Product tags (the search `tag` filter values).
+             */
+            tags?: string[];
+            /**
+             * Fields
+             * @description Top-level categories (fields) of `categories`.
+             */
+            fields?: components["schemas"]["app__modules__catalog__presentation__schemas__CategoryResponse"][];
             live_diploma?: components["schemas"]["LiveDiplomaView"] | null;
         };
         /** ProductLearners */
@@ -19399,6 +20429,80 @@ export interface components {
              * @default manual
              */
             source: string;
+        };
+        /** RagDeleteBody */
+        RagDeleteBody: {
+            /**
+             * Product Ids
+             * @description Products to take out of the index.
+             */
+            product_ids: string[];
+            /**
+             * Reason
+             * @default deleted by admin
+             */
+            reason: string;
+        };
+        /** RagIndexBody */
+        RagIndexBody: {
+            /**
+             * Product Ids
+             * @description Products to embed (one or many).
+             */
+            product_ids?: string[];
+            /**
+             * Product Types
+             * @description Also every draft/published product of these types.
+             */
+            product_types?: ("course" | "diploma" | "package" | "bundle" | "consultation" | "live_diploma")[];
+            /**
+             * All
+             * @description Every draft/published product, plus any product still in the index (archived ones are soft-deleted).
+             * @default false
+             */
+            all: boolean;
+            /**
+             * Force
+             * @description Re-embed chunks whose text did not change.
+             * @default false
+             */
+            force: boolean;
+        };
+        /** RagProductStatus */
+        RagProductStatus: {
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /**
+             * State
+             * @description `indexed`: has vectors; `deleted`: soft-deleted (no vectors, rows kept); `not_indexed`: never embedded.
+             * @enum {string}
+             */
+            state: "indexed" | "deleted" | "not_indexed";
+            /** Indexed Chunks */
+            indexed_chunks: number;
+            /** Deleted Chunks */
+            deleted_chunks: number;
+            /** Indexed At */
+            indexed_at?: string | null;
+            /** Deleted At */
+            deleted_at?: string | null;
+            /** Deleted Reason */
+            deleted_reason?: string | null;
+        };
+        /** RagRunView */
+        RagRunView: {
+            /** Workflow Id */
+            workflow_id: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "index" | "delete";
+            /** Products */
+            products: number;
         };
         /** ReadmeResponse */
         ReadmeResponse: {
@@ -20191,6 +21295,20 @@ export interface components {
              */
             base_revision: number;
         };
+        /** SearchCategoryOptionResponse */
+        SearchCategoryOptionResponse: {
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Count */
+            count: number;
+            /**
+             * Parent
+             * @description Parent category code; null for a top-level category (a field).
+             */
+            parent?: string | null;
+        };
         /** SearchInstructorResponse */
         SearchInstructorResponse: {
             /** Instructor Id */
@@ -20238,7 +21356,7 @@ export interface components {
             /** Product Types */
             product_types: components["schemas"]["SearchOptionResponse"][];
             /** Categories */
-            categories: components["schemas"]["SearchOptionResponse"][];
+            categories: components["schemas"]["SearchCategoryOptionResponse"][];
             /** Skills */
             skills: components["schemas"]["SearchOptionResponse"][];
             /** Tags */
@@ -20421,6 +21539,11 @@ export interface components {
             debug?: {
                 [key: string]: unknown;
             } | null;
+            /**
+             * Image
+             * @description First product image; card art for B2C-only products.
+             */
+            image?: string | null;
             /**
              * Legacy Id
              * @description Id of the legacy record behind this product (the number in its slug).
@@ -20650,6 +21773,23 @@ export interface components {
             sort_order: number;
             /** Category Ids */
             category_ids?: string[];
+        };
+        /** SkillView */
+        SkillView: {
+            /**
+             * Skill Id
+             * Format: uuid
+             */
+            skill_id: string;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /**
+             * Created
+             * @description False when a skill with this slug already existed and was returned instead.
+             */
+            created: boolean;
         };
         /** SlaStateResponse */
         SlaStateResponse: {
@@ -23366,6 +24506,8 @@ export interface operations {
                 request_id?: string | null;
                 /** @description Free-text search over action, path and entity type. */
                 search?: string | null;
+                /** @description Only actions by members of this admin group (team). */
+                group_id?: string | null;
                 /** @description Only rows created at/after this UTC instant. */
                 start?: string | null;
                 /** @description Only rows created before this UTC instant. */
@@ -23459,6 +24601,1281 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminAuditLogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    scope_catalog_api_v1_admin_iam_scopes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminScopeCatalogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_directory_api_v1_admin_iam_directory_get: {
+        parameters: {
+            query?: {
+                search?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_iam_users_api_v1_admin_iam_users_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    provision_iam_user_api_v1_admin_iam_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminUserProvisionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_iam_user_api_v1_admin_iam_users__admin_user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_groups_api_v1_admin_iam_groups_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGroupPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_group_api_v1_admin_iam_groups_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminGroupCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGroupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_group_api_v1_admin_iam_groups__group_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGroupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_group_api_v1_admin_iam_groups__group_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_group_api_v1_admin_iam_groups__group_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminGroupUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGroupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_group_members_api_v1_admin_iam_groups__group_id__members_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_group_member_api_v1_admin_iam_groups__group_id__members_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminGroupMemberRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_group_member_api_v1_admin_iam_groups__group_id__members__admin_user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_team_admin_api_v1_admin_iam_groups__group_id__admin_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminGroupInviteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_group_policies_api_v1_admin_iam_groups__group_id__policies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttachmentResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    attach_group_policy_api_v1_admin_iam_groups__group_id__policies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminAttachmentCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttachmentResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detach_group_policy_api_v1_admin_iam_groups__group_id__policies__attachment_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+                /** @description Binding id. */
+                attachment_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_policies_api_v1_admin_iam_policies_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                template_only?: boolean | null;
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_policy_api_v1_admin_iam_policies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminPolicyCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_policy_templates_api_v1_admin_iam_policies_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_policy_api_v1_admin_iam_policies__policy_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Policy id. */
+                policy_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_policy_api_v1_admin_iam_policies__policy_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Policy id. */
+                policy_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_policy_api_v1_admin_iam_policies__policy_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Policy id. */
+                policy_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminPolicyUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_policy_scopes_api_v1_admin_iam_policies__policy_id__scopes_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Policy id. */
+                policy_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminPolicyUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminPolicyResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_admin_policies_api_v1_admin_iam_admin_users__admin_user_id__policies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttachmentResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    attach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminAttachmentCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttachmentResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detach_admin_policy_api_v1_admin_iam_admin_users__admin_user_id__policies__attachment_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+                /** @description Binding id. */
+                attachment_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_trace_api_v1_admin_iam_admin_users__admin_user_id__trace_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTraceResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    team_audit_api_v1_admin_iam_audit_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                /** @description Restrict to one team. */
+                group_id?: string | null;
+                /** @description Restrict to one admin. */
+                actor_id?: string | null;
+                /** @description Exact action code. */
+                action?: string | null;
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAuditLogPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminInlinePolicy"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_inline_policy_api_v1_admin_iam_users__admin_user_id__inline_policy_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminInlinePolicy"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_user_boundary_api_v1_admin_iam_users__admin_user_id__boundary_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminBoundaryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_group_boundary_api_v1_admin_iam_groups__group_id__boundary_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Group id. */
+                group_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminBoundaryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGroupResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_member_status_api_v1_admin_iam_users__admin_user_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminMemberStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_member_api_v1_admin_iam_users__admin_user_id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Admin user id. */
+                admin_user_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserResponse"];
                 };
             };
             /** @description Validation Error */
@@ -23842,8 +26259,8 @@ export interface operations {
                 source?: "all" | "b2c" | "legacy";
                 /** @description `course`, `diploma`, `package`, `bundle`, `consultation` or `live_diploma`; comma-separated for several. */
                 product_type?: string | null;
-                /** @description Only this status. */
-                status?: ("draft" | "published" | "unpublished" | "archived") | null;
+                /** @description Only this status. Soft-deleted products are left out unless `deleted` is asked for. */
+                status?: ("draft" | "published" | "unpublished" | "archived" | "deleted") | null;
                 /** @description Search in title and slug. */
                 query?: string | null;
                 /** @description B2C category slug or id; comma-separated for several (matches any). */
@@ -24185,6 +26602,44 @@ export interface operations {
             };
         };
     };
+    delete_product_api_v1_admin_catalog_products__product_ref__delete: {
+        parameters: {
+            query?: {
+                /** @description Why it was deleted (kept for the audit). */
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`. */
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogProductView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_product_api_v1_admin_catalog_products__product_ref__patch: {
         parameters: {
             query?: never;
@@ -24242,6 +26697,41 @@ export interface operations {
                 "application/json": components["schemas"]["ProductStatusRequest"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogProductView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_product_api_v1_admin_catalog_products__product_ref__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`. */
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -24322,6 +26812,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CategorySuggestionsView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_skill_api_v1_admin_catalog_skills_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSkillRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillView"];
                 };
             };
             /** @description Validation Error */
@@ -26647,6 +29173,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReadmeResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    index_products_api_v1_admin_rag_index_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RagIndexBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RagRunView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_products_api_v1_admin_rag_delete_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RagDeleteBody"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RagRunView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    product_status_api_v1_admin_rag_products__product_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RagProductStatus"];
                 };
             };
             /** @description Validation Error */

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { consultationAdminKeys, importLegacyConsultations, listB2cExperts, type B2cExpertRow } from "@/lib/api";
 import { formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import { initialsOf } from "@/lib/status";
 import { AppLink } from "@/components/ui/app-link";
 import { toast } from "@/components/ui/toast";
@@ -15,6 +16,7 @@ export default function ConsultationExpertsPage() {
   const queryClient = useQueryClient();
 
   /** Counts what legacy has that B2C lacks, asks, then imports only those (existing experts are never changed). */
+  const canWrite = useCan("consultationsWrite.write");
   const syncLegacy = useMutation({
     mutationFn: async () => {
       const preview = await importLegacyConsultations(true);
@@ -65,12 +67,12 @@ export default function ConsultationExpertsPage() {
       <PageHead title={t("الخبراء", "Experts")}
         sub={t("الخبراء، مواعيدهم المتاحة وحجوزاتهم.", "Experts, their availability and bookings.")}
         actions={
-          <Button
+          canWrite ? <Button
             icon="refresh"
             disabled={syncLegacy.isPending}
             label={syncLegacy.isPending ? t("جارٍ المزامنة…", "Syncing…") : t("مزامنة من النظام القديم", "Sync from legacy")}
             onClick={() => syncLegacy.mutate()}
-          />
+          /> : undefined
         }
       />
       <ErrorAlert error={syncLegacy.error} title={t("تعذّرت المزامنة", "Couldn't sync from legacy")} />

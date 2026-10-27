@@ -25,6 +25,36 @@ npm run dev        # http://localhost:5173 (or any free port)
 - Sign in at `/login` (`admin@masteryacademy.site` / `Admin@12345` in dev). Session store:
   `src/lib/auth/store.ts` (zustand, silent refresh, cross-tab BroadcastChannel).
 
+## Access management (IAM)
+
+The dashboard includes an **Access** module (sidebar: Users, Teams, Policies & templates,
+Audit & tracing) backed by `/api/v1/admin/iam/*`:
+
+- **Users** — searchable list; click a user to open the full `/access/users/:adminUserId`
+  page (teams/lead, effective scopes with `all/team/own` conditions, team policies, direct
+  policies, recent actions, suspend/activate).
+- **Add user** — action modal with password generate + eye toggle, inherited team-policy
+  preview, searchable policy picker (templates + the selected teams’ policies, union for
+  multiple teams), team lead (super), record scope.
+- **Teams** — create a team, then open `/access/teams/:groupId` for members, lead assignment,
+  binding policies (searchable, granted scope), and **New team policy** (lead creates and
+  attaches a policy in one step).
+- **Policies & templates** — templates, custom policies, scope catalog; Edit appears only
+  when the API returns `can_manage`; super admins manage all custom policies (seeded system
+  templates are read-only).
+- **Audit & tracing** — team/admin filters with aligned search, action trail, and a Details
+  modal with actor, request context, and pretty-printed before/payload + after/result.
+- **Permission boundaries** — cap a user's effective scopes with a policy (user page, team default,
+  Add-user picker); leads can suspend/activate and revoke members of their own teams.
+- **Domain gating** — the sidebar and shell guard show only domains/pages allowed by the
+  admin’s scopes; direct URLs to hidden domains are blocked.
+- **Read vs write** — write actions use `useCan("<area>.write")` (`ACTION_SCOPE` in
+  `src/lib/permissions.ts` accepts only write scopes) and write-only routes carry `RequireScope`.
+- **E2E** — `npm run test:e2e:iam` runs `e2e/iam-*.spec.ts` (personas, delegation, visibility).
+
+Full feature guide (model, scopes, delegation boundaries, resource conditions, API, security):
+[../docs/admin/iam_access_management.md](../docs/admin/iam_access_management.md).
+
 ## Where it comes from
 
 The prototype (`admin_demo/`) is the source of truth for layout, styles and interaction. This app
@@ -170,6 +200,10 @@ npm run api:types     # regenerate src/types/openapi.ts from openapi.json
 npm run test:api      # live read tests against http://localhost:8000 (offline client tests too)
 npm run test:api:mutations   # also exercises every POST/PATCH/PUT/DELETE
 ```
+
+`npm run test:e2e` / `npm run test:e2e:iam` (Playwright) need the dev stack and the QA account
+env (`QA_LOGIN_KEY`, `QA_ADMIN_EMAIL`, `QA_CUSTOMER_EMAIL`, from the backend `.env`); set
+`E2E_ADMIN_URL` when the app is not on `http://localhost:5173`.
 
 `scripts/test-api-layer.ts` logs in as the dev admin, keeps a cookie jar, and walks every admin +
 legacy-admin endpoint. The offline section stubs `fetch` to check URL/query/body/error handling.

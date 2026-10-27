@@ -12,6 +12,7 @@ import {
 } from "@/lib/api";
 import { formatAmount, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import { toast } from "@/components/ui/toast";
 import { Badge, Button, Card, ErrorAlert, Field, FormActions } from "@/components/ui/kit";
 import { DataTable, type Column } from "@/components/ui/data-table";
@@ -126,6 +127,7 @@ export function ExpertServicesCard({ expert }: { expert: B2cExpert }) {
   const t = useT();
   const refresh = useRefreshExpert(expert.consultant_id);
   const [editing, setEditing] = useState<Editing>(null);
+  const canWrite = useCan("consultationsWrite.write");
 
   const remove = useMutation({
     mutationFn: (service: B2cExpertService) => deleteB2cExpertService(expert.consultant_id, service.service_id),
@@ -160,7 +162,7 @@ export function ExpertServicesCard({ expert }: { expert: B2cExpert }) {
       key: "actions",
       header: "",
       align: "end",
-      cell: (s) => (
+      cell: (s) => canWrite ? (
         <span className="ma-cell-flex">
           <Button sm label={t("تعديل", "Edit")} onClick={() => setEditing({ kind: "edit", service: s })} />
           <Button
@@ -175,7 +177,7 @@ export function ExpertServicesCard({ expert }: { expert: B2cExpert }) {
             }}
           />
         </span>
-      ),
+      ) : null,
     },
   ];
 
@@ -184,7 +186,7 @@ export function ExpertServicesCard({ expert }: { expert: B2cExpert }) {
       <Card
         title={t("الخدمات", "Services")}
         flush
-        actions={<Button sm kind="primary" icon="plus" label={t("إضافة خدمة", "Add service")} onClick={() => setEditing({ kind: "new" })} />}
+        actions={canWrite ? <Button sm kind="primary" icon="plus" label={t("إضافة خدمة", "Add service")} onClick={() => setEditing({ kind: "new" })} /> : undefined}
       >
         <DataTable columns={columns} rows={expert.services} empty={t("لا خدمات.", "No services.")} />
       </Card>

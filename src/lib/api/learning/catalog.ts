@@ -37,6 +37,9 @@ type ListProductResourcesOp = "list_product_resources_api_v1_admin_catalog_produ
 type UpdateResourceDurationOp = "update_resource_duration_api_v1_admin_catalog_resources__resource_id__patch";
 type CategorySuggestionsOp = "category_suggestions_api_v1_admin_catalog_categories__category_id__suggestions_get";
 type CategoriesOp = "list_categories_api_v1_admin_catalog_categories_get";
+type CreateSkillOp = "create_skill_api_v1_admin_catalog_skills_post";
+type DeleteProductOp = "delete_product_api_v1_admin_catalog_products__product_ref__delete";
+type RestoreProductOp = "restore_product_api_v1_admin_catalog_products__product_ref__restore_post";
 type PriceListsOp = "list_price_lists_api_v1_admin_catalog_price_lists_get";
 type ExtensionPackagesOp = "list_extension_packages_api_v1_admin_catalog_extension_packages_get";
 type CertificateTemplatesOp = "list_certificate_templates_api_v1_admin_catalog_certificates_get";
@@ -64,6 +67,8 @@ export type ProductLinks = ProductView["links"];
 export type ProductItem = ProductView["product"];
 export type ProductPrice = ProductDetail["prices"][number];
 export type ProductStatus = RequestBody<SetStatusOp>["status"];
+/** A status the list can filter by: the settable ones plus soft-deleted products. */
+export type ProductListStatus = NonNullable<ProductsParams["status"]>;
 export type ProductSort = NonNullable<ProductsParams["sort"]>;
 export type ProductSource = NonNullable<ProductsParams["source"]>;
 export type ProductOrigin = NonNullable<ProductsParams["origin"]>;
@@ -120,6 +125,11 @@ export interface ProductTagOption {
 }
 
 export type UpdateProductRequest = RequestBody<UpdateProductOp>;
+export type CreateSkillRequest = RequestBody<CreateSkillOp>;
+/** A B2C skill; `created` is false when the slug already existed and that skill was returned. */
+export type CreatedSkill = SuccessResponse<CreateSkillOp>;
+/** A product's admin-set skill, as the product detail returns it. */
+export type ProductDetailSkill = NonNullable<ProductDetail["skills"]>[number];
 /** Skills and tags curated for one category. */
 export type CategorySuggestions = SuccessResponse<CategorySuggestionsOp>;
 
@@ -227,6 +237,7 @@ export const productPaths = {
   list: "admin/catalog/products",
   detail: "admin/catalog/products/{product_ref}",
   status: "admin/catalog/products/{product_ref}/status",
+  restore: "admin/catalog/products/{product_ref}/restore",
   sales: "admin/catalog/products/{product_ref}/sales",
   behavior: "admin/catalog/products/{product_ref}/behavior",
   transactions: "admin/catalog/products/{product_ref}/transactions",
@@ -260,6 +271,7 @@ export const resourcePaths = {
 
 /** Public catalog read endpoints (`/catalog/*`) used by the product form for its options. */
 export const categorySuggestionsPath = "admin/catalog/categories/{category_id}/suggestions";
+export const skillsPath = "admin/catalog/skills";
 
 export const catalogPaths = {
   onboardingOptions: "catalog/onboarding-options",
@@ -300,6 +312,22 @@ export function getProduct(product_ref: PathParams<GetProductOp>["product_ref"])
 /** `POST /admin/catalog/products` — creates a course, diploma, package or consultation. Audited. */
 export function createProduct(body: CreateProductRequest): Promise<ProductView> {
   return apiPost(productPaths.list, { body });
+}
+
+/** `DELETE /admin/catalog/products/{ref}` — soft delete: the product leaves the store, search and the RAG index;
+ * orders, access and content stay, and `restoreProduct` brings back the status it had. Audited. */
+export function deleteProduct(product_ref: string, reason?: string): Promise<SuccessResponse<DeleteProductOp>> {
+  return apiDelete(productPaths.detail, { path: { product_ref }, query: reason?.trim() ? { reason: reason.trim() } : {} });
+}
+
+/** `POST /admin/catalog/products/{ref}/restore` — undo a soft delete. Audited. */
+export function restoreProduct(product_ref: string): Promise<SuccessResponse<RestoreProductOp>> {
+  return apiPost(productPaths.restore, { path: { product_ref } });
+}
+
+/** `POST /admin/catalog/skills` — adds a skill (or returns the one with the same slug). Audited. */
+export function createSkill(body: CreateSkillRequest): Promise<CreatedSkill> {
+  return apiPost(skillsPath, { body });
 }
 
 /** `GET /catalog/onboarding-options` — skills, tags and product types for the product form. */

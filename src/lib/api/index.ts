@@ -13,6 +13,7 @@ export * from "@/lib/api/operation-types";
 // Auth & access control
 export * from "@/lib/api/auth/admin-auth";
 export * from "@/lib/api/iam/rbac";
+export * from "@/lib/api/iam/access";
 
 // Dashboard
 export * from "@/lib/api/dashboard/dashboard";

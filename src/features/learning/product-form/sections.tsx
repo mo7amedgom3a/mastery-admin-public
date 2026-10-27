@@ -1,6 +1,9 @@
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Button, Card, Field } from "@/components/ui/kit";
+import { catalogQueries, createSkill } from "@/lib/api";
+import { Button, Card, ErrorAlert, Field } from "@/components/ui/kit";
+import { toast } from "@/components/ui/toast";
 import { useLang, useT } from "@/lib/i18n";
 
 import { LANGUAGE_OPTIONS, LEVEL_OPTIONS, type GeneralInfo } from "./model";
@@ -98,9 +101,12 @@ export function GeneralInfoCard({
 }
 
 /**
- * Category-first classification. Picking categories floats their curated skills/tags to the top of
- * the pickers (the full lists stay available), and "Add suggested" applies them in one click.
- * Tags are optional (`tags` omitted for products that have none, e.g. bundles).
+ * Field-first classification. A field is a top-level category; its sub-categories are picked
+ * under it, and both go to the product's `category_ids` (removing a field drops its
+ * sub-categories). Picking categories floats their curated skills/tags to the top of the pickers
+ * (the full lists stay available), and "Add suggested" applies them in one click. A skill that
+ * doesn't exist yet can be created from the skill search. Tags are optional (`tags` omitted for
+ * products that have none, e.g. bundles).
  */
 export function ClassificationCard({
   idPrefix,
@@ -128,9 +134,70 @@ export function ClassificationCard({
   const t = useT();
   const lang = useLang();
   const suggestions = useCategorySuggestions(categoryIds);
+  const [skillDraft, setSkillDraft] = useState<{ nameAr: string; nameEn: string } | null>(null);
+  const [createdSkills, setCreatedSkills] = useState<PickerOption[]>([]);
+  const queryClient = useQueryClient();
+
+  const rootOf = useMemo(() => {
+    const parents = options.categoryParents;
+    return (id: string): string => {
+      let current = id;
+      for (let depth = 0; depth < 10; depth += 1) {
+        const parent = parents.get(current);
+        if (!parent) return current;
+        current = parent;
+      }
+      return current;
+    };
+  }, [options.categoryParents]);
+
+  const fieldIds = useMemo(() => [...new Set(categoryIds.map(rootOf))], [categoryIds, rootOf]);
+  const fieldOptions = useMemo(
+    () => options.categoryOptions.filter((option) => !options.categoryParents.get(String(option.value))),
+    [options.categoryOptions, options.categoryParents],
+  );
+  const subCategoryOptions = useMemo(
+    () =>
+      options.categoryOptions.filter(
+        (option) => options.categoryParents.get(String(option.value)) && fieldIds.includes(rootOf(String(option.value))),
+      ),
+    [options.categoryOptions, options.categoryParents, fieldIds, rootOf],
+  );
+  const subCategoryIds = categoryIds.filter((id) => !fieldIds.includes(id));
+
+  const toggleField = (value: string) => {
+    if (fieldIds.includes(value)) {
+      onCategoriesChange(categoryIds.filter((id) => rootOf(id) !== value));
+    } else {
+      onCategoriesChange([...categoryIds, value]);
+    }
+  };
+
+  const createSkillMutation = useMutation({
+    mutationFn: (draft: { nameAr: string; nameEn: string }) =>
+      createSkill({
+        name_ar: draft.nameAr.trim(),
+        name_en: draft.nameEn.trim() || null,
+        category_ids: categoryIds,
+      }),
+    onSuccess: (skill) => {
+      setSkillDraft(null);
+      setCreatedSkills((prev) =>
+        prev.some((option) => option.value === skill.skill_id) ? prev : [...prev, { value: skill.skill_id, label: skill.name }],
+      );
+      if (!skillIds.includes(skill.skill_id)) onSkillsChange([...skillIds, skill.skill_id]);
+      toast.success(
+        skill.created ? t(`تمت إضافة المهارة «${skill.name}»`, `Skill “${skill.name}” added`) : t("المهارة موجودة بالفعل وتم اختيارها", "That skill already existed and was selected"),
+      );
+      queryClient.invalidateQueries({ queryKey: catalogQueries.onboardingOptions().queryKey });
+      queryClient.invalidateQueries({ queryKey: ["catalog", "category-suggestions"] });
+    },
+  });
 
   const skillOptions: PickerOption[] = useMemo(() => {
     const suggestedLabel = lang === "ar" ? "مقترح" : "Suggested";
+    const newLabel = lang === "ar" ? "جديد" : "New";
+    const known = new Set(options.skillOptions.map((option) => String(option.value)));
     const suggested: PickerOption[] = [];
     const rest: PickerOption[] = [];
     for (const option of options.skillOptions) {
@@ -140,8 +207,11 @@ export function ClassificationCard({
         rest.push(option);
       }
     }
-    return [...suggested, ...rest];
-  }, [options.skillOptions, suggestions.skillIds, lang]);
+    const created = createdSkills
+      .filter((option) => !known.has(String(option.value)))
+      .map((option) => ({ ...option, hint: newLabel }));
+    return [...created, ...suggested, ...rest];
+  }, [options.skillOptions, suggestions.skillIds, createdSkills, lang]);
 
   const tagSuggestions = useMemo(
     () => [...suggestions.tags, ...options.tags.filter((tag) => !suggestions.tags.includes(tag))],
@@ -156,19 +226,33 @@ export function ClassificationCard({
     <Card title={t("التصنيف والوسوم", "Classification & tags")}>
       <div className="ma-form">
         <CheckPicker
-          id={`${idPrefix}-categories`}
-          label={t("التصنيفات", "Categories")}
-          options={options.categoryOptions}
-          selected={categoryIds}
-          onToggle={(value) => onCategoriesChange(toggled(categoryIds, String(value)))}
+          id={`${idPrefix}-fields`}
+          label={t("المجالات", "Fields")}
+          options={fieldOptions}
+          selected={fieldIds}
+          onToggle={(value) => toggleField(String(value))}
           onClear={() => onCategoriesChange([])}
-          searchPlaceholder={t("ابحث في التصنيفات…", "Search categories…")}
-          emptyText={t("لا تصنيفات متاحة.", "No categories available.")}
+          searchPlaceholder={t("ابحث في المجالات…", "Search fields…")}
+          emptyText={t("لا مجالات متاحة.", "No fields available.")}
           hint={t(
-            "اختر التصنيف أولًا لتظهر المهارات والوسوم المقترحة له.",
-            "Pick the category first to see its suggested skills and tags.",
+            "اختر المجال أولًا لتظهر تصنيفاته والمهارات والوسوم المقترحة له.",
+            "Pick the field first to see its categories and suggested skills and tags.",
           )}
           required
+        />
+        <CheckPicker
+          id={`${idPrefix}-categories`}
+          label={t("التصنيفات", "Categories")}
+          options={subCategoryOptions}
+          selected={subCategoryIds}
+          onToggle={(value) => onCategoriesChange(toggled(categoryIds, String(value)))}
+          onClear={() => onCategoriesChange(categoryIds.filter((id) => fieldIds.includes(id)))}
+          searchPlaceholder={t("ابحث في التصنيفات…", "Search categories…")}
+          emptyText={
+            fieldIds.length === 0
+              ? t("اختر مجالًا لعرض تصنيفاته.", "Pick a field to see its categories.")
+              : t("لا تصنيفات فرعية لهذا المجال.", "This field has no sub-categories.")
+          }
         />
         {hasSuggestions ? (
           <div>
@@ -183,16 +267,52 @@ export function ClassificationCard({
           </div>
         ) : null}
         {showSkills ? (
-          <CheckPicker
-            id={`${idPrefix}-skills`}
-            label={t("المهارات", "Skills")}
-            options={skillOptions}
-            selected={skillIds}
-            onToggle={(value) => onSkillsChange(toggled(skillIds, String(value)))}
-            onClear={() => onSkillsChange([])}
-            searchPlaceholder={t("ابحث في المهارات…", "Search skills…")}
-            emptyText={t("لا مهارات متاحة.", "No skills available.")}
-          />
+          <>
+            <CheckPicker
+              id={`${idPrefix}-skills`}
+              label={t("المهارات", "Skills")}
+              options={skillOptions}
+              selected={skillIds}
+              onToggle={(value) => onSkillsChange(toggled(skillIds, String(value)))}
+              onClear={() => onSkillsChange([])}
+              searchPlaceholder={t("ابحث في المهارات أو أضف مهارة جديدة…", "Search skills or add a new one…")}
+              emptyText={t("لا مهارات متاحة.", "No skills available.")}
+              onCreate={(query) =>
+                setSkillDraft(/[\u0600-\u06ff]/.test(query) ? { nameAr: query, nameEn: "" } : { nameAr: query, nameEn: query })
+              }
+              createLabel={(query) => t(`إنشاء مهارة «${query}»`, `Create skill “${query}”`)}
+            />
+            {skillDraft ? (
+              <div className="ma-inline-create" role="group" aria-label={t("مهارة جديدة", "New skill")}>
+                <Field
+                  id={`${idPrefix}-new-skill-ar`}
+                  label={t("اسم المهارة بالعربية", "Skill name (Arabic)")}
+                  value={skillDraft.nameAr}
+                  onChange={(nameAr) => setSkillDraft((prev) => (prev ? { ...prev, nameAr } : prev))}
+                  required
+                />
+                <Field
+                  id={`${idPrefix}-new-skill-en`}
+                  label={t("الاسم بالإنجليزية (يُستخدم في رابط البحث)", "English name (used for the search link)")}
+                  value={skillDraft.nameEn}
+                  dir="ltr"
+                  onChange={(nameEn) => setSkillDraft((prev) => (prev ? { ...prev, nameEn } : prev))}
+                />
+                <ErrorAlert error={createSkillMutation.error} title={t("تعذّر إنشاء المهارة", "Couldn't create the skill")} />
+                <div className="ma-inline-create__actions">
+                  <Button
+                    sm
+                    kind="secondary"
+                    icon="plus"
+                    label={createSkillMutation.isPending ? t("جارٍ الإنشاء…", "Creating…") : t("إنشاء المهارة", "Create skill")}
+                    disabled={createSkillMutation.isPending || !skillDraft.nameAr.trim()}
+                    onClick={() => createSkillMutation.mutate(skillDraft)}
+                  />
+                  <Button sm kind="soft" label={t("إلغاء", "Cancel")} onClick={() => setSkillDraft(null)} />
+                </div>
+              </div>
+            ) : null}
+          </>
         ) : null}
         {onTagsChange ? (
           <TagInput
@@ -201,6 +321,7 @@ export function ClassificationCard({
             tags={tags ?? []}
             suggestions={tagSuggestions}
             onChange={onTagsChange}
+            hint={t("اكتب وسمًا جديدًا ثم Enter، أو اختر من المقترح.", "Type a new tag then Enter, or pick a suggestion.")}
           />
         ) : null}
         {children}

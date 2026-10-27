@@ -663,9 +663,60 @@ a.ma-list__title:hover { text-decoration: underline; text-decoration-color: var(
 .ma-check { display: grid; place-items: center; width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--on-accent); flex: none; }
 .ma-check[data-state="checked"] { background: var(--accent); border-color: var(--accent); }
 .ma-check .ma-icon { width: 13px; height: 13px; }
-.ma-select-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 40px; min-width: 150px; padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); font: inherit; font-size: 14px; text-align: start; cursor: pointer; }
+.ma-select-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 40px; min-width: 150px; padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); font: inherit; font-size: 14px; line-height: 20px; text-align: start; cursor: pointer; white-space: nowrap; }
+.ma-select-trigger > span:first-child { overflow: hidden; text-overflow: ellipsis; }
 .ma-select-trigger[data-placeholder] { color: var(--text-muted); }
 .ma-select-trigger:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+.ma-select-trigger--lg { min-height: 48px; padding: var(--space-3) var(--space-4); font-size: 16px; line-height: 22px; }
+.ma-select-trigger--full { width: 100%; }
+/* Selects and multi-selects in forms fill the column and match the 48px inputs. */
+.ma-form .ma-select-trigger { width: 100%; min-height: 48px; padding: var(--space-3) var(--space-4); font-size: 16px; line-height: 28px; }
+/* Password input with a show/hide button. */
+.ma-input-wrap { position: relative; }
+.ma-input-wrap .ma-input { padding-inline-end: 48px; }
+.ma-input-action { position: absolute; inset-inline-end: 8px; top: 50%; transform: translateY(-50%); display: inline-grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: var(--radius-full); background: transparent; color: var(--text-muted); cursor: pointer; }
+.ma-input-action:hover { background: var(--fill-soft); color: var(--text); }
+.ma-input-action .ma-icon { width: 18px; height: 18px; }
+/* Searchable single-select option rows. */
+.ma-picker__option { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2); border: 0; border-radius: 8px; background: none; color: var(--text); text-align: start; cursor: pointer; }
+.ma-picker__option:hover, .ma-picker__option[aria-selected="true"] { background: var(--fill-soft); }
+.ma-picker__option .ma-icon { width: 16px; height: 16px; flex: none; }
+/* Inline "field + action" rows (e.g. attach policy + Attach). */
+.ma-inline-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); margin-block-start: var(--space-3); }
+.ma-inline-form > * { min-width: 0; }
+.ma-inline-form .ma-field { flex: 1 1 150px; }
+.ma-inline-form .ma-select-trigger { width: 100%; min-height: 40px; padding: var(--space-2) var(--space-3); font-size: 14px; }
+.ma-inline-form .ma-btn { flex: none; min-height: 40px; }
+@media (max-width: 640px) {
+  .ma-inline-form { flex-direction: column; align-items: stretch; }
+  .ma-inline-form .ma-btn { width: 100%; }
+}
+/* Inline "info icon + helper text" line used under page headers and form fields. */
+.ma-hintline { display: flex; align-items: center; gap: var(--space-2); margin-block-start: var(--space-2); font-size: 13px; line-height: 20px; }
+
+/* Filter bars: labelled controls and the search field share one aligned grid. */
+.ma-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); align-items: end; }
+.ma-filter-grid .ma-search { width: 100%; }
+.ma-filter-grid .ma-input--search { min-height: 54px; }
+.ma-filter-grid .ma-select-trigger { min-height: 54px; padding: var(--space-3) var(--space-4); font-size: 16px; line-height: 28px; }
+@media (max-width: 900px) { .ma-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .ma-filter-grid { grid-template-columns: 1fr; } }
+/* Audit payload blocks. */
+.ma-json { margin: 0; max-height: 340px; overflow: auto; padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface-alt); color: var(--text); font-size: 12px; line-height: 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Wide audit tables: honour the column widths and clip long actions/paths instead of stretching. */
+.ma-table--fixed { table-layout: fixed; }
+.ma-table--fixed th, .ma-table--fixed td { overflow: hidden; }
+.ma-truncate { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* A labelled field next to an action button (e.g. password + Generate). The 28px offset is the
+   label line (20px) + the field gap (8px), so the button aligns with the input, not the hint. */
+.ma-field-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-3); }
+.ma-field-row > * { min-width: 0; }
+.ma-field-row > .ma-btn { margin-block-start: 28px; }
+@media (max-width: 640px) {
+  .ma-field-row { flex-direction: column; align-items: stretch; }
+  .ma-field-row > .ma-btn { margin-block-start: 0; width: 100%; }
+}
 .ma-select-content { z-index: 100; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
 .ma-select-item { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-6) var(--space-2) var(--space-3); font-size: 14px; cursor: pointer; outline: none; }
 .ma-select-item[data-highlighted] { background: var(--fill-soft); }

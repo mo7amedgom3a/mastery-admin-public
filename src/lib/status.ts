@@ -140,6 +140,8 @@ export function productStatusBadge(status: string | null | undefined): BadgeDef 
       return { label: { ar: "غير منشور", en: "Unpublished" }, tone: "warning" };
     case "archived":
       return { label: { ar: "مؤرشف", en: "Archived" }, tone: "neutral" };
+    case "deleted":
+      return { label: { ar: "محذوف", en: "Deleted" }, tone: "danger" };
     default:
       return status ? { label: { ar: status, en: status } } : null;
   }

@@ -98,6 +98,7 @@ export function DataTable<T>({
   serverSort,
   onServerSort,
   exportConfig,
+  className,
 }: {
   columns: Column<T>[];
   rows: T[];
@@ -119,6 +120,8 @@ export function DataTable<T>({
   onServerSort?: (sort: SortState) => void;
   /** Explicit export setup. Omit for the automatic Excel export of the on-screen table; `false` hides the menu. */
   exportConfig?: TableExport<T> | false;
+  /** Extra table class, e.g. `ma-table--fixed` for long audit actions. */
+  className?: string;
 }) {
   const t = useT();
   const [localSorting, setLocalSorting] = useState<SortingState>(initialSort ? [{ id: initialSort.key, desc: initialSort.dir === "desc" }] : []);
@@ -253,7 +256,7 @@ export function DataTable<T>({
       ) : null}
 
       {body ?? (
-        <Table>
+        <Table className={className}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

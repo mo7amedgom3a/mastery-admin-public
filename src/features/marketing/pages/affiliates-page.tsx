@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { listReferralPartners, referralsKeys, setReferralPartnerStatus, type ReferralPartner } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 import { useLang, useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import { badgeLabel, dateValue } from "@/lib/export/columns";
 import { Badge, Button, ErrorAlert, PageHead } from "@/components/ui/kit";
 import { type Column } from "@/components/ui/data-table";
@@ -14,6 +15,7 @@ export default function AffiliatesPage({ embedded = false }: { embedded?: boolea
   const t = useT();
   const lang = useLang();
   const queryClient = useQueryClient();
+  const canWrite = useCan("affiliatesWrite.manage");
 
   const approve = useMutation({
     mutationFn: (partner: ReferralPartner) => setReferralPartnerStatus(partner.legacy_affiliate_id, { status: "approved" }),
@@ -36,7 +38,7 @@ export default function AffiliatesPage({ embedded = false }: { embedded?: boolea
       exportable: false,
       align: "end",
       cell: (row) =>
-        row.status === "approved" ? null : (
+        row.status === "approved" || !canWrite ? null : (
           <Button sm icon="check" disabled={approve.isPending} label={t("اعتماد", "Approve")} onClick={() => approve.mutate(row)} />
         ),
     },

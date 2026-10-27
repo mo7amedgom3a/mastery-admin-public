@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Dialog } from "@base-ui-components/react/dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -42,8 +42,27 @@ export function Modal({
   bodyClassName,
   showCloseButton = true,
 }: ModalProps) {
+  // `modal={false}` lets the Radix portals (selects/info popovers) work inside the dialog.
+  // Keep the page behind from scrolling while it is open.
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root
+      open={open}
+      onOpenChange={onOpenChange}
+      // Radix selects/popovers render in a body portal. A fully modal Base UI dialog treats
+      // those clicks as outside presses and closes itself, so keep pointer dismissal off and
+      // let the popups interact; explicit Cancel/Close buttons close the dialog.
+      modal={false}
+      disablePointerDismissal
+    >
       <Dialog.Portal>
         <Dialog.Backdrop className="ma-backdrop" />
         <Dialog.Viewport className="ma-modal-viewport">

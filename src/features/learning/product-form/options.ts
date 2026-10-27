@@ -35,6 +35,9 @@ export function useCatalogOptions() {
     };
   });
 
+  /** Each category's parent (`null` for a field, i.e. a top-level category). */
+  const categoryParents = new Map((categories.data ?? []).map((category) => [category.category_id, category.parent_id]));
+
   /** Skill options keyed by the UUID the create endpoint wants. */
   const skillOptions: PickerOption[] = (onboarding.data?.skills ?? []).map((skill) => ({
     value: skill.skill_id,
@@ -52,6 +55,7 @@ export function useCatalogOptions() {
 
   return {
     categoryOptions,
+    categoryParents,
     skillOptions,
     tagOptions,
     productTypes,

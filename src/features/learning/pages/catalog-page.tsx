@@ -5,17 +5,19 @@ import {
   listProducts,
   productKeys,
   productQueries,
+  restoreProduct,
   setProductStatus,
   type Product,
   type ProductOrigin,
   type ProductSort,
   type ProductSource,
-  type ProductStatus,
+  type ProductListStatus,
 } from "@/lib/api";
 import { formatAmount, formatDateTime, formatNumber } from "@/lib/format";
 import { useLang, useT } from "@/lib/i18n";
 import { badgeLabel, dateValue } from "@/lib/export/columns";
 import { AppLink } from "@/components/ui/app-link";
+import { toast } from "@/components/ui/toast";
 import { Avatar, Badge, Button, ErrorAlert, PageHead } from "@/components/ui/kit";
 import { type Column } from "@/components/ui/data-table";
 import { PagedList, type ListFilter } from "@/components/ui/paged-list";
@@ -147,11 +149,13 @@ export default function CatalogPage({ defaultType }: { defaultType?: string } = 
   );
 }
 
-const STATUSES: { value: ProductStatus; ar: string; en: string }[] = [
+const STATUSES: { value: ProductListStatus; ar: string; en: string }[] = [
   { value: "published", ar: "منشور", en: "Published" },
   { value: "unpublished", ar: "غير منشور", en: "Unpublished" },
   { value: "draft", ar: "مسودة", en: "Draft" },
   { value: "archived", ar: "مؤرشف", en: "Archived" },
+  // Soft-deleted products are hidden from every other view of the list.
+  { value: "deleted", ar: "محذوف", en: "Deleted" },
 ];
 
 function CatalogList({ types }: { types: string }) {
@@ -166,6 +170,16 @@ function CatalogList({ types }: { types: string }) {
         product.status === "published" ? (product.source === "legacy" ? "draft" : "unpublished") : "published",
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+
+  const restore = useMutation({
+    mutationFn: (product: Product) => restoreProduct(product.ref ?? `b2c:${product.product_id}`),
+    onSuccess: (view) => {
+      toast.success(t("تمت استعادة المنتج", "Product restored"));
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+      return view;
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : t("تعذّرت الاستعادة", "Couldn't restore")),
   });
 
   const columns: Column<Product>[] = [
@@ -298,14 +312,24 @@ function CatalogList({ types }: { types: string }) {
       key: "actions",
       header: "",
       align: "end",
-      cell: (row) => (
-        <Button
-          sm
-          disabled={toggle.isPending}
-          label={row.status === "published" ? t("إلغاء النشر", "Unpublish") : t("نشر", "Publish")}
-          onClick={() => toggle.mutate(row)}
-        />
-      ),
+      cell: (row) =>
+        row.status === "deleted" ? (
+          <Button
+            sm
+            kind="soft"
+            icon="refresh"
+            disabled={restore.isPending}
+            label={t("استعادة", "Restore")}
+            onClick={() => restore.mutate(row)}
+          />
+        ) : (
+          <Button
+            sm
+            disabled={toggle.isPending}
+            label={row.status === "published" ? t("إلغاء النشر", "Unpublish") : t("نشر", "Publish")}
+            onClick={() => toggle.mutate(row)}
+          />
+        ),
     },
   ];
 
@@ -393,7 +417,7 @@ function CatalogList({ types }: { types: string }) {
         fetchPage={({ query, offset, limit, filters: selected, multi, sort }) =>
           listProducts({
             product_type: multi?.product_type?.length ? multi.product_type.join(",") : types || undefined,
-            status: (selected.status || undefined) as ProductStatus | undefined,
+            status: (selected.status || undefined) as ProductListStatus | undefined,
             category: multi?.category?.length ? multi.category.join(",") : undefined,
             tag: multi?.tag?.length ? multi.tag.join(",") : undefined,
             source: (selected.source || undefined) as ProductSource | undefined,

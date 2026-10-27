@@ -43,6 +43,7 @@ import {
 import { useAdminAuth } from "@/lib/auth/store";
 import { formatDateTime, formatMinor, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import {
   Avatar,
   Badge,
@@ -116,6 +117,7 @@ const legacyStatusDef = (status: number | null) =>
 
 export default function TicketsPage() {
   const t = useT();
+  const canWrite = useCan("tickets.write");
   const currentAdmin = useAdminAuth((s) => s.admin);
 
   // Tab & Filters
@@ -423,12 +425,14 @@ export default function TicketsPage() {
           "Manage B2C support tickets, SLA tracking, direct customer conversations and internal team notes.",
         )}
         actions={
-          <Button
-            kind="secondary"
-            icon="settings"
-            label={t("إدارة التصنيفات والأولويات", "Manage Categories & Priorities")}
-            onClick={() => setCategoryModalOpen(true)}
-          />
+          canWrite ? (
+            <Button
+              kind="secondary"
+              icon="settings"
+              label={t("إدارة التصنيفات والأولويات", "Manage Categories & Priorities")}
+              onClick={() => setCategoryModalOpen(true)}
+            />
+          ) : undefined
         }
       />
 
@@ -1195,6 +1199,7 @@ function ManageCategoriesModal({ open, onClose }: ManageCategoriesModalProps) {
 
 function LegacyTicketDetail({ ticketId, onClose }: { ticketId: number; onClose: () => void }) {
   const t = useT();
+  const canWrite = useCan("tickets.write");
   const queryClient = useQueryClient();
   const [reply, setReply] = useState("");
 
@@ -1240,7 +1245,7 @@ function LegacyTicketDetail({ ticketId, onClose }: { ticketId: number; onClose: 
       }
       actions={
         <>
-          {data ? (
+          {data && canWrite ? (
             <Button
               sm
               icon={data.status === 1 ? "check" : "refresh"}
@@ -1272,7 +1277,7 @@ function LegacyTicketDetail({ ticketId, onClose }: { ticketId: number; onClose: 
               <Empty icon="message" text={t("لا رسائل في هذه التذكرة بعد.", "No messages in this ticket yet.")} />
             )}
 
-            <form
+            {canWrite ? <form
               className="ma-form ma-section-gap mt-4"
               onSubmit={(event) => {
                 event.preventDefault();
@@ -1298,7 +1303,7 @@ function LegacyTicketDetail({ ticketId, onClose }: { ticketId: number; onClose: 
                   disabled={!reply.trim() || replyMutation.isPending}
                 />
               </FormActions>
-            </form>
+            </form> : null}
           </>
         ) : (
           <Loading />

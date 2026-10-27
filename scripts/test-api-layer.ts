@@ -67,6 +67,8 @@ import {
   importCustomers,
   listAdminInstructors,
   listAdminUserRoles,
+  getIamUser,
+  setUserBoundary,
   listAdminUsers,
   listAnnouncements,
   listAuditLogs,
@@ -421,6 +423,15 @@ function liveEndpointTests(): LiveTest[] {
       },
     },
     { name: "GET /admin/audit-logs", run: async () => { await listAuditLogs({ limit: 5 }); } },
+    {
+      name: "GET /admin/iam/users/{id} (permission boundary fields)",
+      run: async (ctx) => {
+        if (!ctx.adminUserId) throw new SkipTest("no admin user id available");
+        const user = await getIamUser(ctx.adminUserId);
+        assert(Array.isArray(user.granted_scopes), "expected granted_scopes array");
+        assert(user.scopes.every((scope) => user.granted_scopes!.includes(scope)), "effective scopes must be a subset of granted scopes");
+      },
+    },
 
     // -- dashboard (B2C + legacy)
     { name: "GET /admin/dashboard/summary", run: async () => { const s = await dashboardSummary(); assert(typeof s.customers_total === "number", "expected numeric counters"); } },
@@ -820,6 +831,17 @@ function liveEndpointTests(): LiveTest[] {
 
     // ----------------------------------------------------------------- mutations
     { name: "POST /admin/auth/refresh", mutates: true, run: async () => { await adminRefresh({}); } },
+    {
+      // Clearing a boundary that isn't set is a no-op; it only proves the route and its guard.
+      name: "PUT /admin/iam/users/{id}/boundary (clear, no-op)",
+      mutates: true,
+      run: async (ctx) => {
+        if (!ctx.adminUserId) throw new SkipTest("no admin user id available");
+        if ((await getIamUser(ctx.adminUserId)).boundary_policy_id) throw new SkipTest("admin has a boundary; not clearing it");
+        const user = await setUserBoundary(ctx.adminUserId, null);
+        assert(user.boundary_policy_id == null, "expected no boundary");
+      },
+    },
 
     {
       name: "POST /admin/admin-users + PATCH status (create then suspend)",

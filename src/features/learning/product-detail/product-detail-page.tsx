@@ -3,8 +3,10 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   consultationAdminQueries,
+  deleteProduct,
   productKeys,
   productQueries,
+  restoreProduct,
   searchQueries,
   setProductStatus,
   curriculumQueries,
@@ -14,12 +16,14 @@ import {
 import { productTypeLabel } from "@/lib/product-types";
 import { ordersQueries } from "@/lib/api/sales/orders";
 import { useT } from "@/lib/i18n";
-import { Loading, ErrorAlert } from "@/components/ui/kit";
+import { Loading, ErrorAlert, Field } from "@/components/ui/kit";
+import { toast } from "@/components/ui/toast";
 import { LegacyProductContent } from "@/features/learning/components/legacy-product-content";
 import { DetailHeader } from "./components/detail-header";
 import { DetailTabBar, type DetailTab, type DetailTabDef } from "./components/detail-tabbar";
 import { DetailAside } from "./components/detail-aside";
 import { OverviewTab } from "./tabs/overview-tab";
+import { ProductClassificationEditor } from "./components/product-classification-editor";
 import { ProductDetailsEditor } from "./components/product-details-editor";
 import { ContentTab } from "./tabs/content-tab";
 import { ResourcesTab } from "./tabs/resources-tab";
@@ -110,6 +114,29 @@ export function ProductDetailPage() {
       queryClient.invalidateQueries({ queryKey: productKeys.all });
       setPublishModalOpen(false);
     },
+  });
+
+  // Soft delete (confirm with an optional reason) and restore.
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("");
+  const removeProduct = useMutation({
+    mutationFn: () => deleteProduct(productRef, deleteReason),
+    onSuccess: (view) => {
+      queryClient.setQueryData(productKeys.detail(productRef), view);
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+      setDeleteModalOpen(false);
+      setDeleteReason("");
+      toast.success(t("تم حذف المنتج ويمكن استعادته", "Product deleted; it can be restored"));
+    },
+  });
+  const restore = useMutation({
+    mutationFn: () => restoreProduct(productRef),
+    onSuccess: (view) => {
+      queryClient.setQueryData(productKeys.detail(productRef), view);
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+      toast.success(t("تمت استعادة المنتج", "Product restored"));
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : t("تعذّرت الاستعادة", "Couldn't restore")),
   });
 
   const item = productData?.product;
@@ -244,6 +271,9 @@ export function ProductDetailPage() {
         packageCourses={packageCourses}
         sales={salesData}
         onTogglePublish={() => setPublishModalOpen(true)}
+        onDelete={productData.links.b2c_product_id ? () => setDeleteModalOpen(true) : undefined}
+        onRestore={() => restore.mutate()}
+        isRestoring={restore.isPending}
       />
 
       {/* Sticky Tab Bar */}
@@ -274,6 +304,12 @@ export function ProductDetailPage() {
             productData.b2c &&
             (productType === "course" || productType === "diploma" || productType === "package") && (
               <ProductDetailsEditor key={productRef} productRef={productRef} data={productData} />
+            )}
+
+          {activeTab === "overview" &&
+            productData.b2c &&
+            (productType === "course" || productType === "diploma") && (
+              <ProductClassificationEditor key={`classification-${productRef}`} productRef={productRef} data={productData} />
             )}
 
           {activeTab === "content" && <ContentTab productRef={productRef} />}
@@ -322,6 +358,50 @@ export function ProductDetailPage() {
       </div>
 
       {/* Publish / Unpublish Confirmation Modal */}
+      {deleteModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-product-title"
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "grid", placeItems: "center", zIndex: 1000 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setDeleteModalOpen(false);
+          }}
+        >
+          <div className="cd-card" style={{ width: "min(460px, 92vw)", padding: 24, boxShadow: "var(--sh-xl)" }}>
+            <h2 className="cd-modal__h" id="delete-product-title">
+              {t("حذف المنتج؟", "Delete this product?")}
+            </h2>
+            <p className="cd-muted" style={{ marginBlock: "12px 16px", lineHeight: 1.6 }}>
+              {t(
+                "سيختفي من المتجر والبحث والبحث الذكي. لا يُمسح شيء: تبقى الطلبات ووصول المشتركين والمحتوى، ويمكن استعادته لاحقًا من فلتر «محذوف» في الكتالوج.",
+                "It disappears from the store, search and smart search. Nothing is erased: orders, customer access and content stay, and it can be restored later from the catalog's Deleted filter.",
+              )}
+            </p>
+            <Field
+              id="delete-reason"
+              label={t("السبب (اختياري)", "Reason (optional)")}
+              value={deleteReason}
+              onChange={setDeleteReason}
+            />
+            <ErrorAlert error={removeProduct.error} title={t("تعذّر الحذف", "Couldn't delete")} />
+            <div className="cd-modal__f" style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginBlockStart: 16 }}>
+              <button type="button" className="ma-btn ma-btn--soft" onClick={() => setDeleteModalOpen(false)}>
+                {t("إلغاء", "Cancel")}
+              </button>
+              <button
+                type="button"
+                className="ma-btn ma-btn--danger-soft"
+                disabled={removeProduct.isPending}
+                onClick={() => removeProduct.mutate()}
+              >
+                {removeProduct.isPending ? t("جارٍ الحذف…", "Deleting…") : t("تأكيد الحذف", "Confirm delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {publishModalOpen && (
         <div
           role="dialog"

@@ -12,6 +12,7 @@ import { Alert, Badge, Button, Card, Dl, ErrorAlert, Field, FormActions, Loading
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { PageState } from "@/components/ui/primitives";
 import { toast } from "@/components/ui/toast";
+import { useCan } from "@/lib/permissions";
 
 const IN_FLIGHT = ["processing", "pending", "requires_action", "needs_reconciliation"];
 const MIN_REASON = 5;
@@ -34,6 +35,7 @@ function DecisionCard({ data }: { data: RefundCaseDetail }) {
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
   const [confirming, setConfirming] = useState<RefundDecisionAction | null>(null);
+  const canDecide = useCan("refunds.write");
   const eligibility = data.current_eligibility;
   const max = Math.min(data.requested_minor, eligibility.remaining_minor ?? data.requested_minor);
   const amountMinor = amount === "" ? undefined : Math.round(Number(amount) * 100);
@@ -61,6 +63,16 @@ function DecisionCard({ data }: { data: RefundCaseDetail }) {
       await refresh();
     },
   });
+
+  if (!canDecide && (IN_FLIGHT.includes(data.status) || data.status === "requested")) {
+    return (
+      <Card title={t("القرار", "Decision")}>
+        <p className="ma-note">
+          {t("قرارات الاسترداد تتطلب صلاحية الاسترداد.", "Refund decisions need the refund permission.")}
+        </p>
+      </Card>
+    );
+  }
 
   if (IN_FLIGHT.includes(data.status)) {
     return (

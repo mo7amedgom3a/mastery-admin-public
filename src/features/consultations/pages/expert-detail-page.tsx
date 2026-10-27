@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { consultationAdminQueries } from "@/lib/api";
 import { formatAmount, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import { initialsOf } from "@/lib/status";
 import { Avatar, Button, Card, Dl, Kpi, Loading, PageHead } from "@/components/ui/kit";
 import { PageState } from "@/components/ui/primitives";
@@ -22,6 +23,7 @@ export default function ExpertDetailPage() {
   const expert = useQuery(consultationAdminQueries.expert(id));
   const e = expert.data;
   const [editingProfile, setEditingProfile] = useState(false);
+  const canWrite = useCan("consultationsWrite.write");
 
   const tabs: [Tab, string][] = [
     ["overview", t("نظرة عامة", "Overview")],
@@ -58,7 +60,7 @@ export default function ExpertDetailPage() {
               ) : (
               <Card
                 title={t("بيانات الخبير", "Profile")}
-                actions={<Button sm label={t("تعديل", "Edit")} onClick={() => setEditingProfile(true)} />}
+                actions={canWrite ? <Button sm label={t("تعديل", "Edit")} onClick={() => setEditingProfile(true)} /> : undefined}
               >
                 <div className="ma-cell-flex" style={{ marginBlockEnd: "var(--space-4)" }}>
                   <Avatar initials={initialsOf(e.display_name ?? "?")} color="var(--purple)" lg alt={e.display_name ?? ""} />

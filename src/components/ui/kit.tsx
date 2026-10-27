@@ -76,9 +76,12 @@ export type ButtonProps = {
   sm?: boolean;
   block?: boolean;
   type?: "button" | "submit";
+  /** Associate the button with a form rendered elsewhere (e.g. in a modal footer). */
+  form?: string;
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
+  title?: string;
   children?: ReactNode;
   "aria-label"?: string;
   "aria-busy"?: boolean;

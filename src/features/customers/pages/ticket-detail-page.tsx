@@ -36,6 +36,7 @@ import {
 import { useAdminAuth } from "@/lib/auth/store";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { useT } from "@/lib/i18n";
+import { useCan } from "@/lib/permissions";
 import {
   Avatar,
   Badge,
@@ -115,6 +116,8 @@ export default function TicketDetailPage() {
 
   // Resolution modal state
   const [resolveDialogOpen, setResolveDialogOpen] = useState(false);
+
+  const canWrite = useCan("tickets.write");
 
   // Composer State
   const [composerMode, setComposerMode] = useState<"reply" | "note">("reply");
@@ -316,8 +319,9 @@ export default function TicketDetailPage() {
     return rows;
   }, [ticketData, ticketInfo, t]);
 
-  const canResolve = ticketInfo && ticketInfo.status !== "resolved" && ticketInfo.status !== "closed";
-  const canReopen = ticketInfo && (ticketInfo.status === "resolved" || ticketInfo.status === "closed");
+  const isClosed = ticketInfo && (ticketInfo.status === "resolved" || ticketInfo.status === "closed");
+  const canResolve = canWrite && ticketInfo && !isClosed;
+  const canReopen = canWrite && isClosed;
   const composerSending = replyMutation.isPending || noteMutation.isPending;
 
   const submit = () => {
@@ -470,7 +474,7 @@ export default function TicketDetailPage() {
               </div>
 
               {/* Composer */}
-              <div className={`ma-composer${composerMode === "note" ? " is-note" : ""}`}>
+              {canWrite ? <div className={`ma-composer${composerMode === "note" ? " is-note" : ""}`}>
                 <div className="ma-composer__modes" role="tablist">
                   <button type="button" role="tab" aria-selected={composerMode === "reply"} aria-pressed={composerMode === "reply"} onClick={() => setComposerMode("reply")}>
                     <Send className="size-3.5" />
@@ -568,13 +572,13 @@ export default function TicketDetailPage() {
                     />
                   </div>
                 </form>
-              </div>
+              </div> : null}
             </div>
 
             {/* Details sidebar */}
             <aside className="ma-panel ma-panel--flush ma-info">
               {/* Triage & assignment */}
-              <section className="ma-info__sec">
+              {canWrite ? <section className="ma-info__sec">
                 <h3><Headset className="size-3.5" /><span>{t("توجيه وإسناد التذكرة", "Triage & Assignment")}</span></h3>
                 <div className="ma-form" style={{ gap: "var(--space-3)" }}>
                   <div>
@@ -635,7 +639,7 @@ export default function TicketDetailPage() {
                     />
                   </div>
                 </div>
-              </section>
+              </section> : null}
 
               {/* Customer 360 */}
               <section className="ma-info__sec">

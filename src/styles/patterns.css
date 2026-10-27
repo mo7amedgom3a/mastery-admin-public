@@ -245,11 +245,17 @@ label.ma-check input { flex: none; }
 .ma-picker__list .ma-check { width: 100%; padding: var(--space-1) var(--space-2); border-radius: 6px; }
 .ma-picker__list .ma-check:hover { background: var(--fill-soft); }
 .ma-picker__empty { padding: var(--space-3) var(--space-2); color: var(--text-muted); font-size: 13px; line-height: 20px; }
+.ma-picker__create { display: block; inline-size: 100%; padding: var(--space-2) var(--space-3); text-align: start; border-block-end: 1px solid var(--line); }
+.ma-inline-create { display: grid; gap: var(--space-3); padding: var(--space-3); border: 1px dashed var(--line); border-radius: var(--radius-control); background: var(--fill-soft); }
+.ma-inline-create__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .ma-picker__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-block-start: 1px solid var(--line); background: var(--fill-soft); font-size: 13px; color: var(--text-muted); }
 .ma-picker__count { font-variant-numeric: tabular-nums; }
 
 /* Toolbar multi-select facet: a compact trigger opening a searchable checkbox panel. */
-.ma-multiselect { z-index: 40; display: flex; flex-direction: column; width: min(320px, 90vw); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+.ma-multiselect { z-index: 120; display: flex; flex-direction: column; width: min(320px, 90vw); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+
+/* Radix portals (selects, popovers, dropdowns) must sit above the Base UI modal (z 81). */
+[data-radix-popper-content-wrapper] { z-index: 130 !important; }
 .ma-multiselect .ma-picker__search { margin: var(--space-2); }
 .ma-multiselect__summary { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 

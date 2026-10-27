@@ -33,6 +33,10 @@
 @media (min-width: 900px) { .ma-section { padding-block: clamp(var(--space-12), 7svh, var(--space-16)); } }
 .ma-band { background: var(--surface-alt); }
 .ma-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+/* A horizontal row with a leading block (name/description) and trailing actions. */
+.ma-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-width: 0; }
+.ma-row > * { min-width: 0; }
+@media (max-width: 640px) { .ma-row { flex-wrap: wrap; } }
 .ma-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 .ma-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .ma-rule { border: 0; border-block-start: 1px solid var(--line); margin: 0; }

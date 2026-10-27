@@ -20,6 +20,7 @@ import {
 import { formatDateTime } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { productHref } from "@/lib/refs";
+import { useCan } from "@/lib/permissions";
 import { initialsOf } from "@/lib/status";
 import { AppLink } from "@/components/ui/app-link";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
@@ -51,6 +52,7 @@ function useRefreshCustomer(customerRef: string) {
 
 export function CustomerAvatarCard({ customerRef, name }: { customerRef: string; name: string }) {
   const t = useT();
+  const canWrite = useCan("customers.write");
   const queryClient = useQueryClient();
   const refresh = useRefreshCustomer(customerRef);
   const input = useRef<HTMLInputElement>(null);
@@ -80,7 +82,7 @@ export function CustomerAvatarCard({ customerRef, name }: { customerRef: string;
               if (file) upload.mutate(file);
             }}
           />
-          <Button sm icon="upload" disabled={upload.isPending} label={upload.isPending ? t("جارٍ الرفع…", "Uploading…") : t("رفع صورة", "Upload photo")} onClick={() => input.current?.click()} />
+          {canWrite ? <Button sm icon="upload" disabled={upload.isPending} label={upload.isPending ? t("جارٍ الرفع…", "Uploading…") : t("رفع صورة", "Upload photo")} onClick={() => input.current?.click()} /> : null}
         </div>
       </div>
       <ErrorAlert error={avatar.error ?? upload.error} title={t("تعذّر تحميل الصورة أو رفعها", "Couldn't load or upload the photo")} />
@@ -98,6 +100,7 @@ const grantStatus = (status: string) =>
 /** Access given without payment (zero-total admin orders): grant a product, or revoke a grant. */
 export function CustomerGrantsCard({ customerRef }: { customerRef: string }) {
   const t = useT();
+  const canWrite = useCan("customers.write");
   const kindLabel = useKindLabel();
   const queryClient = useQueryClient();
   const refresh = useRefreshCustomer(customerRef);
@@ -121,7 +124,7 @@ export function CustomerGrantsCard({ customerRef }: { customerRef: string }) {
     <Card
       title={t("وصول ممنوح من الإدارة", "Access given by admins")}
       className="ma-section-gap"
-      actions={<Button kind="primary" icon="plus" label={t("منح وصول", "Grant access")} onClick={() => setGranting(true)} />}
+      actions={canWrite ? <Button kind="primary" icon="plus" label={t("منح وصول", "Grant access")} onClick={() => setGranting(true)} /> : undefined}
     >
       <ErrorAlert error={grants.error ?? revoke.error} />
       <DataTable
@@ -148,7 +151,7 @@ export function CustomerGrantsCard({ customerRef }: { customerRef: string }) {
             header: "",
             align: "end",
             cell: (row) =>
-              row.status === "active" ? <Button sm kind="ghost" icon="trash" label={t("سحب", "Revoke")} onClick={() => setRevoking(row)} /> : null,
+              canWrite && row.status === "active" ? <Button sm kind="ghost" icon="trash" label={t("سحب", "Revoke")} onClick={() => setRevoking(row)} /> : null,
           },
         ]}
       />
@@ -225,6 +228,7 @@ function GrantModal({ customerRef, onClose, onGranted }: { customerRef: string; 
 
 export function CustomerNotesCard({ customerRef }: { customerRef: string }) {
   const t = useT();
+  const canWrite = useCan("customers.write");
   const queryClient = useQueryClient();
   const [note, setNote] = useState("");
   const notes = useQuery({ queryKey: customerAdminKeys.notes(customerRef), queryFn: () => listCustomerNotes(customerRef) });
@@ -239,7 +243,7 @@ export function CustomerNotesCard({ customerRef }: { customerRef: string }) {
             <div key={item.note_id} className="border-b border-line py-3">
               <div className="ma-cell-flex" style={{ justifyContent: "space-between" }}>
                 <span><strong>{item.author || "—"}</strong> <span className="ma-cell-sub">{formatDateTime(item.created_at)}</span></span>
-                <Button sm kind="ghost" icon="trash" label={t("حذف", "Delete")} disabled={remove.isPending} onClick={() => remove.mutate(item.note_id)} />
+                {canWrite ? <Button sm kind="ghost" icon="trash" label={t("حذف", "Delete")} disabled={remove.isPending} onClick={() => remove.mutate(item.note_id)} /> : null}
               </div>
               <p className="whitespace-pre-wrap" style={{ margin: "4px 0 0" }}>{item.body}</p>
             </div>
@@ -248,13 +252,13 @@ export function CustomerNotesCard({ customerRef }: { customerRef: string }) {
           <Empty text={t("لا توجد ملاحظات.", "No notes yet.")} />
         )}
       </div>
-      <form className="mt-4 grid gap-3" onSubmit={(event) => { event.preventDefault(); if (note.trim()) add.mutate(); }}>
+      {canWrite ? <form className="mt-4 grid gap-3" onSubmit={(event) => { event.preventDefault(); if (note.trim()) add.mutate(); }}>
         <label className="ma-field">
           <span className="ma-label">{t("ملاحظة جديدة", "New note")}</span>
           <textarea className="ma-input" rows={3} value={note} maxLength={3000} onChange={(event) => setNote(event.target.value)} />
         </label>
         <Button type="submit" kind="primary" label={t("إضافة ملاحظة", "Add note")} disabled={add.isPending || !note.trim()} />
-      </form>
+      </form> : null}
       <ErrorAlert error={notes.error ?? add.error ?? remove.error} />
     </Card>
   );
