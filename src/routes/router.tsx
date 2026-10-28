@@ -83,6 +83,7 @@ import FunnelsPage from "@/features/analytics/pages/funnels-page";
 import PostHogAnalyticsPage from "@/features/analytics/pages/posthog-page";
 import BehaviorMapPage from "@/features/analytics/pages/behavior-map-page";
 import SearchPage from "@/features/dashboard/pages/search-page";
+import { CertificatesPage as IssuedCertificatesPage } from "@/features/certificates/pages/certificates-page";
 import {
   AffiliatesReportPage,
   AnnouncementsPage,
@@ -181,7 +182,7 @@ export const ROUTER = createBrowserRouter([
       { path: "learning/company-requests", element: <Navigate to="/companies" replace /> },
       { path: "companies", element: <CompanyRequestsPage /> },
       { path: "companies/:id", element: <CompanyRequestsPage /> },
-      { path: "learning/certificates", element: <CertificatesPage /> },
+      { path: "learning/certificates", element: <IssuedCertificatesPage /> },
       { path: "learning/qa", element: ph("أسئلة المتدربين", "Q&A inbox") },
 
       // Consultations (B2C)

@@ -27,6 +27,7 @@ import { ProductClassificationEditor } from "./components/product-classification
 import { ProductDetailsEditor } from "./components/product-details-editor";
 import { ContentTab } from "./tabs/content-tab";
 import { ResourcesTab } from "./tabs/resources-tab";
+import { CertificateTab } from "./tabs/certificate-tab";
 import { InstructorsTab } from "./tabs/instructors-tab";
 import { OrdersTab } from "./tabs/orders-tab";
 import { RelatedTab } from "./tabs/related-tab";
@@ -178,6 +179,9 @@ export function ProductDetailPage() {
     // Who holds this product (B2C products only): extend, suspend, reinstate or revoke each customer's access.
     const access: DetailTabDef[] =
       isB2c && can("subscribers.read") ? [{ id: "access", labelAr: "وصول العملاء", labelEn: "Customer access" }] : [];
+    // B2C courses, diplomas and live diplomas carry a certificate (settings, preview, issuing).
+    const certificate: DetailTabDef[] =
+      isB2c && can("certificates.read") ? [{ id: "certificate", labelAr: "الشهادة", labelEn: "Certificate" }] : [];
     const legacy: DetailTabDef | null = hasLegacy
       ? { id: "legacy", labelAr: "محتوى النظام القديم", labelEn: "Legacy content" }
       : null;
@@ -199,7 +203,7 @@ export function ProductDetailPage() {
           related,
         ];
       case "live_diploma":
-        return [overview, { id: "live_diploma", labelAr: "الدبلوم المباشر", labelEn: "Live diploma" }, orders, ...access, related];
+        return [overview, { id: "live_diploma", labelAr: "الدبلوم المباشر", labelEn: "Live diploma" }, ...certificate, orders, ...access, related];
       default: {
         const content: DetailTabDef = {
           id: "content",
@@ -226,6 +230,7 @@ export function ProductDetailPage() {
           content,
           { id: "resources", labelAr: "المصادر والمحتوى", labelEn: "Resources" },
           instructors,
+          ...(productType === "course" || productType === "diploma" ? certificate : []),
           orders,
           ...access,
           related,
@@ -259,7 +264,7 @@ export function ProductDetailPage() {
   }
 
   const isPublished = item.status === "published";
-  const showAside = activeTab !== "legacy";
+  const showAside = activeTab !== "legacy" && activeTab !== "certificate";
 
   return (
     <div className="cd-main" style={{ minHeight: "100vh" }}>
@@ -343,6 +348,10 @@ export function ProductDetailPage() {
           {activeTab === "availability" && <ConsultationAvailabilityTab data={productData} />}
 
           {activeTab === "live_diploma" && <LiveDiplomaTab slug={item.slug} />}
+
+          {activeTab === "certificate" && item?.product_id ? (
+            <CertificateTab productRef={productRef} productId={item.product_id} productType={productType} />
+          ) : null}
 
           {activeTab === "orders" && <OrdersTab productRef={productRef} />}
 

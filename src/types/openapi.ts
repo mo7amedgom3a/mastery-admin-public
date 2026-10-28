@@ -5028,6 +5028,338 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/certificates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My certificates */
+        get: operations["my_certificates_api_v1_me_certificates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/certificates/{certificate_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My certificate */
+        get: operations["my_certificate_api_v1_me_certificates__certificate_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/certificates/{certificate_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download my certificate PDF
+         * @description Redirects to a short-lived S3 URL, or streams the PDF when storage is not configured.
+         */
+        get: operations["my_certificate_pdf_api_v1_me_certificates__certificate_id__pdf_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/certificate-name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the English name printed on my certificates
+         * @description Certificates waiting for a name are issued with it.
+         */
+        put: operations["set_my_certificate_name_api_v1_me_certificate_name_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/certificates/verify/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Verify a certificate (public)
+         * @description Anyone can check a certificate by its ID No (`MA-XXXX-XXXX`, case and dashes optional). Legacy-platform certificate codes are also recognised. Rate limited per client (middleware).
+         */
+        get: operations["verify_certificate_api_v1_certificates_verify__code__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/certificate-addons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Certificate add-ons offered for products (public)
+         * @description Paid extras (CPD mark, printed copy) and their prices per product slug, for cart previews.
+         */
+        get: operations["certificate_addon_offers_api_v1_catalog_certificate_addons_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/products/{product_ref}/certificate-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Product certificate settings
+         * @description Stored settings, or defaults derived from the product when none are saved. Resource ref: `b2c:<uuid>` (a bare UUID also works) or `legacy:<kind>:<id>`.
+         */
+        get: operations["get_certificate_settings_api_v1_admin_catalog_products__product_ref__certificate_settings_get"];
+        /** Save product certificate settings */
+        put: operations["put_certificate_settings_api_v1_admin_catalog_products__product_ref__certificate_settings_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/products/{product_ref}/certificate-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Render a certificate preview (HTML)
+         * @description Renders the unsaved draft settings with a sample recipient. The HTML is self-contained (fonts and images inlined) so the dashboard can show it in an `srcdoc` iframe; it is the same template the issued PDF is printed from.
+         */
+        post: operations["preview_certificate_html_api_v1_admin_catalog_products__product_ref__certificate_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/products/{product_ref}/certificate-preview.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Render a sample certificate PDF */
+        post: operations["preview_certificate_pdf_api_v1_admin_catalog_products__product_ref__certificate_preview_pdf_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/catalog/products/{product_ref}/certificate-recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Enrolled customers and their certificate status
+         * @description Customers with active access (entitlement or paid live-diploma seat) to the product.
+         */
+        get: operations["list_certificate_recipients_api_v1_admin_catalog_products__product_ref__certificate_recipients_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/issue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue certificates */
+        post: operations["issue_certificates_api_v1_admin_certificates_issue_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Issued certificates */
+        get: operations["list_certificates_api_v1_admin_certificates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/{certificate_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Certificate detail */
+        get: operations["get_certificate_api_v1_admin_certificates__certificate_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/{certificate_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download the issued PDF */
+        get: operations["get_certificate_pdf_api_v1_admin_certificates__certificate_id__pdf_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/{certificate_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke */
+        post: operations["revoke_certificate_api_v1_admin_certificates__certificate_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/{certificate_id}/reissue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Re-render with the product's current settings (code kept) */
+        post: operations["reissue_certificate_api_v1_admin_certificates__certificate_id__reissue_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/certificates/{certificate_id}/recipient-name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Correct the printed name */
+        patch: operations["set_certificate_recipient_name_api_v1_admin_certificates__certificate_id__recipient_name_patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/pricing/certificate-addons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Certificate add-on prices
+         * @description Default price and copy of each certificate add-on sold in the cart. A product offers an add-on only when its certificate settings enable it, and may override the price there.
+         */
+        get: operations["get_certificate_addon_pricing_api_v1_admin_pricing_certificate_addons_get"];
+        /** Save certificate add-on prices */
+        put: operations["put_certificate_addon_pricing_api_v1_admin_pricing_certificate_addons_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cart": {
         parameters: {
             query?: never;
@@ -5078,6 +5410,27 @@ export interface paths {
         head?: never;
         /** Update Cart Item */
         patch: operations["update_cart_item_api_v1_cart_items__cart_item_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/cart/items/{cart_item_id}/addons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Cart Item Addons
+         * @description Choose the line's certificate add-ons (CPD mark, printed copy). Only add-ons the product
+         *     offers are accepted (409 otherwise); an empty list removes them.
+         */
+        put: operations["set_cart_item_addons_api_v1_cart_items__cart_item_id__addons_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/checkout/quote": {
@@ -9639,6 +9992,28 @@ export interface components {
              */
             required: boolean;
         };
+        /** AddonOfferOut */
+        AddonOfferOut: {
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description: string | null;
+            /** Title En */
+            title_en: string;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Currency */
+            currency: string;
+            /** Requires Shipping */
+            requires_shipping: boolean;
+        };
+        /** AddonOffersPage */
+        AddonOffersPage: {
+            /** Items */
+            items: components["schemas"]["ProductAddonOffersOut"][];
+        };
         /** AdminAssetResponse */
         AdminAssetResponse: {
             /**
@@ -12973,20 +13348,19 @@ export interface components {
             /** Price Max */
             price_max?: number | null;
         };
-        /** BulkIssueIn */
-        BulkIssueIn: {
-            segment: components["schemas"]["SegmentIn"];
-            voucher: components["schemas"]["VoucherIssueIn"];
-        };
-        /** BulkIssueOut */
-        BulkIssueOut: {
+        /** BulkIssueItemOut */
+        BulkIssueItemOut: {
             /**
-             * Batch Id
+             * Customer Id
              * Format: uuid
              */
-            batch_id: string;
-            /** Issued */
-            issued: number;
+            customer_id: string;
+            /** Certificate Id */
+            certificate_id: string | null;
+            /** Status */
+            status: string;
+            /** Detail */
+            detail: string | null;
         };
         /** BulkOperationBody */
         BulkOperationBody: {
@@ -13216,6 +13590,11 @@ export interface components {
              */
             reason?: string | null;
         };
+        /** CartItemAddonsRequest */
+        CartItemAddonsRequest: {
+            /** Addons */
+            addons: ("cpd_certificate" | "physical_certificate")[];
+        };
         /** CartItemRequest */
         CartItemRequest: {
             /**
@@ -13235,11 +13614,36 @@ export interface components {
              * @default USD
              */
             currency_code: string;
+            /**
+             * Addons
+             * @description Certificate add-ons for the line (replaces the current choice).
+             */
+            addons?: ("cpd_certificate" | "physical_certificate")[] | null;
         };
         /** CartItemUpdateRequest */
         CartItemUpdateRequest: {
             /** Quantity */
             quantity: number;
+        };
+        /** CartLineAddonResponse */
+        CartLineAddonResponse: {
+            /** Code */
+            code: string;
+            /** Title */
+            title: string;
+            /** Description */
+            description?: string | null;
+            /** Amount Minor */
+            amount_minor: number;
+            /** Currency Code */
+            currency_code: string;
+            /** Selected */
+            selected: boolean;
+            /**
+             * Requires Shipping
+             * @default false
+             */
+            requires_shipping: boolean;
         };
         /** CartLineResponse */
         CartLineResponse: {
@@ -13274,6 +13678,16 @@ export interface components {
              * @default 0
              */
             discount_amount_minor: number;
+            /**
+             * Addons
+             * @default []
+             */
+            addons: components["schemas"]["CartLineAddonResponse"][];
+            /**
+             * Addons Amount Minor
+             * @default 0
+             */
+            addons_amount_minor: number;
         };
         /** CartResponse */
         CartResponse: {
@@ -13673,6 +14087,240 @@ export interface components {
                 [key: string]: string;
             }[];
         };
+        /** CertificateNameIn */
+        CertificateNameIn: {
+            /** Name */
+            name: string;
+        };
+        /** CertificateOut */
+        CertificateOut: {
+            /**
+             * Certificate Id
+             * Format: uuid
+             */
+            certificate_id: string;
+            /** Public Code */
+            public_code: string;
+            /** Status */
+            status: string;
+            /** Source */
+            source: string;
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /** Customer Email */
+            customer_email: string | null;
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Product Slug */
+            product_slug: string | null;
+            /** Product Type */
+            product_type: string | null;
+            /** Recipient Name */
+            recipient_name: string | null;
+            /** Title */
+            title: string;
+            /** Training Hours */
+            training_hours: number | null;
+            /** Completed At */
+            completed_at: string | null;
+            /** Issued At */
+            issued_at: string | null;
+            /** Issued By Admin Id */
+            issued_by_admin_id: string | null;
+            /** Cohort Id */
+            cohort_id: string | null;
+            /** Cpd */
+            cpd: boolean;
+            /** Cpd Hours */
+            cpd_hours: number | null;
+            /** Cpd Ref */
+            cpd_ref: string | null;
+            /** Revoked At */
+            revoked_at: string | null;
+            /** Revoked Reason */
+            revoked_reason: string | null;
+            /** Render Version */
+            render_version: number;
+            /** Verify Url */
+            verify_url: string;
+            /** Has Pdf */
+            has_pdf: boolean;
+            /** Created At */
+            created_at: string | null;
+        };
+        /** CertificatePage */
+        CertificatePage: {
+            /** Items */
+            items: components["schemas"]["CertificateOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** CertificatePreviewIn */
+        CertificatePreviewIn: {
+            settings: components["schemas"]["CertificateSettingsIn"];
+            /** Sample Name */
+            sample_name?: string | null;
+            /**
+             * Show Cpd
+             * @default true
+             */
+            show_cpd: boolean;
+            /**
+             * Show Qr
+             * @default true
+             */
+            show_qr: boolean;
+        };
+        /** CertificateRecipientOut */
+        CertificateRecipientOut: {
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name: string | null;
+            /** Certificate Name */
+            certificate_name: string | null;
+            /** Entitlement Id */
+            entitlement_id: string | null;
+            /** Entitlement Status */
+            entitlement_status: string | null;
+            /** Cohort Id */
+            cohort_id: string | null;
+            /** Progress Percent */
+            progress_percent: number | null;
+            /** Certificate Id */
+            certificate_id: string | null;
+            /** Certificate Status */
+            certificate_status: string | null;
+            /** Public Code */
+            public_code: string | null;
+        };
+        /** CertificateRecipientPage */
+        CertificateRecipientPage: {
+            /** Items */
+            items: components["schemas"]["CertificateRecipientOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** CertificateSettingsIn */
+        CertificateSettingsIn: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Template Id */
+            template_id?: string | null;
+            /** Title Override */
+            title_override?: string | null;
+            /** Training Hours */
+            training_hours?: number | null;
+            /** Signatories */
+            signatories: components["schemas"]["SignatoryIO"][];
+            /**
+             * Auto Issue
+             * @default false
+             */
+            auto_issue: boolean;
+            /**
+             * Completion Threshold Pct
+             * @default 100
+             */
+            completion_threshold_pct: number;
+            /**
+             * Cpd Enabled
+             * @default false
+             */
+            cpd_enabled: boolean;
+            /** Cpd Hours */
+            cpd_hours?: number | null;
+            /** Cpd Provider Ref */
+            cpd_provider_ref?: string | null;
+            /**
+             * Physical Enabled
+             * @default false
+             */
+            physical_enabled: boolean;
+            /** Cpd Price Minor */
+            cpd_price_minor?: number | null;
+            /** Physical Price Minor */
+            physical_price_minor?: number | null;
+            /** Currency */
+            currency?: string | null;
+        };
+        /** CertificateSettingsOut */
+        CertificateSettingsOut: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Template Id */
+            template_id?: string | null;
+            /** Title Override */
+            title_override?: string | null;
+            /** Training Hours */
+            training_hours?: number | null;
+            /** Signatories */
+            signatories: components["schemas"]["SignatoryIO"][];
+            /**
+             * Auto Issue
+             * @default false
+             */
+            auto_issue: boolean;
+            /**
+             * Completion Threshold Pct
+             * @default 100
+             */
+            completion_threshold_pct: number;
+            /**
+             * Cpd Enabled
+             * @default false
+             */
+            cpd_enabled: boolean;
+            /** Cpd Hours */
+            cpd_hours?: number | null;
+            /** Cpd Provider Ref */
+            cpd_provider_ref?: string | null;
+            /**
+             * Physical Enabled
+             * @default false
+             */
+            physical_enabled: boolean;
+            /** Cpd Price Minor */
+            cpd_price_minor?: number | null;
+            /** Physical Price Minor */
+            physical_price_minor?: number | null;
+            /** Currency */
+            currency?: string | null;
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Configured */
+            configured: boolean;
+            /** Updated At */
+            updated_at?: string | null;
+        };
         /** CertificateTemplate */
         CertificateTemplate: {
             /** Legacy Certificate Id */
@@ -13681,6 +14329,31 @@ export interface components {
             name: string | null;
             /** Description */
             description: string | null;
+        };
+        /** CertificateVerificationOut */
+        CertificateVerificationOut: {
+            /** Status */
+            status: string;
+            /** Public Code */
+            public_code: string;
+            /** Recipient Name */
+            recipient_name: string | null;
+            /** Title */
+            title: string | null;
+            /** Issued At */
+            issued_at: string | null;
+            /** Training Hours */
+            training_hours: number | null;
+            /** Cpd */
+            cpd: boolean;
+            /** Cpd Hours */
+            cpd_hours: number | null;
+            /** Issuer */
+            issuer: string;
+            /** Revoked At */
+            revoked_at: string | null;
+            /** Legacy */
+            legacy: boolean;
         };
         /** CheckoutQuoteResponse */
         CheckoutQuoteResponse: {
@@ -13773,6 +14446,7 @@ export interface components {
             /** Voucher Ids */
             voucher_ids?: string[] | null;
             referral?: components["schemas"]["ReferralIn"] | null;
+            shipping_address?: components["schemas"]["ShippingAddressIn"] | null;
         };
         /** CheckoutSessionResponse */
         CheckoutSessionResponse: {
@@ -16773,6 +17447,33 @@ export interface components {
             /** Source */
             source: string;
         };
+        /** GlobalAddonOfferIO */
+        GlobalAddonOfferIO: {
+            /**
+             * Code
+             * @enum {string}
+             */
+            code: "cpd_certificate" | "physical_certificate";
+            /** Enabled */
+            enabled: boolean;
+            /** Price Minor */
+            price_minor: number;
+            /** Currency */
+            currency: string;
+            /** Title Ar */
+            title_ar: string;
+            /** Description Ar */
+            description_ar?: string | null;
+            /** Title En */
+            title_en: string;
+            /** Description En */
+            description_en?: string | null;
+        };
+        /** GlobalAddonOffersIO */
+        GlobalAddonOffersIO: {
+            /** Items */
+            items: components["schemas"]["GlobalAddonOfferIO"][];
+        };
         /** GrantOption */
         GrantOption: {
             /**
@@ -17891,6 +18592,56 @@ export interface components {
             destination: string | null;
             /** Payout Terms */
             payout_terms: string;
+        };
+        /** MyCertificateOut */
+        MyCertificateOut: {
+            /**
+             * Certificate Id
+             * Format: uuid
+             */
+            certificate_id: string;
+            /** Public Code */
+            public_code: string;
+            /** Status */
+            status: string;
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Product Slug */
+            product_slug: string | null;
+            /** Product Type */
+            product_type: string | null;
+            /** Recipient Name */
+            recipient_name: string | null;
+            /** Title */
+            title: string;
+            /** Training Hours */
+            training_hours: number | null;
+            /** Completed At */
+            completed_at: string | null;
+            /** Issued At */
+            issued_at: string | null;
+            /** Cpd */
+            cpd: boolean;
+            /** Cpd Hours */
+            cpd_hours: number | null;
+            /** Cpd Ref */
+            cpd_ref: string | null;
+            /** Verify Url */
+            verify_url: string;
+            /** Pdf Path */
+            pdf_path: string | null;
+        };
+        /** MyCertificatesOut */
+        MyCertificatesOut: {
+            /** Certificate Name */
+            certificate_name: string | null;
+            /** Needs Name */
+            needs_name: boolean;
+            /** Items */
+            items: components["schemas"]["MyCertificateOut"][];
         };
         /** MyReferralsOut */
         MyReferralsOut: {
@@ -19632,6 +20383,13 @@ export interface components {
             /** Ends At */
             ends_at: string | null;
         };
+        /** ProductAddonOffersOut */
+        ProductAddonOffersOut: {
+            /** Slug */
+            slug: string;
+            /** Addons */
+            addons: components["schemas"]["AddonOfferOut"][];
+        };
         /**
          * ProductBehaviorPoint
          * @description One bucket of product behaviour events (page views, wishlist and cart actions).
@@ -21214,6 +21972,11 @@ export interface components {
              */
             skipped: string[];
         };
+        /** RevokeIn */
+        RevokeIn: {
+            /** Reason */
+            reason?: string | null;
+        };
         /** RevokeSubscriptionRequest */
         RevokeSubscriptionRequest: {
             /** Reason */
@@ -21711,6 +22474,37 @@ export interface components {
              * @enum {string}
              */
             status: "draft" | "published" | "archived";
+        };
+        /**
+         * ShippingAddressIn
+         * @description Where a printed certificate is shipped (cart checkout with the printed-copy add-on).
+         */
+        ShippingAddressIn: {
+            /** Full Name */
+            full_name: string;
+            /** Phone */
+            phone: string;
+            /** Country Code */
+            country_code: string;
+            /** City */
+            city: string;
+            /** District */
+            district?: string | null;
+            /** Street */
+            street: string;
+            /** Building */
+            building?: string | null;
+            /** Postal Code */
+            postal_code?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** SignatoryIO */
+        SignatoryIO: {
+            /** Name */
+            name: string;
+            /** Lines */
+            lines?: string[];
         };
         /** SignupPointResponse */
         SignupPointResponse: {
@@ -23883,6 +24677,36 @@ export interface components {
             /** Currency Code */
             currency_code: string;
         };
+        /** BulkIssueIn */
+        app__modules__certificates__presentation__schemas__BulkIssueIn: {
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Customer Ids */
+            customer_ids?: string[] | null;
+            /**
+             * All Eligible
+             * @default false
+             */
+            all_eligible: boolean;
+            /** Cohort Id */
+            cohort_id?: string | null;
+        };
+        /** BulkIssueOut */
+        app__modules__certificates__presentation__schemas__BulkIssueOut: {
+            /** Issued */
+            issued: number;
+            /** Pending Name */
+            pending_name: number;
+            /** Skipped */
+            skipped: number;
+            /** Errors */
+            errors: number;
+            /** Results */
+            results: components["schemas"]["BulkIssueItemOut"][];
+        };
         /** ExpertSummaryResponse */
         app__modules__consultations__presentation__schemas__ExpertSummaryResponse: {
             /** Pending Approvals */
@@ -23915,6 +24739,21 @@ export interface components {
              * Format: uuid
              */
             product_id: string;
+        };
+        /** BulkIssueIn */
+        app__modules__promotions__presentation__voucher_schemas__BulkIssueIn: {
+            segment: components["schemas"]["SegmentIn"];
+            voucher: components["schemas"]["VoucherIssueIn"];
+        };
+        /** BulkIssueOut */
+        app__modules__promotions__presentation__voucher_schemas__BulkIssueOut: {
+            /**
+             * Batch Id
+             * Format: uuid
+             */
+            batch_id: string;
+            /** Issued */
+            issued: number;
         };
         /** CategoryResponse */
         app__modules__support__presentation__schemas__CategoryResponse: {
@@ -34726,6 +35565,721 @@ export interface operations {
             };
         };
     };
+    my_certificates_api_v1_me_certificates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyCertificatesOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_certificate_api_v1_me_certificates__certificate_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyCertificateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_certificate_pdf_api_v1_me_certificates__certificate_id__pdf_get: {
+        parameters: {
+            query?: {
+                download?: boolean;
+            };
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                };
+            };
+            /** @description Presigned S3 URL */
+            307: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_my_certificate_name_api_v1_me_certificate_name_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CertificateNameIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyCertificatesOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_certificate_api_v1_certificates_verify__code__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateVerificationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    certificate_addon_offers_api_v1_catalog_certificate_addons_get: {
+        parameters: {
+            query?: {
+                slugs?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddonOffersPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_certificate_settings_api_v1_admin_catalog_products__product_ref__certificate_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_certificate_settings_api_v1_admin_catalog_products__product_ref__certificate_settings_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CertificateSettingsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_certificate_html_api_v1_admin_catalog_products__product_ref__certificate_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CertificatePreviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_certificate_pdf_api_v1_admin_catalog_products__product_ref__certificate_preview_pdf_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CertificatePreviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_certificate_recipients_api_v1_admin_catalog_products__product_ref__certificate_recipients_get: {
+        parameters: {
+            query?: {
+                cohort_id?: string | null;
+                q?: string | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                product_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateRecipientPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    issue_certificates_api_v1_admin_certificates_issue_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__modules__certificates__presentation__schemas__BulkIssueIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["app__modules__certificates__presentation__schemas__BulkIssueOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_certificates_api_v1_admin_certificates_get: {
+        parameters: {
+            query?: {
+                product_id?: string | null;
+                status?: ("pending_name" | "issued" | "revoked") | null;
+                /** @description Code, email, name or title contains. */
+                q?: string | null;
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificatePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_certificate_api_v1_admin_certificates__certificate_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_certificate_pdf_api_v1_admin_certificates__certificate_id__pdf_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_certificate_api_v1_admin_certificates__certificate_id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reissue_certificate_api_v1_admin_certificates__certificate_id__reissue_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_certificate_recipient_name_api_v1_admin_certificates__certificate_id__recipient_name_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                certificate_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CertificateNameIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CertificateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_certificate_addon_pricing_api_v1_admin_pricing_certificate_addons_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalAddonOffersIO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_certificate_addon_pricing_api_v1_admin_pricing_certificate_addons_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GlobalAddonOffersIO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalAddonOffersIO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_cart_api_v1_cart_get: {
         parameters: {
             query?: {
@@ -34839,6 +36393,43 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["CartItemUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CartResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_cart_item_addons_api_v1_cart_items__cart_item_id__addons_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cart_item_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CartItemAddonsRequest"];
             };
         };
         responses: {
@@ -41712,7 +43303,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["BulkIssueIn"];
+                "application/json": components["schemas"]["app__modules__promotions__presentation__voucher_schemas__BulkIssueIn"];
             };
         };
         responses: {
@@ -41722,7 +43313,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BulkIssueOut"];
+                    "application/json": components["schemas"]["app__modules__promotions__presentation__voucher_schemas__BulkIssueOut"];
                 };
             };
             /** @description Validation Error */

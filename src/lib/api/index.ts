@@ -31,6 +31,7 @@ export * from "@/lib/api/customers/tickets";
 
 // Learning
 export * from "@/lib/api/learning/catalog";
+export * from "@/lib/api/learning/certificates";
 export * from "@/lib/api/learning/studio";
 export * from "@/lib/api/learning/curriculum";
 export * from "@/lib/api/learning/bundles";

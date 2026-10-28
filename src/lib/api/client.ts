@@ -56,6 +56,17 @@ function canRecover(path: string): boolean {
 }
 
 export async function apiRequest<T>(method: string, path: string, options: ApiRequestOptions = {}): Promise<T> {
+  const response = await apiRaw(method, path, options);
+
+  if (response.status === 204 || !hasJsonBody(response)) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
+}
+
+/** Like `apiRequest`, but returns the raw response (HTML previews, PDF downloads). Throws `ApiError` when not ok. */
+export async function apiRaw(method: string, path: string, options: ApiRequestOptions = {}): Promise<Response> {
   const { body, headers: requestHeaders, path: pathParams, query, ...requestOptions } = options;
   const headers = buildHeaders(requestHeaders);
   const url = buildUrl(path, pathParams, query);
@@ -87,11 +98,7 @@ export async function apiRequest<T>(method: string, path: string, options: ApiRe
     throw await createApiError(response, url);
   }
 
-  if (response.status === 204 || !hasJsonBody(response)) {
-    return undefined as T;
-  }
-
-  return (await response.json()) as T;
+  return response;
 }
 
 export function apiGet<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {

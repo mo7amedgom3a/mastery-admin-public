@@ -15,6 +15,7 @@ export type DetailTab =
   | "live_diploma"
   | "orders"
   | "access"
+  | "certificate"
   | "related"
   | "legacy";
 
