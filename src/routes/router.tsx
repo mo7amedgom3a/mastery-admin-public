@@ -77,6 +77,9 @@ import AnalyticsSalesPage, {
   ProductsReportPage,
 } from "@/features/analytics/pages/reports-page";
 import BannersPage from "@/features/marketing/pages/banners-page";
+import BlogPostsPage from "@/features/marketing/blog/pages/blog-posts-page";
+import BlogStudioPage from "@/features/marketing/blog/pages/blog-studio-page";
+import BlogSubscribersPage from "@/features/marketing/blog/pages/blog-subscribers-page";
 import PoliciesPage from "@/features/marketing/pages/policies-page";
 import BehaviorOverviewPage from "@/features/analytics/pages/behavior-page";
 import FunnelsPage from "@/features/analytics/pages/funnels-page";
@@ -234,6 +237,9 @@ export const ROUTER = createBrowserRouter([
       { path: "marketing/announcements", element: <AnnouncementsPage /> },
       { path: "marketing/policies", element: <PoliciesPage /> },
       { path: "marketing/banners", element: <BannersPage /> },
+      { path: "marketing/blog", element: <RequireScope permission="marketing.read"><BlogPostsPage /></RequireScope> },
+      { path: "marketing/blog/subscribers", element: <RequireScope permission="marketing.read"><BlogSubscribersPage /></RequireScope> },
+      { path: "marketing/blog/:postId/studio", element: <RequireScope permission="marketing.write"><BlogStudioPage /></RequireScope>, handle: { studio: true } },
 
       // Analytics
       { path: "analytics/sales", element: <AnalyticsSalesPage /> },

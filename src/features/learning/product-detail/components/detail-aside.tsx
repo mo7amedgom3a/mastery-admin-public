@@ -4,9 +4,11 @@ import { initialsOf } from "@/lib/status";
 import { useT } from "@/lib/i18n";
 import type { CurriculumUnit, ProductView, SearchProductDetail } from "@/lib/api";
 import { computeCompleteness } from "../model";
+import { LegacySyncCard } from "./legacy-sync-card";
 import type { DetailTab } from "./detail-tabbar";
 
 interface DetailAsideProps {
+  productRef: string;
   data: ProductView;
   units: CurriculumUnit[];
   searchDetail?: SearchProductDetail | null;
@@ -14,6 +16,7 @@ interface DetailAsideProps {
 }
 
 export function DetailAside({
+  productRef,
   data,
   units,
   searchDetail,
@@ -49,6 +52,9 @@ export function DetailAside({
   return (
     <aside className="cd-aside" aria-label={t("معلومات سريعة", "Quick facts")}>
       {/* Cover & Quick facts card */}
+      {data.links.b2c_product_id && ["course", "diploma", "package"].includes(item.product_type) ? (
+        <LegacySyncCard productRef={productRef} />
+      ) : null}
       <div className="cd-card">
         {coverImage ? (
           <div className="cd-cover" style={{ background: "var(--fill-soft)" }}>

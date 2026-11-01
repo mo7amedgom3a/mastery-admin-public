@@ -22,11 +22,16 @@ export type PreviewChannel = {
   blocked: boolean;
   /** Posts a one-off message (e.g. scroll) once the frame is ready. */
   post: (data: Record<string, unknown>) => void;
+  /** Remounts the frame and re-arms the handshake (the retry action of the unreachable state). */
+  reload: () => void;
+  /** The frame reported `load`: ask it for a fresh `ready` in case the first ones were missed. */
+  notifyLoaded: () => void;
 };
 
 /** Connects to `/preview/{path}` and re-posts `message` (memoize it) whenever it changes. */
 export function usePreviewChannel(path: string, message: Record<string, unknown> | null): PreviewChannel {
-  const url = `${STOREFRONT_ORIGIN.replace(/\/$/, "")}${path}`;
+  const [nonce, setNonce] = useState(0);
+  const url = `${STOREFRONT_ORIGIN.replace(/\/$/, "")}${path}${nonce > 0 ? `?preview=${nonce}` : ""}`;
   const origin = new URL(url).origin;
   const frame = useRef<HTMLIFrameElement>(null);
   const [ready, setReady] = useState(false);
@@ -47,7 +52,7 @@ export function usePreviewChannel(path: string, message: Record<string, unknown>
       }
     };
     window.addEventListener("message", onMessage);
-    const watchdog = window.setTimeout(() => setBlocked(!readyRef.current), 8000);
+    const watchdog = window.setTimeout(() => setBlocked(!readyRef.current), 10000);
     return () => {
       window.removeEventListener("message", onMessage);
       window.clearTimeout(watchdog);
@@ -72,5 +77,20 @@ export function usePreviewChannel(path: string, message: Record<string, unknown>
     return () => window.clearTimeout(timer.current);
   }, [ready, handshake, message, post]);
 
-  return { frameRef: frame, url, ready, blocked, post };
+  const reload = useCallback(() => {
+    readyRef.current = false;
+    setReady(false);
+    setBlocked(false);
+    setHandshake(0);
+    setNonce((value) => value + 1);
+  }, []);
+
+  const notifyLoaded = useCallback(() => {
+    // A late load means the watchdog may already have shown the unreachable state; the frame can
+    // still connect, so clear it and explicitly ask for the handshake.
+    setBlocked(false);
+    frame.current?.contentWindow?.postMessage({ source: "mastery-studio", type: "hello" }, origin);
+  }, [origin]);
+
+  return { frameRef: frame, url, ready, blocked, post, reload, notifyLoaded };
 }

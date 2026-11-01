@@ -268,7 +268,18 @@ export const navigation: NavModule[] = [
       },
       {
         title: { ar: "الموقع", en: "Website" },
-        items: [{ title: { ar: "البانرات والسلايدر", en: "Banners & sliders" }, href: "/marketing/banners", permission: "marketing.read" }],
+        items: [
+          { title: { ar: "البانرات والسلايدر", en: "Banners & sliders" }, href: "/marketing/banners", permission: "marketing.read" },
+          {
+            title: { ar: "المدونة", en: "Blog" },
+            href: "/marketing/blog",
+            permission: "marketing.read",
+            children: [
+              { title: { ar: "المقالات", en: "Posts" }, href: "/marketing/blog", permission: "marketing.read" },
+              { title: { ar: "مشتركو المدونة", en: "Blog subscribers" }, href: "/marketing/blog/subscribers", permission: "marketing.read" },
+            ],
+          },
+        ],
       },
     ],
   },

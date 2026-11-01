@@ -363,7 +363,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* Aside Facts & Completeness */}
-        {showAside && <DetailAside data={productData} searchDetail={searchDetail} units={units} />}
+        {showAside && <DetailAside productRef={productRef} data={productData} searchDetail={searchDetail} units={units} />}
       </div>
 
       {/* Publish / Unpublish Confirmation Modal */}

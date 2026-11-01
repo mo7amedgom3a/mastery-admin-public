@@ -56,6 +56,7 @@ export * from "@/lib/api/marketing/vouchers";
 export * from "@/lib/api/marketing/affiliates";
 export * from "@/lib/api/marketing/referrals";
 export * from "@/lib/api/marketing/content";
+export * from "@/lib/api/marketing/blog";
 
 // Analytics & reporting
 export * from "@/lib/api/analytics/reports";

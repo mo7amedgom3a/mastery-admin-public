@@ -325,6 +325,30 @@ export function restoreProduct(product_ref: string): Promise<SuccessResponse<Res
   return apiPost(productPaths.restore, { path: { product_ref } });
 }
 
+export interface LegacySyncStatus {
+  sync_status: "synced" | "pending" | "failed" | "conflict" | "needs_mapping" | "not_synced";
+  legacy_id: number | null;
+  last_error?: string | null;
+  last_synced_at?: string | null;
+  lms_units?: number | null;
+  lms_videos?: number | null;
+}
+
+/** `GET /admin/catalog/products/{ref}/legacy-sync` — this product against the LMS tables. */
+export function getLegacySync(product_ref: string): Promise<LegacySyncStatus> {
+  return apiGet("admin/catalog/products/{product_ref}/legacy-sync", { path: { product_ref } });
+}
+
+/** `POST /admin/catalog/products/{ref}/legacy-sync` — push now, even when unchanged. Audited. */
+export function pushLegacySync(product_ref: string): Promise<{ outcome: string }> {
+  return apiPost("admin/catalog/products/{product_ref}/legacy-sync", { path: { product_ref } });
+}
+
+/** `POST /admin/catalog/legacy-sync/sweep` — run the two-way sync without waiting for its schedule. */
+export function runLegacySweep(): Promise<{ workflow_id: string }> {
+  return apiPost("admin/catalog/legacy-sync/sweep");
+}
+
 /** `POST /admin/catalog/skills` — adds a skill (or returns the one with the same slug). Audited. */
 export function createSkill(body: CreateSkillRequest): Promise<CreatedSkill> {
   return apiPost(skillsPath, { body });

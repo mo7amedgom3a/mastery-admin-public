@@ -6,6 +6,7 @@ import {
   productKeys,
   productQueries,
   restoreProduct,
+  runLegacySweep,
   setProductStatus,
   type Product,
   type ProductOrigin,
@@ -103,6 +104,17 @@ export default function CatalogPage({ defaultType }: { defaultType?: string } = 
     }
   })();
 
+  const legacyQueryClient = useQueryClient();
+  const sweep = useMutation({
+    mutationFn: runLegacySweep,
+    onSuccess: () => {
+      toast.success(t("بدأت المزامنة مع LMS", "LMS sync started"));
+      // The sweep runs in the background; new drafts show once it has finished.
+      window.setTimeout(() => void legacyQueryClient.invalidateQueries({ queryKey: productKeys.all }), 8000);
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : t("تعذّرت المزامنة", "Couldn't sync")),
+  });
+
   const createLabel = (() => {
     switch (type) {
       case "package":
@@ -125,7 +137,17 @@ export default function CatalogPage({ defaultType }: { defaultType?: string } = 
       <PageHead
         title={pageTitle}
         sub={t("كل منتجات المتجر وحالة نشرها.", "Every storefront product and its publishing state.")}
-        actions={<Button kind="primary" icon="plus" label={createLabel} href={createHref} />}
+        actions={
+          <>
+            <Button
+              label={t("مزامنة مع LMS", "Sync with LMS")}
+              disabled={sweep.isPending}
+              onClick={() => sweep.mutate()}
+              data-testid="legacy-sweep"
+            />
+            <Button kind="primary" icon="plus" label={createLabel} href={createHref} />
+          </>
+        }
       />
 
       <nav className="ma-pagetabs" role="tablist" aria-label={t("أنواع المنتجات", "Product types")} style={{ marginBlock: "var(--space-3)" }}>
