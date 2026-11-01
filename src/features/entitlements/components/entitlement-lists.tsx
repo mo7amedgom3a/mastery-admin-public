@@ -68,6 +68,7 @@ export function EntitlementDirectory({ productId }: { productId?: string }) {
       options: [
         { value: "order", label: t("طلب", "Order") },
         { value: "subscription", label: t("اشتراك", "Subscription") },
+        { value: "legacy_enrollment", label: t("مستورد من LMS", "Imported from LMS") },
       ],
     },
     {
@@ -91,7 +92,7 @@ export function EntitlementDirectory({ productId }: { productId?: string }) {
             limit,
             product_id: productId,
             status: (values.status || undefined) as EntitlementStatus | undefined,
-            source_type: (values.source_type || undefined) as "order" | "subscription" | undefined,
+            source_type: (values.source_type || undefined) as "order" | "subscription" | "legacy_enrollment" | undefined,
             expiring_within_days: values.expiring_within_days ? Number(values.expiring_within_days) : undefined,
           })
         }

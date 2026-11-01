@@ -91,7 +91,7 @@ test("units and lessons of a B2C course reach the LMS tables, and an LMS-owned c
   expect(sql(`SELECT COUNT(*) FROM legacy.MAS_COU_Units WHERE courseId = ${owned}`)).toBe(before);
 });
 
-test("a B2C package reaches the LMS with its courses, and LMS edits come back", async ({ page, request }) => {
+test("a B2C package reaches the LMS with its courses, and B2C keeps its content", async ({ page, request }) => {
   test.setTimeout(300_000);
   const stamp = Date.now().toString(36);
   const member = await create(request, { product_type: "course", title: `عضو باقة ${stamp}`, price: 10, currency_code: "USD", published: true, category_ids: [category()] });
@@ -113,7 +113,8 @@ test("a B2C package reaches the LMS with its courses, and LMS edits come back", 
   const edited = `باقة معدلة في LMS ${stamp}`;
   sql(`UPDATE legacy.MAS_COU_Curriculum SET name = N'${edited}' WHERE Id = ${legacyId}`);
   await sweep(request);
-  await slow(() => sql(`SELECT title FROM b2c.product_translations WHERE product_id = '${pkg.id}' AND locale_code LIKE 'ar%'`)).toBe(edited);
+  await slow(() => sql(`SELECT COUNT(*) FROM b2c.legacy_sync_events WHERE legacy_id = ${legacyId} AND action = N'content_drift' AND outcome = N'b2c_wins'`)).toBe("1");
+  expect(sql(`SELECT title FROM b2c.product_translations WHERE product_id = '${pkg.id}' AND locale_code LIKE 'ar%'`)).not.toBe(edited);
 });
 
 test("a B2C consultation reaches the LMS with its expert and price", async ({ request }) => {

@@ -13,7 +13,7 @@ export function daysLeft(row: Pick<AdminEntitlement, "status" | "expires_at" | "
 
 export function useSourceLabel() {
   const t = useT();
-  return (source: string) => ({ order: t("طلب", "Order"), subscription: t("اشتراك", "Subscription") })[source] ?? source;
+  return (source: string) => ({ order: t("طلب", "Order"), subscription: t("اشتراك", "Subscription"), legacy_enrollment: t("مستورد من LMS", "Imported from LMS") })[source] ?? source;
 }
 
 /** Refreshes every list an entitlement can appear in (customer page, product tab, global list). */

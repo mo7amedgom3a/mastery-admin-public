@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { apiGet } from "@/lib/api/client";
+import { apiGet, apiPost } from "@/lib/api/client";
 import type { QueryParams, SuccessResponse } from "@/lib/api/operation-types";
 
 type SocialOp = "social_links_api_v1_admin_settings_social_links_get";
@@ -49,3 +49,28 @@ export const settingsQueries = {
   countries: () => queryOptions({ queryKey: settingsKeys.countries(), queryFn: listCountries }),
   modules: () => queryOptions({ queryKey: settingsKeys.modules(), queryFn: listModules }),
 };
+
+export type MirrorRun = {
+  run_id: string;
+  status: "running" | "applying" | "succeeded" | "partial" | "failed";
+  started_by: string | null;
+  started_at: string;
+  finished_at: string | null;
+  tables_total: number;
+  tables_done: number;
+  rows_copied: number;
+  current_table: string | null;
+  failed_tables: string[];
+  summary: Record<string, unknown>;
+};
+export type MirrorStatus = { enabled: boolean; running: boolean; runs: MirrorRun[] };
+
+/** `GET /admin/legacy-sync/mirror` — whether a refresh can run, and the latest runs. */
+export function getMirrorStatus(): Promise<MirrorStatus> {
+  return apiGet("admin/legacy-sync/mirror");
+}
+
+/** `POST /admin/legacy-sync/mirror/refresh` — copy production into the mirror, then apply the sync. Audited. */
+export function refreshMirror(): Promise<{ run_id: string }> {
+  return apiPost("admin/legacy-sync/mirror/refresh");
+}

@@ -89,6 +89,15 @@ export function CustomerDirectory({ initialSource }: { initialSource?: "b2c" | "
         { value: "blocked", label: t("محظور", "Blocked") },
       ],
     },
+    {
+      key: "enrolled_in",
+      label: t("كل المتعلمين", "All learners"),
+      options: [
+        { value: "any", label: t("منضم إلى دورة أو دبلومة", "In a course or diploma") },
+        { value: "course", label: t("منضم إلى دورة", "In a course") },
+        { value: "diploma", label: t("منضم إلى دبلومة", "In a diploma") },
+      ],
+    },
   ];
 
   return (
@@ -99,6 +108,7 @@ export function CustomerDirectory({ initialSource }: { initialSource?: "b2c" | "
           source: (selected.source || initialSource || "all") as "all" | "b2c" | "legacy",
           query,
           status: selected.status || undefined,
+          enrolled_in: (selected.enrolled_in || undefined) as "any" | "course" | "diploma" | undefined,
           limit,
           offset,
         })

@@ -6,6 +6,7 @@ import { formatDateTime, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { Card, Field, PageHead } from "@/components/ui/kit";
 import { DataTable, type Column } from "@/components/ui/data-table";
+import { MirrorRefreshCard } from "@/features/settings/components/mirror-refresh-card";
 
 export default function GeneralSettingsPage() {
   const t = useT();
@@ -18,6 +19,7 @@ export default function GeneralSettingsPage() {
   return (
     <>
       <PageHead title={t("عام", "General")} sub={t("بيانات مرجعية وإعدادات الموقع.", "Reference data and site settings.")} />
+      <MirrorRefreshCard />
       <div className="ma-cols ma-cols--2">
         <ReferenceCard title={t("الدول", "Countries")} rows={countries.data?.items ?? []} loading={countries.isLoading} error={countries.error} />
         <ReferenceCard title={t("وسائل التواصل", "Social links")} rows={socialRows} loading={social.isLoading} error={social.error} />

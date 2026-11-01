@@ -8,8 +8,8 @@ import { fingerprint } from "./support";
 /*
  * Two-way catalog sync on the local `legacy` mirror, against the live API and legacy sync worker.
  * B2C → LMS: a course created in the admin reaches MAS_DEF_Course; edit, delete and restore follow.
- * LMS → B2C: a row inserted in the LMS tables becomes an admin draft, LMS edits reach it, a price edit is only
- * logged, publishing keeps the LMS course active, and removing the row soft-deletes the product.
+ * LMS → B2C: a row inserted in the LMS tables becomes an admin draft, B2C keeps its content when the LMS edits it, a
+ * price edit is only logged, publishing keeps the LMS course active, and removing the row soft-deletes the product.
  * Writes real dev data. Needs LEGACY_SYNC_* on and SA_PASSWORD (docs/db_access.txt). Never run against production.
  */
 
@@ -144,13 +144,12 @@ test("a course added in the LMS shows in the admin as a draft and stays in sync"
     await expect(page.getByTestId("legacy-sync-id")).toContainText(String(LMS_ID));
     await shot(page, "04-admin-draft-linked-to-lms");
 
-    // An LMS edit reaches B2C, and the sweep does not push it back.
+    // B2C controls content: an LMS edit is logged and not applied.
     const edited = `${name} معدلة`;
     sql(`UPDATE legacy.MAS_DEF_Course SET name = N'${edited}' WHERE Id = ${LMS_ID}`);
     await sweepFromAdmin(page);
-    await slow(async () => (await detail(request, ref)).product.title).toBe(edited);
-    await slow(() => sql(`SELECT COUNT(*) FROM b2c.audit_logs WHERE action = N'catalog.legacy_sync_inbound'
-                          AND entity_id = '${ref.replace("b2c:", "")}'`)).toBe("1");
+    await slow(() => sql(`SELECT COUNT(*) FROM b2c.legacy_sync_events WHERE legacy_id = ${LMS_ID} AND action = N'content_drift' AND outcome = N'b2c_wins'`)).toBe("1");
+    expect((await detail(request, ref)).product.title).toBe(name);
 
     // An LMS price edit is logged, never applied.
     const price = sql(`SELECT CAST(amount AS INT) FROM b2c.prices p JOIN b2c.products x ON x.product_id = p.product_id
@@ -162,12 +161,12 @@ test("a course added in the LMS shows in the admin as a draft and stays in sync"
     expect(sql(`SELECT CAST(amount AS INT) FROM b2c.prices p JOIN b2c.products x ON x.product_id = p.product_id
                 WHERE x.slug = N'course-${LMS_ID}' AND p.valid_to IS NULL`)).toBe("77");
 
-    // A true conflict: the same field edited on both sides keeps B2C and logs the LMS value.
+    // The same field edited on both sides keeps B2C, and B2C goes back to the LMS.
     const conflictId = ref.replace("b2c:", "");
     sql(`UPDATE legacy.MAS_DEF_Course SET intro = N'مقدمة LMS متعارضة' WHERE Id = ${LMS_ID};
          UPDATE b2c.product_translations SET short_description = N'مقدمة B2C' WHERE product_id = '${conflictId}';`);
     await sweepFromAdmin(page);
-    await slow(() => sql(`SELECT COUNT(*) FROM b2c.legacy_sync_events WHERE legacy_id = ${LMS_ID} AND action = N'conflict'`)).toBe("1");
+    await slow(() => sql(`SELECT COUNT(*) FROM b2c.legacy_sync_events WHERE legacy_id = ${LMS_ID} AND action = N'content_drift'`)).toBe("2");
     await slow(() => sql(`SELECT intro FROM legacy.MAS_DEF_Course WHERE Id = ${LMS_ID}`)).toBe("مقدمة B2C");
 
     // A B2C edit while still a draft leaves the live LMS course active.
@@ -183,7 +182,9 @@ test("a course added in the LMS shows in the admin as a draft and stays in sync"
     await page.goto(productPage(ref));
     await shot(page, "05-admin-lms-course-published");
 
-    // Deactivating in the LMS unpublishes; removing the row soft-deletes.
+    // Deactivating in the LMS unpublishes; removing the row soft-deletes. Publishing pushes active = 1 in the
+    // background, so wait for that push or it would overwrite the LMS change below.
+    await slow(() => sql(`SELECT COUNT(*) FROM b2c.legacy_sync_events WHERE legacy_id = ${LMS_ID} AND direction = N'outbound' AND details_json LIKE N'%"status": "published"%'`)).toBe("1");
     sql(`UPDATE legacy.MAS_DEF_Course SET active = 0 WHERE Id = ${LMS_ID}`);
     await sweepFromAdmin(page);
     await slow(async () => (await detail(request, ref)).product.status).toBe("draft");

@@ -16822,6 +16822,15 @@ export interface components {
              * @description While `suspended`: days of access given back when it is resumed.
              */
             suspended_remaining_days?: number | null;
+            /** Product Status */
+            product_status?: string | null;
+            /**
+             * Progress Pct
+             * @description LMS progress; null when not started.
+             */
+            progress_pct?: number | null;
+            /** Last Activity At */
+            last_activity_at?: string | null;
             /**
              * Fulfillments
              * @default []
@@ -16949,6 +16958,15 @@ export interface components {
              * @description While `suspended`: days of access given back when it is resumed.
              */
             suspended_remaining_days?: number | null;
+            /** Product Status */
+            product_status?: string | null;
+            /**
+             * Progress Pct
+             * @description LMS progress; null when not started.
+             */
+            progress_pct?: number | null;
+            /** Last Activity At */
+            last_activity_at?: string | null;
         };
         /** EventStreamPageResponse */
         EventStreamPageResponse: {
@@ -19235,6 +19253,12 @@ export interface components {
              * @default 1
              */
             entitlement_count: number;
+            /** Product Status */
+            product_status?: string | null;
+            /** Progress Pct */
+            progress_pct?: number | null;
+            /** Last Activity At */
+            last_activity_at?: string | null;
         };
         /** PackageCourse */
         PackageCourse: {
@@ -31767,6 +31791,8 @@ export interface operations {
                 query?: string | null;
                 /** @description `active`, `suspended` or `blocked` (B2C). */
                 status?: string | null;
+                /** @description Only learners with access to a `course`, a `diploma` or `any` of both, active or expired (B2C). */
+                enrolled_in?: "any" | "course" | "diploma" | null;
                 /** @description Page size (max items returned). */
                 limit?: number;
                 /** @description Number of items to skip (for paging). */
@@ -38120,7 +38146,7 @@ export interface operations {
                 customer_ref?: string | null;
                 product_id?: string | null;
                 status?: ("active" | "expired" | "suspended" | "revoked") | null;
-                source_type?: ("order" | "subscription") | null;
+                source_type?: ("order" | "subscription" | "legacy_enrollment") | null;
                 expiring_within_days?: number | null;
                 query?: string | null;
                 limit?: number;
