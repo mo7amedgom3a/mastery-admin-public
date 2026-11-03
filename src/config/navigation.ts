@@ -253,7 +253,7 @@ export const navigation: NavModule[] = [
           { title: { ar: "المسوقون بالعمولة", en: "Affiliates" }, href: "/marketing/affiliates", permission: "affiliates.read" },
           { title: { ar: "العمولات", en: "Commissions" }, href: "/marketing/commissions", permission: "affiliates.read" },
           { title: { ar: "ادعُ صديقًا", en: "Invite a friend" }, href: "/marketing/referral-program", permission: "affiliates.read" },
-          { title: { ar: "طلبات الصرف", en: "Payout requests" }, href: "/marketing/payouts", permission: "affiliates.read", badge: "payouts" },
+          { title: { ar: "طلبات الصرف (النظام القديم)", en: "Legacy payout requests" }, href: "/marketing/payouts", permission: "affiliates.read", badge: "payouts" },
           { title: { ar: "سياسة البرنامج", en: "Program policy" }, href: "/marketing/policies", permission: "affiliates.read" },
           { title: { ar: "أشرطة الإعلانات", en: "Announcement bars" }, href: "/marketing/announcements", permission: "marketing.read" },
         ],

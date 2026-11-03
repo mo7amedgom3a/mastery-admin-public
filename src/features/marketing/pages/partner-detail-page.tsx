@@ -11,7 +11,7 @@ import {
   listConversions,
   listPartnerCustomers,
   resyncPartner,
-  setAffiliateCommission,
+  declineAffiliateCommission,
   setPartnerStatus,
   updatePartner,
   type AffiliateCommission,
@@ -32,7 +32,6 @@ import { PageState } from "@/components/ui/primitives";
 
 import { CouponForm } from "../components/coupon-form";
 import { PartnerForm } from "../components/partner-form";
-import { PartnerPayouts } from "../components/partner-payouts";
 import { commissionStatusBadge, conversionStatusBadge, partnerStatusBadge, syncStatusBadge } from "../lib/affiliates";
 import { couponStatusBadge, couponValueLabel } from "../lib/coupons";
 
@@ -49,7 +48,7 @@ const PLATFORM_LABELS: Record<string, string> = {
   website: "Website / blog",
 };
 
-type Tab = "overview" | "customers" | "sales" | "commissions" | "payouts" | "coupons" | "settings";
+type Tab = "overview" | "customers" | "sales" | "commissions" | "coupons" | "settings";
 
 function Overview({ partner }: { partner: Partner }) {
   const t = useT();
@@ -210,8 +209,9 @@ export function SalesList({ partnerId }: { partnerId?: string }) {
 export function CommissionsList({ partnerId }: { partnerId?: string }) {
   const t = useT();
   const queryClient = useQueryClient();
+  // Tolt approves commissions itself (after the refund window); an admin can only decline one.
   const act = useMutation({
-    mutationFn: ({ id, action }: { id: string; action: "approve" | "decline" }) => setAffiliateCommission(id, action),
+    mutationFn: (id: string) => declineAffiliateCommission(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: affiliatesKeys.all }),
   });
   const canWrite = can("affiliatesWrite.manage");
@@ -221,16 +221,13 @@ export function CommissionsList({ partnerId }: { partnerId?: string }) {
     { key: "order", header: t("الطلب", "Order"), exportValue: (r) => r.order_id ?? "", cell: (r) => (r.order_id ? <AppLink className="ma-link ma-num" to={`/sales/orders/${r.order_id}`}>{r.order_id.slice(0, 8)}</AppLink> : "—") },
     { key: "amount", header: t("العمولة", "Amount"), align: "end", exportKind: "number", exportValue: (r) => r.amount_minor / 100, cell: (r) => <span className="ma-num">{formatMinor(r.amount_minor)}</span> },
     { key: "status", header: t("الحالة", "Status"), exportValue: (r) => r.effective_status, cell: (r) => <Badge def={commissionStatusBadge(r.effective_status)} /> },
-    { key: "payout", header: t("الدفعة", "Payout"), exportValue: (r) => r.settled_payout_id ?? r.payout_id ?? "", cell: (r) => (r.settled_at ? formatDateTime(r.settled_at) : r.payout_id ?? "—") },
+    { key: "payout", header: t("دفعة Tolt", "Tolt payout"), exportValue: (r) => r.payout_id ?? "", cell: (r) => (r.payout_id ? <span className="ma-num">{r.payout_id.slice(0, 12)}</span> : "—") },
     { key: "at", header: t("التاريخ", "Date"), exportKind: "datetime", exportValue: (r) => r.tolt_created_at ?? null, cell: (r) => formatDateTime(r.tolt_created_at) },
     {
       key: "actions", header: "", exportable: false, align: "end",
       cell: (r) =>
         canWrite && r.status === "pending" ? (
-          <span style={{ display: "inline-flex", gap: "var(--space-1)" }}>
-            <Button sm kind="primary" label={t("اعتماد", "Approve")} disabled={act.isPending} onClick={() => act.mutate({ id: r.tolt_commission_id, action: "approve" })} />
-            <Button sm kind="ghost" label={t("رفض", "Decline")} disabled={act.isPending} onClick={() => act.mutate({ id: r.tolt_commission_id, action: "decline" })} />
-          </span>
+          <Button sm kind="ghost" label={t("رفض", "Decline")} disabled={act.isPending} onClick={() => act.mutate(r.tolt_commission_id)} />
         ) : null,
     },
   ];
@@ -310,6 +307,7 @@ export default function PartnerDetailPage() {
   const select = (next: Tab) => setParams((prev) => { const n = new URLSearchParams(prev); n.set("tab", next); return n; }, { replace: true });
   const queryClient = useQueryClient();
   const partner = useQuery(affiliatesQueries.partner(partnerId));
+  const portalUrl = useQuery(affiliatesQueries.affiliateProgram()).data?.portal_url ?? null;
   const p = partner.data;
   const canWrite = can("affiliatesWrite.manage");
   const [confirmArchive, setConfirmArchive] = useState(false);
@@ -323,7 +321,6 @@ export default function PartnerDetailPage() {
     ["customers", t("العملاء", "Customers")],
     ["sales", t("المبيعات", "Sales")],
     ["commissions", t("العمولات", "Commissions")],
-    ...(p?.kind === "marketer" ? ([["payouts", t("الصرف", "Payouts")]] as [Tab, string][]) : []),
     ["coupons", t("الكوبونات", "Coupons")],
     ...(canWrite ? ([["settings", t("تعديل", "Edit")]] as [Tab, string][]) : []),
   ];
@@ -337,7 +334,7 @@ export default function PartnerDetailPage() {
             <div style={{ display: "flex", gap: "var(--space-1)", alignItems: "center" }}>
               <Badge def={partnerStatusBadge(p.status)} />
               {p.source === "application" ? (
-                <span className="ma-badge ma-badge--info">{t("طلب انضمام", "Application")}</span>
+                <span className="ma-badge ma-badge--info">{t("من نموذج الانضمام", "From the application form")}</span>
               ) : null}
             </div>
           ) : null
@@ -351,13 +348,15 @@ export default function PartnerDetailPage() {
                 <Button
                   kind="primary"
                   icon="check"
-                  label={p.status === "pending" ? t("اعتماد المسوّق", "Approve Application") : t("اعتماد", "Approve")}
+                  label={t("تفعيل", "Activate")}
                   disabled={status.isPending}
                   onClick={() => status.mutate("active")}
                 />
               ) : null}
               {p.status === "active" ? <Button label={t("إيقاف", "Suspend")} disabled={status.isPending} onClick={() => status.mutate("suspended")} /> : null}
-              {p.sync_status !== "synced" ? <Button icon="refresh" label={t("مزامنة مع Tolt", "Sync to Tolt")} disabled={resync.isPending} onClick={() => resync.mutate()} /> : null}
+              {/* Always offered: it also re-approves an active partner that Tolt still holds for review. */}
+              {p.kind === "marketer" || p.sync_status !== "synced" ? <Button icon="refresh" label={t("مزامنة مع Tolt", "Sync to Tolt")} disabled={resync.isPending} onClick={() => resync.mutate()} /> : null}
+              {portalUrl ? <Button kind="ghost" icon="link" label={t("بوابة Tolt", "Tolt portal")} href={portalUrl} target="_blank" rel="noreferrer" /> : null}
               <Button kind="ghost" icon="folder" label={t("أرشفة", "Archive")} onClick={() => setConfirmArchive(true)} />
             </>
           ) : null
@@ -375,7 +374,6 @@ export default function PartnerDetailPage() {
         {p && tab === "customers" ? <Customers partner={p} /> : null}
         {p && tab === "sales" ? <SalesList partnerId={p.partner_id} /> : null}
         {p && tab === "commissions" ? <CommissionsList partnerId={p.partner_id} /> : null}
-        {p && tab === "payouts" && p.kind === "marketer" ? <PartnerPayouts partner={p} /> : null}
         {p && tab === "coupons" ? <Coupons partner={p} /> : null}
         {p && tab === "settings" && canWrite ? <Settings partner={p} /> : null}
       </PageState>

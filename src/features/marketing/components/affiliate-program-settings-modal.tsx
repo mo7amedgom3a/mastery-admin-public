@@ -140,7 +140,10 @@ export function AffiliateProgramSettingsModal({
           <Field
             id="payout-terms"
             label={t("شروط وطريقة الدفع", "Payout Terms")}
-            hint={t("مثال: PayPal · NET-15", "e.g. PayPal · NET-15")}
+            hint={t(
+              "نص يظهر في صفحة المسوقين فقط؛ يدفع Tolt العمولات حسب إعدادات الدفع في لوحته. مثال: PayPal · NET-15",
+              "Shown on the marketers page only; Tolt pays commissions per its payout settings. e.g. PayPal · NET-15",
+            )}
             required
           >
             <input
@@ -158,8 +161,8 @@ export function AffiliateProgramSettingsModal({
             id="min-payout"
             label={t("الحد الأدنى للسحب ($)", "Minimum Payout ($)")}
             hint={t(
-              "أقل مبلغ يمكن للمسوّق طلب صرفه من رصيده (0 يعني بدون حد أدنى)",
-              "Smallest amount a marketer can request from their balance (0 = no minimum)",
+              "للعرض فقط؛ اضبط الحد الأدنى الفعلي في إعدادات الدفع في Tolt (0 يعني بدون حد أدنى)",
+              "Display only; set the real minimum in Tolt's payout settings (0 = no minimum)",
             )}
             required
           >

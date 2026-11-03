@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
-import { affiliatesKeys, listPartners, type Partner } from "@/lib/api";
+import { affiliatesKeys, affiliatesQueries, listPartners, type Partner } from "@/lib/api";
 import { formatDate, formatMinor, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { can } from "@/lib/permissions";
@@ -27,7 +28,7 @@ function PartnerList({ kind }: { kind: "marketer" | "student" }) {
             <span className="ma-cell-main">{r.full_name || r.email}</span>
             {r.source === "application" ? (
               <span className="ma-badge ma-badge--info" style={{ fontSize: "10px", padding: "1px 6px" }}>
-                {t("طلب انضمام", "Application")}
+                {t("من نموذج الانضمام", "Application form")}
               </span>
             ) : null}
           </div>
@@ -50,7 +51,7 @@ function PartnerList({ kind }: { kind: "marketer" | "student" }) {
       label: t("كل الحالات", "All states"),
       options: [
         { value: "active", label: t("نشط", "Active") },
-        { value: "pending", label: t("بانتظار الموافقة", "Pending") },
+        { value: "pending", label: t("بانتظار التفعيل", "Pending") },
         { value: "suspended", label: t("موقوف", "Suspended") },
         { value: "rejected", label: t("مرفوض", "Rejected") },
       ],
@@ -78,14 +79,19 @@ export default function PartnersPage() {
   const view = (params.get("view") as View | null) ?? "marketer";
   const select = (next: View) => setParams((prev) => { const n = new URLSearchParams(prev); n.set("view", next); return n; }, { replace: true });
   const canWrite = can("affiliatesWrite.manage");
+  const portalUrl = useQuery(affiliatesQueries.affiliateProgram()).data?.portal_url ?? null;
 
   return (
     <>
       <PageHead
         title={t("المسوقون بالعمولة", "Affiliates")}
-        sub={t("المسوقون وطلاب برنامج الإحالة — مصدر الحقيقة هنا، ومتزامنون مع Tolt.", "Marketers and referral students — managed here, synced to Tolt.")}
+        sub={t(
+          "المسوقون وطلاب برنامج الإحالة، متزامنون مع Tolt. يُفعَّل المسوّق فور تقديمه، ويعتمد Tolt العمولات ويدفعها.",
+          "Marketers and referral students, synced to Tolt. Applicants are activated at once; Tolt approves and pays commissions.",
+        )}
         actions={canWrite ? (
           <>
+            {portalUrl ? <Button icon="link" label={t("بوابة Tolt", "Tolt portal")} href={portalUrl} target="_blank" rel="noreferrer" /> : null}
             <Button icon="settings" label={t("إعدادات البرنامج", "Program terms")} onClick={() => setSettingsOpen(true)} />
             <Button icon="upload" label={t("استيراد من النظام القديم", "Import legacy")} href="/marketing/affiliates/import" />
             <Button kind="primary" icon="plus" label={t("إضافة مسوّق", "Add affiliate")} href="/marketing/affiliates/new" />

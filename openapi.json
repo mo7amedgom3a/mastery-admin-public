@@ -37907,7 +37907,7 @@
           "Admin Affiliates"
         ],
         "summary": "Set Commission",
-        "description": "Approve or decline a Tolt commission (e.g. decline after a partial refund).",
+        "description": "Decline a Tolt commission (e.g. after a partial refund). Tolt approves commissions itself.",
         "operationId": "set_commission_api_v1_admin_affiliates_commissions__commission_id__post",
         "security": [
           {
@@ -38736,654 +38736,6 @@
         }
       }
     },
-    "/api/v1/admin/affiliates/payouts": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "List Payouts",
-        "operationId": "list_payouts_api_v1_admin_affiliates_payouts_get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 20
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "A status, or `open`.",
-              "title": "Status"
-            },
-            "description": "A status, or `open`."
-          },
-          {
-            "name": "partner_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Partner Id"
-            }
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 200
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Query"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 200,
-              "minimum": 1,
-              "description": "Page size (max items returned).",
-              "default": 50,
-              "title": "Limit"
-            },
-            "description": "Page size (max items returned)."
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Number of items to skip (for paging).",
-              "default": 0,
-              "title": "Offset"
-            },
-            "description": "Number of items to skip (for paging)."
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminPayoutPage"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/payouts/summary": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Payouts Summary",
-        "operationId": "payouts_summary_api_v1_admin_affiliates_payouts_summary_get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutSummaryOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/payouts/{payout_id}": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Get Payout",
-        "description": "The request with the full payout details, the marketer's balance and recent ledger entries.",
-        "operationId": "get_payout_api_v1_admin_affiliates_payouts__payout_id__get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "payout_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Payout Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminPayoutReviewOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/payouts/{payout_id}/approve": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Approve Payout",
-        "operationId": "approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "payout_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Payout Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayoutApproveIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminPayoutReviewOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/payouts/{payout_id}/reject": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Reject Payout",
-        "description": "The whole requested amount returns to the marketer's available balance.",
-        "operationId": "reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "payout_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Payout Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayoutRejectIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminPayoutReviewOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/payouts/{payout_id}/pay": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Pay Payout",
-        "description": "Record the transfer (made outside the platform) in full or in part; the unpaid part returns to the\nmarketer's available balance.",
-        "operationId": "pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "payout_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Payout Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayoutPayIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AdminPayoutReviewOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/partners/{partner_id}/balance": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Partner Balance",
-        "operationId": "partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "partner_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Partner Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartnerBalanceOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/partners/{partner_id}/ledger": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Partner Ledger",
-        "operationId": "partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "partner_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Partner Id"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 200,
-              "minimum": 1,
-              "description": "Page size (max items returned).",
-              "default": 50,
-              "title": "Limit"
-            },
-            "description": "Page size (max items returned)."
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Number of items to skip (for paging).",
-              "default": 0,
-              "title": "Offset"
-            },
-            "description": "Number of items to skip (for paging)."
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LedgerPage"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/me/referrals": {
       "get": {
         "tags": [
@@ -39553,390 +38905,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AttributionPage"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/me/affiliate/earnings": {
-      "get": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "My Earnings",
-        "description": "Balance (USD minor units) and whether a payout can be requested. Marketers only (403 otherwise).",
-        "operationId": "my_earnings_api_v1_me_affiliate_earnings_get",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MyAffiliateEarningsOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/me/affiliate/payouts": {
-      "get": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "My Payouts",
-        "operationId": "my_payouts_api_v1_me_affiliate_payouts_get",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 20,
-              "title": "Limit"
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "title": "Offset"
-            }
-          },
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutPage"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "Request Payout",
-        "description": "Ask to be paid. 409 when a request is already open; 422 `below_minimum`, `above_available`,\n`missing_details` or `partner_inactive`.",
-        "operationId": "request_payout_api_v1_me_affiliate_payouts_post",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayoutRequestIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/me/affiliate/payouts/{payout_id}/cancel": {
-      "post": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "Cancel Payout",
-        "operationId": "cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "payout_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Payout Id"
-            }
-          },
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/me/affiliate/payout-details": {
-      "get": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "My Payout Details",
-        "operationId": "my_payout_details_api_v1_me_affiliate_payout_details_get",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/PayoutDetailsIO"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response My Payout Details Api V1 Me Affiliate Payout Details Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Affiliate earnings"
-        ],
-        "summary": "Save Payout Details",
-        "description": "Where payouts are sent. A request keeps the details it was made with.",
-        "operationId": "save_payout_details_api_v1_me_affiliate_payout_details_put",
-        "security": [
-          {
-            "B2C JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "B2C Access Token"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayoutDetailsIO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayoutDetailsIO"
                 }
               }
             }
@@ -40479,7 +39447,7 @@
           "Affiliate program"
         ],
         "summary": "Affiliate Program",
-        "description": "Terms shown on the storefront marketers page.",
+        "description": "Terms shown on the storefront marketers page, plus the Tolt partner portal URL.",
         "operationId": "affiliate_program_api_v1_affiliates_program_get",
         "responses": {
           "200": {
@@ -40523,7 +39491,7 @@
           "Affiliate program"
         ],
         "summary": "Apply As Marketer",
-        "description": "Join as a marketer: stored as a pending partner, sent to Tolt once an admin approves it.",
+        "description": "Join as a marketer: approved immediately and created in Tolt, which emails the portal invite.",
         "operationId": "apply_as_marketer_api_v1_affiliates_applications_post",
         "requestBody": {
           "content": {
@@ -53012,281 +51980,6 @@
         ],
         "title": "AdminPaymentFailurePage"
       },
-      "AdminPayoutOut": {
-        "properties": {
-          "payout_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Payout Id"
-          },
-          "partner_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Partner Id"
-          },
-          "currency_code": {
-            "type": "string",
-            "title": "Currency Code"
-          },
-          "requested_minor": {
-            "type": "integer",
-            "title": "Requested Minor"
-          },
-          "paid_minor": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Paid Minor"
-          },
-          "returned_minor": {
-            "type": "integer",
-            "title": "Returned Minor",
-            "description": "Back in the available balance after a partial payment, rejection or cancel."
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "method": {
-            "type": "string",
-            "title": "Method"
-          },
-          "destination": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Destination",
-            "description": "Masked payout destination."
-          },
-          "payment_reference": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Payment Reference"
-          },
-          "reject_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reject Reason"
-          },
-          "requested_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requested At"
-          },
-          "reviewed_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reviewed At"
-          },
-          "paid_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Paid At"
-          },
-          "cancelled_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Cancelled At"
-          },
-          "partner_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Partner Name"
-          },
-          "partner_email": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Partner Email"
-          },
-          "admin_note": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Admin Note"
-          },
-          "reviewed_by": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reviewed By"
-          },
-          "paid_by": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Paid By"
-          },
-          "details": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/PayoutDetailsIO"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Full payout details (admin only)."
-          }
-        },
-        "type": "object",
-        "required": [
-          "payout_id",
-          "partner_id",
-          "currency_code",
-          "requested_minor",
-          "paid_minor",
-          "returned_minor",
-          "status",
-          "method",
-          "destination",
-          "payment_reference",
-          "reject_reason",
-          "requested_at",
-          "reviewed_at",
-          "paid_at",
-          "cancelled_at",
-          "partner_name",
-          "partner_email",
-          "admin_note",
-          "reviewed_by",
-          "paid_by"
-        ],
-        "title": "AdminPayoutOut"
-      },
-      "AdminPayoutPage": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/AdminPayoutOut"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "AdminPayoutPage"
-      },
-      "AdminPayoutReviewOut": {
-        "properties": {
-          "payout": {
-            "$ref": "#/components/schemas/AdminPayoutOut"
-          },
-          "balance": {
-            "$ref": "#/components/schemas/AffiliateBalanceOut"
-          },
-          "ledger": {
-            "items": {
-              "$ref": "#/components/schemas/LedgerEntryOut"
-            },
-            "type": "array",
-            "title": "Ledger"
-          }
-        },
-        "type": "object",
-        "required": [
-          "payout",
-          "balance",
-          "ledger"
-        ],
-        "title": "AdminPayoutReviewOut"
-      },
       "AdminPerson": {
         "properties": {
           "customer_id": {
@@ -55196,52 +53889,6 @@
         "title": "AffiliateApplicationIn",
         "description": "The storefront \"join as a marketer\" form."
       },
-      "AffiliateBalanceOut": {
-        "properties": {
-          "currency_code": {
-            "type": "string",
-            "title": "Currency Code",
-            "default": "USD"
-          },
-          "available_minor": {
-            "type": "integer",
-            "title": "Available Minor",
-            "description": "Can be requested now. Negative after a refund clawback."
-          },
-          "held_minor": {
-            "type": "integer",
-            "title": "Held Minor",
-            "description": "In an open payout request."
-          },
-          "pending_minor": {
-            "type": "integer",
-            "title": "Pending Minor",
-            "description": "Commissions Tolt has not approved yet."
-          },
-          "lifetime_earned_minor": {
-            "type": "integer",
-            "title": "Lifetime Earned Minor"
-          },
-          "paid_total_minor": {
-            "type": "integer",
-            "title": "Paid Total Minor"
-          },
-          "minimum_payout_minor": {
-            "type": "integer",
-            "title": "Minimum Payout Minor"
-          }
-        },
-        "type": "object",
-        "required": [
-          "available_minor",
-          "held_minor",
-          "pending_minor",
-          "lifetime_earned_minor",
-          "paid_total_minor",
-          "minimum_payout_minor"
-        ],
-        "title": "AffiliateBalanceOut"
-      },
       "AffiliatePolicyOut": {
         "properties": {
           "version": {
@@ -55306,99 +53953,6 @@
           "body_html"
         ],
         "title": "AffiliatePolicySectionOut"
-      },
-      "AffiliateProgramIO-Input": {
-        "properties": {
-          "applications_open": {
-            "type": "boolean",
-            "title": "Applications Open"
-          },
-          "commission_percent": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 100.0,
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              }
-            ],
-            "title": "Commission Percent",
-            "description": "Shown on the public page; keep it in line with the Tolt group."
-          },
-          "cookie_days": {
-            "type": "integer",
-            "maximum": 365.0,
-            "minimum": 1.0,
-            "title": "Cookie Days"
-          },
-          "payout_terms": {
-            "type": "string",
-            "maxLength": 300,
-            "minLength": 1,
-            "title": "Payout Terms"
-          },
-          "minimum_payout_minor": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Minimum Payout Minor"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "applications_open",
-          "commission_percent",
-          "cookie_days",
-          "payout_terms",
-          "minimum_payout_minor"
-        ],
-        "title": "AffiliateProgramIO",
-        "description": "Public marketer-programme terms (also edited by the admin)."
-      },
-      "AffiliateProgramIO-Output": {
-        "properties": {
-          "applications_open": {
-            "type": "boolean",
-            "title": "Applications Open"
-          },
-          "commission_percent": {
-            "type": "string",
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Commission Percent",
-            "description": "Shown on the public page; keep it in line with the Tolt group."
-          },
-          "cookie_days": {
-            "type": "integer",
-            "maximum": 365.0,
-            "minimum": 1.0,
-            "title": "Cookie Days"
-          },
-          "payout_terms": {
-            "type": "string",
-            "maxLength": 300,
-            "minLength": 1,
-            "title": "Payout Terms"
-          },
-          "minimum_payout_minor": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Minimum Payout Minor"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "applications_open",
-          "commission_percent",
-          "cookie_days",
-          "payout_terms",
-          "minimum_payout_minor"
-        ],
-        "title": "AffiliateProgramIO",
-        "description": "Public marketer-programme terms (also edited by the admin)."
       },
       "AgentInfoResponse": {
         "properties": {
@@ -62127,10 +60681,7 @@
         "properties": {
           "action": {
             "type": "string",
-            "enum": [
-              "approve",
-              "decline"
-            ],
+            "const": "decline",
             "title": "Action"
           }
         },
@@ -62263,7 +60814,7 @@
           "effective_status": {
             "type": "string",
             "title": "Effective Status",
-            "description": "`paid` once a local payout settled it; otherwise the Tolt status."
+            "description": "The Tolt status (Tolt approves and pays commissions)."
           }
         },
         "type": "object",
@@ -71540,110 +70091,6 @@
         ],
         "title": "LearningStarted"
       },
-      "LedgerEntryOut": {
-        "properties": {
-          "entry_id": {
-            "type": "integer",
-            "title": "Entry Id"
-          },
-          "entry_type": {
-            "type": "string",
-            "title": "Entry Type"
-          },
-          "amount_minor": {
-            "type": "integer",
-            "title": "Amount Minor"
-          },
-          "tolt_commission_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Commission Id"
-          },
-          "payout_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Payout Id"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note"
-          },
-          "created_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Created At"
-          }
-        },
-        "type": "object",
-        "required": [
-          "entry_id",
-          "entry_type",
-          "amount_minor",
-          "tolt_commission_id",
-          "payout_id",
-          "note",
-          "created_at"
-        ],
-        "title": "LedgerEntryOut"
-      },
-      "LedgerPage": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/LedgerEntryOut"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "LedgerPage"
-      },
       "LegacyAffiliateOut": {
         "properties": {
           "legacy_id": {
@@ -72453,7 +70900,7 @@
           "status": {
             "type": "string",
             "title": "Status",
-            "description": "pending | approved | paid | rejected | refunded (paid once a payout settled it)."
+            "description": "Tolt status: pending | approved | paid | rejected | refunded."
           },
           "created_at": {
             "anyOf": [
@@ -72818,16 +71265,6 @@
               }
             ]
           },
-          "balance": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/AffiliateBalanceOut"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
           "tolt": {
             "anyOf": [
               {
@@ -72853,7 +71290,7 @@
           "program"
         ],
         "title": "MarketerOverviewOut",
-        "description": "Everything the dashboard home needs. Stats, balance, series and Tolt are absent while pending."
+        "description": "Everything the dashboard home needs. Stats, series and Tolt are absent while pending."
       },
       "MarketerPartnerOut": {
         "properties": {
@@ -73549,82 +71986,6 @@
         ],
         "title": "MoneyAmount",
         "description": "An amount in one currency (major units, e.g. 143.23 AED)."
-      },
-      "MyAffiliateEarningsOut": {
-        "properties": {
-          "balance": {
-            "$ref": "#/components/schemas/AffiliateBalanceOut"
-          },
-          "can_request": {
-            "type": "boolean",
-            "title": "Can Request"
-          },
-          "blocked_reason": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "partner_inactive",
-                  "request_open",
-                  "missing_details",
-                  "below_minimum"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Blocked Reason"
-          },
-          "open_payout": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/PayoutOut"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "payout_method": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Payout Method"
-          },
-          "destination": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Destination"
-          },
-          "payout_terms": {
-            "type": "string",
-            "title": "Payout Terms"
-          }
-        },
-        "type": "object",
-        "required": [
-          "balance",
-          "can_request",
-          "blocked_reason",
-          "open_payout",
-          "payout_method",
-          "destination",
-          "payout_terms"
-        ],
-        "title": "MyAffiliateEarningsOut",
-        "description": "The marketer's earnings card: balance, whether a payout can be requested, and where it goes."
       },
       "MyCertificateOut": {
         "properties": {
@@ -75896,29 +74257,6 @@
         ],
         "title": "PageMetricResponse"
       },
-      "PartnerBalanceOut": {
-        "properties": {
-          "balance": {
-            "$ref": "#/components/schemas/AffiliateBalanceOut"
-          },
-          "details": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/PayoutDetailsIO"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "balance",
-          "details"
-        ],
-        "title": "PartnerBalanceOut"
-      },
       "PartnerConversionOut": {
         "properties": {
           "conversion_id": {
@@ -76717,383 +75055,6 @@
         ],
         "title": "PaymentIntentStatusResponse"
       },
-      "PayoutApproveIn": {
-        "properties": {
-          "note": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 2000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "PayoutApproveIn"
-      },
-      "PayoutDetailsIO": {
-        "properties": {
-          "method": {
-            "type": "string",
-            "enum": [
-              "paypal",
-              "bank_transfer",
-              "wise",
-              "other"
-            ],
-            "title": "Method"
-          },
-          "email": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 320
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Email"
-          },
-          "account_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Account Name"
-          },
-          "iban": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 50
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Iban"
-          },
-          "bank_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 200
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Bank Name"
-          },
-          "swift": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 20
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Swift"
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Country"
-          },
-          "instructions": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 1000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Instructions"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "method"
-        ],
-        "title": "PayoutDetailsIO"
-      },
-      "PayoutOut": {
-        "properties": {
-          "payout_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Payout Id"
-          },
-          "partner_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Partner Id"
-          },
-          "currency_code": {
-            "type": "string",
-            "title": "Currency Code"
-          },
-          "requested_minor": {
-            "type": "integer",
-            "title": "Requested Minor"
-          },
-          "paid_minor": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Paid Minor"
-          },
-          "returned_minor": {
-            "type": "integer",
-            "title": "Returned Minor",
-            "description": "Back in the available balance after a partial payment, rejection or cancel."
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "method": {
-            "type": "string",
-            "title": "Method"
-          },
-          "destination": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Destination",
-            "description": "Masked payout destination."
-          },
-          "payment_reference": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Payment Reference"
-          },
-          "reject_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reject Reason"
-          },
-          "requested_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requested At"
-          },
-          "reviewed_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reviewed At"
-          },
-          "paid_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Paid At"
-          },
-          "cancelled_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Cancelled At"
-          }
-        },
-        "type": "object",
-        "required": [
-          "payout_id",
-          "partner_id",
-          "currency_code",
-          "requested_minor",
-          "paid_minor",
-          "returned_minor",
-          "status",
-          "method",
-          "destination",
-          "payment_reference",
-          "reject_reason",
-          "requested_at",
-          "reviewed_at",
-          "paid_at",
-          "cancelled_at"
-        ],
-        "title": "PayoutOut"
-      },
-      "PayoutPage": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/PayoutOut"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "PayoutPage"
-      },
-      "PayoutPayIn": {
-        "properties": {
-          "amount_minor": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "exclusiveMinimum": 0.0
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Amount Minor"
-          },
-          "percent": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 100.0,
-                "exclusiveMinimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Percent"
-          },
-          "payment_reference": {
-            "type": "string",
-            "maxLength": 200,
-            "minLength": 1,
-            "title": "Payment Reference",
-            "description": "Transfer id / PayPal transaction."
-          },
-          "note": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 2000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "payment_reference"
-        ],
-        "title": "PayoutPayIn",
-        "description": "Record a payment made outside the platform. Give either the amount or a percentage of the request."
-      },
-      "PayoutRejectIn": {
-        "properties": {
-          "reason": {
-            "type": "string",
-            "maxLength": 1000,
-            "minLength": 3,
-            "title": "Reason",
-            "description": "Shown to the marketer."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "reason"
-        ],
-        "title": "PayoutRejectIn"
-      },
       "PayoutRequest": {
         "properties": {
           "legacy_payment_id": {
@@ -77179,22 +75140,6 @@
         ],
         "title": "PayoutRequest"
       },
-      "PayoutRequestIn": {
-        "properties": {
-          "amount_minor": {
-            "type": "integer",
-            "exclusiveMinimum": 0.0,
-            "title": "Amount Minor",
-            "description": "USD minor units, at most the available balance."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "amount_minor"
-        ],
-        "title": "PayoutRequestIn"
-      },
       "PayoutStatusRequest": {
         "properties": {
           "status": {
@@ -77224,34 +75169,6 @@
           "status"
         ],
         "title": "PayoutStatusRequest"
-      },
-      "PayoutSummaryOut": {
-        "properties": {
-          "requested_count": {
-            "type": "integer",
-            "title": "Requested Count"
-          },
-          "approved_count": {
-            "type": "integer",
-            "title": "Approved Count"
-          },
-          "open_minor": {
-            "type": "integer",
-            "title": "Open Minor"
-          },
-          "paid_30d_minor": {
-            "type": "integer",
-            "title": "Paid 30D Minor"
-          }
-        },
-        "type": "object",
-        "required": [
-          "requested_count",
-          "approved_count",
-          "open_minor",
-          "paid_30d_minor"
-        ],
-        "title": "PayoutSummaryOut"
       },
       "PermissionModule": {
         "properties": {
@@ -91865,6 +89782,127 @@
           "display_order"
         ],
         "title": "CategoryResponse"
+      },
+      "AffiliateProgramIO-Input": {
+        "properties": {
+          "applications_open": {
+            "type": "boolean",
+            "title": "Applications Open"
+          },
+          "commission_percent": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              }
+            ],
+            "title": "Commission Percent",
+            "description": "Shown on the public page; keep it in line with the Tolt group."
+          },
+          "cookie_days": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Cookie Days"
+          },
+          "payout_terms": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Payout Terms",
+            "description": "Display text; Tolt runs the payouts."
+          },
+          "minimum_payout_minor": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Minimum Payout Minor",
+            "description": "Display only; the real minimum is set in Tolt."
+          },
+          "portal_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portal Url",
+            "description": "Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "applications_open",
+          "commission_percent",
+          "cookie_days",
+          "payout_terms",
+          "minimum_payout_minor"
+        ],
+        "title": "AffiliateProgramIO",
+        "description": "Public marketer-programme terms (also edited by the admin)."
+      },
+      "AffiliateProgramIO-Output": {
+        "properties": {
+          "applications_open": {
+            "type": "boolean",
+            "title": "Applications Open"
+          },
+          "commission_percent": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Commission Percent",
+            "description": "Shown on the public page; keep it in line with the Tolt group."
+          },
+          "cookie_days": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Cookie Days"
+          },
+          "payout_terms": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Payout Terms",
+            "description": "Display text; Tolt runs the payouts."
+          },
+          "minimum_payout_minor": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Minimum Payout Minor",
+            "description": "Display only; the real minimum is set in Tolt."
+          },
+          "portal_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portal Url",
+            "description": "Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "applications_open",
+          "commission_percent",
+          "cookie_days",
+          "payout_terms",
+          "minimum_payout_minor"
+        ],
+        "title": "AffiliateProgramIO",
+        "description": "Public marketer-programme terms (also edited by the admin)."
       }
     },
     "securitySchemes": {

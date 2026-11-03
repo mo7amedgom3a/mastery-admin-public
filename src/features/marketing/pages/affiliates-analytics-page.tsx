@@ -44,17 +44,8 @@ export default function AffiliatesAnalyticsPage() {
             <div className="ma-kpis">
               <Kpi label={t("عمولات معلّقة", "Pending commission")} value={formatMinor(n(totals.c_pending))} icon="clock" />
               <Kpi label={t("عمولات معتمدة", "Approved commission")} value={formatMinor(n(totals.c_approved))} icon="check" />
-              <Kpi label={t("عمولات مدفوعة", "Paid commission")} value={formatMinor(n(totals.c_paid))} icon="card" />
+              <Kpi label={t("عمولات دفعها Tolt", "Paid by Tolt")} value={formatMinor(n(totals.c_paid))} icon="card" />
               <Kpi label={t("مكافآت الطلاب", "Student rewards")} value={formatNumber(n(totals.rewards))} meta={t(`${formatMinor(n(totals.rewards_value))} مُنحت`, `${formatMinor(n(totals.rewards_value))} granted`)} icon="tag" />
-            </div>
-            <div className="ma-kpis">
-              <Kpi
-                label={t("طلبات صرف مفتوحة", "Open payout requests")}
-                value={formatNumber(n(totals.payouts_open))}
-                meta={<AppLink className="ma-link" to="/marketing/payouts">{formatMinor(n(totals.payouts_open_value))}</AppLink>}
-                icon="clock"
-              />
-              <Kpi label={t("صُرف للمسوقين في الفترة", "Paid to marketers")} value={formatMinor(n(totals.payouts_paid))} icon="card" />
             </div>
             <div className="ma-cols ma-cols--main-side">
               <Card title={t("المبيعات اليومية", "Daily sales")}>

@@ -7810,7 +7810,7 @@ export interface paths {
         put?: never;
         /**
          * Set Commission
-         * @description Approve or decline a Tolt commission (e.g. decline after a partial refund).
+         * @description Decline a Tolt commission (e.g. after a partial refund). Tolt approves commissions itself.
          */
         post: operations["set_commission_api_v1_admin_affiliates_commissions__commission_id__post"];
         delete?: never;
@@ -7986,152 +7986,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/admin/affiliates/payouts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Payouts */
-        get: operations["list_payouts_api_v1_admin_affiliates_payouts_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/summary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Payouts Summary */
-        get: operations["payouts_summary_api_v1_admin_affiliates_payouts_summary_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Payout
-         * @description The request with the full payout details, the marketer's balance and recent ledger entries.
-         */
-        get: operations["get_payout_api_v1_admin_affiliates_payouts__payout_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Approve Payout */
-        post: operations["approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/reject": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Reject Payout
-         * @description The whole requested amount returns to the marketer's available balance.
-         */
-        post: operations["reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/payouts/{payout_id}/pay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Pay Payout
-         * @description Record the transfer (made outside the platform) in full or in part; the unpaid part returns to the
-         *     marketer's available balance.
-         */
-        post: operations["pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/balance": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Balance */
-        get: operations["partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/affiliates/partners/{partner_id}/ledger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Partner Ledger */
-        get: operations["partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/me/referrals": {
         parameters: {
             query?: never;
@@ -8179,86 +8033,6 @@ export interface paths {
         /** My Invites */
         get: operations["my_invites_api_v1_me_referrals_invites_get"];
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/earnings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * My Earnings
-         * @description Balance (USD minor units) and whether a payout can be requested. Marketers only (403 otherwise).
-         */
-        get: operations["my_earnings_api_v1_me_affiliate_earnings_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payouts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Payouts */
-        get: operations["my_payouts_api_v1_me_affiliate_payouts_get"];
-        put?: never;
-        /**
-         * Request Payout
-         * @description Ask to be paid. 409 when a request is already open; 422 `below_minimum`, `above_available`,
-         *     `missing_details` or `partner_inactive`.
-         */
-        post: operations["request_payout_api_v1_me_affiliate_payouts_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payouts/{payout_id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel Payout */
-        post: operations["cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me/affiliate/payout-details": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** My Payout Details */
-        get: operations["my_payout_details_api_v1_me_affiliate_payout_details_get"];
-        /**
-         * Save Payout Details
-         * @description Where payouts are sent. A request keeps the details it was made with.
-         */
-        put: operations["save_payout_details_api_v1_me_affiliate_payout_details_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -8407,7 +8181,7 @@ export interface paths {
         };
         /**
          * Affiliate Program
-         * @description Terms shown on the storefront marketers page.
+         * @description Terms shown on the storefront marketers page, plus the Tolt partner portal URL.
          */
         get: operations["affiliate_program_api_v1_affiliates_program_get"];
         put?: never;
@@ -8449,7 +8223,7 @@ export interface paths {
         put?: never;
         /**
          * Apply As Marketer
-         * @description Join as a marketer: stored as a pending partner, sent to Tolt once an admin approves it.
+         * @description Join as a marketer: approved immediately and created in Tolt, which emails the portal invite.
          */
         post: operations["apply_as_marketer_api_v1_affiliates_applications_post"];
         delete?: never;
@@ -11615,81 +11389,6 @@ export interface components {
             /** Offset */
             offset: number;
         };
-        /** AdminPayoutOut */
-        AdminPayoutOut: {
-            /**
-             * Payout Id
-             * Format: uuid
-             */
-            payout_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Currency Code */
-            currency_code: string;
-            /** Requested Minor */
-            requested_minor: number;
-            /** Paid Minor */
-            paid_minor: number | null;
-            /**
-             * Returned Minor
-             * @description Back in the available balance after a partial payment, rejection or cancel.
-             */
-            returned_minor: number;
-            /** Status */
-            status: string;
-            /** Method */
-            method: string;
-            /**
-             * Destination
-             * @description Masked payout destination.
-             */
-            destination: string | null;
-            /** Payment Reference */
-            payment_reference: string | null;
-            /** Reject Reason */
-            reject_reason: string | null;
-            /** Requested At */
-            requested_at: string | null;
-            /** Reviewed At */
-            reviewed_at: string | null;
-            /** Paid At */
-            paid_at: string | null;
-            /** Cancelled At */
-            cancelled_at: string | null;
-            /** Partner Name */
-            partner_name: string | null;
-            /** Partner Email */
-            partner_email: string | null;
-            /** Admin Note */
-            admin_note: string | null;
-            /** Reviewed By */
-            reviewed_by: string | null;
-            /** Paid By */
-            paid_by: string | null;
-            /** @description Full payout details (admin only). */
-            details?: components["schemas"]["PayoutDetailsIO"] | null;
-        };
-        /** AdminPayoutPage */
-        AdminPayoutPage: {
-            /** Items */
-            items: components["schemas"]["AdminPayoutOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /** AdminPayoutReviewOut */
-        AdminPayoutReviewOut: {
-            payout: components["schemas"]["AdminPayoutOut"];
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            /** Ledger */
-            ledger: components["schemas"]["LedgerEntryOut"][];
-        };
         /** AdminPerson */
         AdminPerson: {
             /**
@@ -12315,35 +12014,6 @@ export interface components {
             /** Website */
             website?: string | null;
         };
-        /** AffiliateBalanceOut */
-        AffiliateBalanceOut: {
-            /**
-             * Currency Code
-             * @default USD
-             */
-            currency_code: string;
-            /**
-             * Available Minor
-             * @description Can be requested now. Negative after a refund clawback.
-             */
-            available_minor: number;
-            /**
-             * Held Minor
-             * @description In an open payout request.
-             */
-            held_minor: number;
-            /**
-             * Pending Minor
-             * @description Commissions Tolt has not approved yet.
-             */
-            pending_minor: number;
-            /** Lifetime Earned Minor */
-            lifetime_earned_minor: number;
-            /** Paid Total Minor */
-            paid_total_minor: number;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
         /** AffiliatePolicyOut */
         AffiliatePolicyOut: {
             /**
@@ -12367,44 +12037,6 @@ export interface components {
              * @description Legacy rich text (HTML); render as text, never as raw HTML.
              */
             body_html: string | null;
-        };
-        /**
-         * AffiliateProgramIO
-         * @description Public marketer-programme terms (also edited by the admin).
-         */
-        "AffiliateProgramIO-Input": {
-            /** Applications Open */
-            applications_open: boolean;
-            /**
-             * Commission Percent
-             * @description Shown on the public page; keep it in line with the Tolt group.
-             */
-            commission_percent: number | string;
-            /** Cookie Days */
-            cookie_days: number;
-            /** Payout Terms */
-            payout_terms: string;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
-        };
-        /**
-         * AffiliateProgramIO
-         * @description Public marketer-programme terms (also edited by the admin).
-         */
-        "AffiliateProgramIO-Output": {
-            /** Applications Open */
-            applications_open: boolean;
-            /**
-             * Commission Percent
-             * @description Shown on the public page; keep it in line with the Tolt group.
-             */
-            commission_percent: string;
-            /** Cookie Days */
-            cookie_days: number;
-            /** Payout Terms */
-            payout_terms: string;
-            /** Minimum Payout Minor */
-            minimum_payout_minor: number;
         };
         /** AgentInfoResponse */
         AgentInfoResponse: {
@@ -14651,9 +14283,9 @@ export interface components {
         CommissionActionIn: {
             /**
              * Action
-             * @enum {string}
+             * @constant
              */
-            action: "approve" | "decline";
+            action: "decline";
         };
         /** CommissionOut */
         CommissionOut: {
@@ -14683,7 +14315,7 @@ export interface components {
             settled_at?: string | null;
             /**
              * Effective Status
-             * @description `paid` once a local payout settled it; otherwise the Tolt status.
+             * @description The Tolt status (Tolt approves and pays commissions).
              */
             effective_status: string;
         };
@@ -17905,34 +17537,6 @@ export interface components {
             /** Started At */
             started_at?: string | null;
         };
-        /** LedgerEntryOut */
-        LedgerEntryOut: {
-            /** Entry Id */
-            entry_id: number;
-            /** Entry Type */
-            entry_type: string;
-            /** Amount Minor */
-            amount_minor: number;
-            /** Tolt Commission Id */
-            tolt_commission_id: string | null;
-            /** Payout Id */
-            payout_id: string | null;
-            /** Note */
-            note: string | null;
-            /** Created At */
-            created_at: string | null;
-        };
-        /** LedgerPage */
-        LedgerPage: {
-            /** Items */
-            items: components["schemas"]["LedgerEntryOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
         /** LegacyAffiliateOut */
         LegacyAffiliateOut: {
             /** Legacy Id */
@@ -18224,7 +17828,7 @@ export interface components {
             amount_minor: number;
             /**
              * Status
-             * @description pending | approved | paid | rejected | refunded (paid once a payout settled it).
+             * @description Tolt status: pending | approved | paid | rejected | refunded.
              */
             status: string;
             /** Created At */
@@ -18332,13 +17936,12 @@ export interface components {
         };
         /**
          * MarketerOverviewOut
-         * @description Everything the dashboard home needs. Stats, balance, series and Tolt are absent while pending.
+         * @description Everything the dashboard home needs. Stats, series and Tolt are absent while pending.
          */
         MarketerOverviewOut: {
             partner: components["schemas"]["MarketerPartnerOut"];
             program: components["schemas"]["MarketerProgramOut"];
             stats?: components["schemas"]["MarketerStatsOut"] | null;
-            balance?: components["schemas"]["AffiliateBalanceOut"] | null;
             tolt?: components["schemas"]["MarketerToltOut"] | null;
             /**
              * Series
@@ -18592,24 +18195,6 @@ export interface components {
             currency: string;
             /** Amount */
             amount: number;
-        };
-        /**
-         * MyAffiliateEarningsOut
-         * @description The marketer's earnings card: balance, whether a payout can be requested, and where it goes.
-         */
-        MyAffiliateEarningsOut: {
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            /** Can Request */
-            can_request: boolean;
-            /** Blocked Reason */
-            blocked_reason: ("partner_inactive" | "request_open" | "missing_details" | "below_minimum") | null;
-            open_payout: components["schemas"]["PayoutOut"] | null;
-            /** Payout Method */
-            payout_method: string | null;
-            /** Destination */
-            destination: string | null;
-            /** Payout Terms */
-            payout_terms: string;
         };
         /** MyCertificateOut */
         MyCertificateOut: {
@@ -19461,11 +19046,6 @@ export interface components {
             /** Group */
             group: string;
         };
-        /** PartnerBalanceOut */
-        PartnerBalanceOut: {
-            balance: components["schemas"]["AffiliateBalanceOut"];
-            details: components["schemas"]["PayoutDetailsIO"] | null;
-        };
         /** PartnerConversionOut */
         PartnerConversionOut: {
             /**
@@ -19742,114 +19322,6 @@ export interface components {
             /** Failure Message */
             failure_message?: string | null;
         };
-        /** PayoutApproveIn */
-        PayoutApproveIn: {
-            /** Note */
-            note?: string | null;
-        };
-        /** PayoutDetailsIO */
-        PayoutDetailsIO: {
-            /**
-             * Method
-             * @enum {string}
-             */
-            method: "paypal" | "bank_transfer" | "wise" | "other";
-            /** Email */
-            email?: string | null;
-            /** Account Name */
-            account_name?: string | null;
-            /** Iban */
-            iban?: string | null;
-            /** Bank Name */
-            bank_name?: string | null;
-            /** Swift */
-            swift?: string | null;
-            /** Country */
-            country?: string | null;
-            /** Instructions */
-            instructions?: string | null;
-        };
-        /** PayoutOut */
-        PayoutOut: {
-            /**
-             * Payout Id
-             * Format: uuid
-             */
-            payout_id: string;
-            /**
-             * Partner Id
-             * Format: uuid
-             */
-            partner_id: string;
-            /** Currency Code */
-            currency_code: string;
-            /** Requested Minor */
-            requested_minor: number;
-            /** Paid Minor */
-            paid_minor: number | null;
-            /**
-             * Returned Minor
-             * @description Back in the available balance after a partial payment, rejection or cancel.
-             */
-            returned_minor: number;
-            /** Status */
-            status: string;
-            /** Method */
-            method: string;
-            /**
-             * Destination
-             * @description Masked payout destination.
-             */
-            destination: string | null;
-            /** Payment Reference */
-            payment_reference: string | null;
-            /** Reject Reason */
-            reject_reason: string | null;
-            /** Requested At */
-            requested_at: string | null;
-            /** Reviewed At */
-            reviewed_at: string | null;
-            /** Paid At */
-            paid_at: string | null;
-            /** Cancelled At */
-            cancelled_at: string | null;
-        };
-        /** PayoutPage */
-        PayoutPage: {
-            /** Items */
-            items: components["schemas"]["PayoutOut"][];
-            /** Total */
-            total: number;
-            /** Limit */
-            limit: number;
-            /** Offset */
-            offset: number;
-        };
-        /**
-         * PayoutPayIn
-         * @description Record a payment made outside the platform. Give either the amount or a percentage of the request.
-         */
-        PayoutPayIn: {
-            /** Amount Minor */
-            amount_minor?: number | null;
-            /** Percent */
-            percent?: number | string | null;
-            /**
-             * Payment Reference
-             * @description Transfer id / PayPal transaction.
-             */
-            payment_reference: string;
-            /** Note */
-            note?: string | null;
-        };
-        /** PayoutRejectIn */
-        PayoutRejectIn: {
-            /**
-             * Reason
-             * @description Shown to the marketer.
-             */
-            reason: string;
-        };
         /** PayoutRequest */
         PayoutRequest: {
             /** Legacy Payment Id */
@@ -19869,14 +19341,6 @@ export interface components {
             /** Notes */
             notes: string | null;
         };
-        /** PayoutRequestIn */
-        PayoutRequestIn: {
-            /**
-             * Amount Minor
-             * @description USD minor units, at most the available balance.
-             */
-            amount_minor: number;
-        };
         /** PayoutStatusRequest */
         PayoutStatusRequest: {
             /**
@@ -19890,17 +19354,6 @@ export interface components {
              * @description Admin note stored on the request.
              */
             notes?: string | null;
-        };
-        /** PayoutSummaryOut */
-        PayoutSummaryOut: {
-            /** Requested Count */
-            requested_count: number;
-            /** Approved Count */
-            approved_count: number;
-            /** Open Minor */
-            open_minor: number;
-            /** Paid 30D Minor */
-            paid_30d_minor: number;
         };
         /** PermissionModule */
         PermissionModule: {
@@ -24802,6 +24255,66 @@ export interface components {
             is_active: boolean;
             /** Display Order */
             display_order: number;
+        };
+        /**
+         * AffiliateProgramIO
+         * @description Public marketer-programme terms (also edited by the admin).
+         */
+        "AffiliateProgramIO-Input": {
+            /** Applications Open */
+            applications_open: boolean;
+            /**
+             * Commission Percent
+             * @description Shown on the public page; keep it in line with the Tolt group.
+             */
+            commission_percent: number | string;
+            /** Cookie Days */
+            cookie_days: number;
+            /**
+             * Payout Terms
+             * @description Display text; Tolt runs the payouts.
+             */
+            payout_terms: string;
+            /**
+             * Minimum Payout Minor
+             * @description Display only; the real minimum is set in Tolt.
+             */
+            minimum_payout_minor: number;
+            /**
+             * Portal Url
+             * @description Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save.
+             */
+            portal_url?: string | null;
+        };
+        /**
+         * AffiliateProgramIO
+         * @description Public marketer-programme terms (also edited by the admin).
+         */
+        "AffiliateProgramIO-Output": {
+            /** Applications Open */
+            applications_open: boolean;
+            /**
+             * Commission Percent
+             * @description Shown on the public page; keep it in line with the Tolt group.
+             */
+            commission_percent: string;
+            /** Cookie Days */
+            cookie_days: number;
+            /**
+             * Payout Terms
+             * @description Display text; Tolt runs the payouts.
+             */
+            payout_terms: string;
+            /**
+             * Minimum Payout Minor
+             * @description Display only; the real minimum is set in Tolt.
+             */
+            minimum_payout_minor: number;
+            /**
+             * Portal Url
+             * @description Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save.
+             */
+            portal_url?: string | null;
         };
     };
     responses: never;
@@ -42253,300 +41766,6 @@ export interface operations {
             };
         };
     };
-    list_payouts_api_v1_admin_affiliates_payouts_get: {
-        parameters: {
-            query?: {
-                /** @description A status, or `open`. */
-                status?: string | null;
-                partner_id?: string | null;
-                query?: string | null;
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    payouts_summary_api_v1_admin_affiliates_payouts_summary_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutSummaryOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_payout_api_v1_admin_affiliates_payouts__payout_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    approve_payout_api_v1_admin_affiliates_payouts__payout_id__approve_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutApproveIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    reject_payout_api_v1_admin_affiliates_payouts__payout_id__reject_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutRejectIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    pay_payout_api_v1_admin_affiliates_payouts__payout_id__pay_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutPayIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminPayoutReviewOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_balance_api_v1_admin_affiliates_partners__partner_id__balance_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerBalanceOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    partner_ledger_api_v1_admin_affiliates_partners__partner_id__ledger_get: {
-        parameters: {
-            query?: {
-                /** @description Page size (max items returned). */
-                limit?: number;
-                /** @description Number of items to skip (for paging). */
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                partner_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LedgerPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     my_referrals_api_v1_me_referrals_get: {
         parameters: {
             query?: never;
@@ -42630,205 +41849,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttributionPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_earnings_api_v1_me_affiliate_earnings_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MyAffiliateEarningsOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_payouts_api_v1_me_affiliate_payouts_get: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutPage"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    request_payout_api_v1_me_affiliate_payouts_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutRequestIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    cancel_payout_api_v1_me_affiliate_payouts__payout_id__cancel_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payout_id: string;
-            };
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    my_payout_details_api_v1_me_affiliate_payout_details_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutDetailsIO"] | null;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    save_payout_details_api_v1_me_affiliate_payout_details_put: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                b2c_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayoutDetailsIO"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayoutDetailsIO"];
                 };
             };
             /** @description Validation Error */

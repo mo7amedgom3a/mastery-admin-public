@@ -68,7 +68,7 @@ const ACTIONS: { ar: string; en: string; href: string; permission: string; icon:
   { ar: "إضافة مدرب", en: "Add instructor", href: "/learning/instructors/new", permission: "instructors.write", icon: "user" },
   { ar: "إصدار استرداد لطلب", en: "Issue a refund", href: "/sales/orders", permission: "refunds.create", icon: "refund", hint: { ar: "اختر الطلب ثم «استرداد»", en: "Pick the order, then Refund" } },
   { ar: "الرد على أسئلة المتدربين", en: "Answer trainee questions", href: "/learning/qa", permission: "qa.read", icon: "message" },
-  { ar: "مراجعة طلبات الصرف", en: "Review payout requests", href: "/marketing/payouts", permission: "affiliates.read", icon: "card" },
+  { ar: "طلبات الصرف (النظام القديم)", en: "Legacy payout requests", href: "/marketing/payouts", permission: "affiliates.read", icon: "card" },
   { ar: "إضافة مستخدم أو دعوة عضو فريق", en: "Add a user or invite a teammate", href: "/access/users", permission: "iam.users", icon: "users" },
 ];
 
