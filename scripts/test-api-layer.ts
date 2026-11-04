@@ -828,6 +828,20 @@ function liveEndpointTests(): LiveTest[] {
     { name: "GET /admin/settings/tracking-tags", run: async () => { await listTags({ limit: 5 }); } },
     { name: "GET /admin/settings/permission-modules", run: async () => { await listModules(); } },
     { name: "GET /admin/settings/countries", run: async () => { await listCountries(); } },
+    {
+      // The runtime-settings dashboard is disabled: env is the single source of truth
+      // for secrets and configuration, so the API hides the whole surface (404).
+      name: "GET /admin/settings/integrations (disabled → 404)",
+      run: async () => {
+        try {
+          await apiRequest("GET", "admin/settings/integrations");
+        } catch (error) {
+          if (error instanceof ApiError && error.status === 404) return;
+          throw error;
+        }
+        throw new Error("the runtime-settings dashboard should be hidden (404)");
+      },
+    },
 
     // ----------------------------------------------------------------- mutations
     { name: "POST /admin/auth/refresh", mutates: true, run: async () => { await adminRefresh({}); } },

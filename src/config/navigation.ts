@@ -340,7 +340,8 @@ export const navigation: NavModule[] = [
         items: [
           { title: { ar: "عام", en: "General" }, href: "/settings/general", permission: "settings.read" },
           { title: { ar: "المستخدمون والفرق", en: "Users & teams" }, href: "/access/users", permission: "iam.users" },
-          { title: { ar: "التكاملات", en: "Integrations" }, href: "/settings/integrations", permission: "settings.read" },
+          // Settings -> Integrations is hidden: env vars are the source of truth
+          // for secrets and configuration (backend routes answer 404).
           { title: { ar: "الإشعارات", en: "Notifications" }, href: "/settings/notifications", permission: "settings.read" },
           { title: { ar: "سجل التدقيق", en: "Audit log" }, href: "/settings/audit", permission: "audit.read" },
         ],

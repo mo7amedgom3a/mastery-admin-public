@@ -120,6 +120,7 @@ The product's analytics panels read `/admin/catalog/products/{ref}/{sales,behavi
 | `subscriptions/admin.ts` | `/admin/subscriptions/*` | Plans (products = what a plan grants, features, benefits, discount), stats, team leads, and customer subscriptions: list, detail and the lifecycle actions `cancel` (`{immediate, reason?}`), `resume`, `extend` (`{days, reason}`), `revoke` (`{reason}`). Lifecycle calls reach Stripe and send an `Idempotency-Key` |
 | `entitlements/admin.ts` | `/admin/entitlements/*`, `/admin/customers/{ref}/entitlements` | Per-access extend / suspend / reinstate / revoke with a reason |
 | `settings/settings.ts` | `/admin/settings/*` | |
+| `settings/integrations.ts` | `/admin/settings/integrations/*` | **Disabled**: env vars are the single source of truth for secrets/configuration, so the backend answers 404 and the page/nav entry is hidden (redirect to `/settings/general`). The module and page are retained for a deliberate re-enable. When enabled: the listing never returns a secret value (`is_set` + `fingerprint` only); reveal/replace/clear/test require the unlock token from `vault/unlock`, held in memory (see the backend `docs/runtime-settings.md`) |
 | `learning/bundles.ts`, `system/fx.ts`, `analytics/behavior.ts` | `/admin/bundles`, `/admin/fx`, `/admin/analytics` (+ `/admin/analytics/posthog/*`) | Pure-B2C module APIs |
 | `search/search.ts`, `system/health.ts`, `learning/experts.ts` | `/search`, `/health`, `/legacy/*` | Public read APIs |
 

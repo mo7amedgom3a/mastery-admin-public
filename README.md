@@ -187,7 +187,8 @@ new endpoint to draw per-course lines.
 | `/learning/courses/new` | Live: create a legacy course |
 | `/learning/consultations`, `/instructors`, `/categories`, `/applications` | Live: legacy reads |
 | `/learning/certificates` | Live: legacy mirror certificates |
-| `/learning/qa`, `/settings/integrations` | Empty state — no backend endpoint yet |
+| `/settings/integrations` | Hidden: the runtime-settings dashboard is disabled (env is the single source of truth for secrets/configuration); the old URL redirects to Settings → General |
+| `/learning/qa` | Empty state — no backend endpoint yet |
 
 ## Checks
 

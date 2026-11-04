@@ -267,7 +267,10 @@ export const ROUTER = createBrowserRouter([
       // Settings
       { path: "settings/general", element: <GeneralSettingsPage /> },
       { path: "settings/team", element: <Navigate to="/access/users" replace /> },
-      { path: "settings/integrations", element: ph("التكاملات", "Integrations") },
+      // The runtime-settings dashboard is hidden: environment variables are the single
+      // source of truth for secrets and configuration. Visiting the old URL lands on
+      // Settings -> General instead of a dead page.
+      { path: "settings/integrations", element: <Navigate to="/settings/general" replace /> },
       { path: "settings/notifications", element: <NotificationsPage /> },
       { path: "settings/audit", element: <AuditPage /> },
 
