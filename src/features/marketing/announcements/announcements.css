@@ -1,0 +1,57 @@
+/* Announcement bar editor (features/marketing/announcements). Tokens only. */
+
+/* The bar is a full-width strip, so the preview spans the page and stays in view while editing. */
+.ma-ann-layout { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); align-items: start; }
+.ma-ann-layout__side { order: -1; position: sticky; inset-block-start: 0; z-index: 5; }
+.ma-ann-layout__form { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1200px) { .ma-ann-layout__form { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+.ma-ann-preview { display: grid; gap: var(--space-2); }
+.ma-ann-preview__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.ma-ann-preview .ma-studio-preview__viewport { block-size: 170px; min-block-size: 0; }
+.ma-ann-preview .ma-studio-preview.is-mobile .ma-studio-preview__viewport { block-size: 240px; }
+
+/* Mini swatch used in the list and the preset gallery. */
+.ma-ann-swatch { display: inline-block; inline-size: 44px; block-size: 18px; border-radius: 999px; border: 1px solid var(--line); vertical-align: middle; }
+
+.ma-ann-presets { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+.ma-ann-preset {
+  display: grid; gap: 6px; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-soft);
+  background: var(--surface); color: inherit; font: inherit; text-align: start; cursor: pointer;
+}
+.ma-ann-preset[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.ma-ann-preset__sample { display: grid; place-items: center; block-size: 28px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+
+.ma-ann-colors { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.ma-ann-color { display: grid; gap: 4px; }
+.ma-ann-color__row { display: flex; align-items: center; gap: var(--space-2); }
+.ma-ann-color__row input[type="color"] { inline-size: 36px; block-size: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.ma-ann-color__row .ma-input { min-inline-size: 0; font-family: var(--font-mono, monospace); }
+
+.ma-ann-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ma-ann-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px var(--space-3); border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: inherit; font: inherit; font-size: 0.875rem; cursor: pointer;
+}
+.ma-ann-chip[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); font-weight: 600; }
+
+.ma-ann-items { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.ma-ann-item {
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-3);
+  padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-soft); background: var(--surface);
+}
+.ma-ann-item.is-dragging { opacity: 0.5; }
+.ma-ann-item.is-over { border-color: var(--accent); }
+.ma-ann-item__grip { cursor: grab; color: var(--text-muted); }
+.ma-ann-item__dot { inline-size: 12px; block-size: 12px; border-radius: 999px; }
+.ma-ann-item__main { display: grid; gap: 2px; min-inline-size: 0; }
+.ma-ann-item__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.ma-ann-item__meta { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: 0.8125rem; color: var(--text-muted); }
+.ma-ann-item__actions { display: flex; gap: var(--space-1); }
+
+.ma-ann-icons { display: flex; flex-wrap: wrap; gap: 6px; }
+.ma-ann-icons button {
+  display: grid; place-items: center; inline-size: 36px; block-size: 36px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: inherit; cursor: pointer;
+}
+.ma-ann-icons button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }

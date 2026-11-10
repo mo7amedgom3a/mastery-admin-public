@@ -22,6 +22,10 @@ type FormState = {
   categoryIds: string[];
   firstPurchaseOnly: boolean;
   isActive: boolean;
+  /** Valid on every subscription plan (product type scope). */
+  subscriptions: boolean;
+  subscriptionDuration: "once" | "repeating" | "forever";
+  subscriptionMonths: string;
 };
 
 const toMajor = (minor: number | null | undefined) => (minor == null ? "" : String(minor / 100));
@@ -45,6 +49,9 @@ function initialState(coupon?: Coupon): FormState {
     categoryIds: coupon?.category_ids ?? [],
     firstPurchaseOnly: coupon?.first_purchase_only ?? false,
     isActive: coupon?.is_active ?? true,
+    subscriptions: (coupon?.product_types ?? []).includes("subscription"),
+    subscriptionDuration: coupon?.subscription_duration ?? "once",
+    subscriptionMonths: coupon?.subscription_months != null ? String(coupon.subscription_months) : "3",
   };
 }
 
@@ -101,7 +108,10 @@ export function CouponForm({
 
   const valueInvalid = form.value === "" || Number(form.value) <= 0 || (form.kind === "percent" && Number(form.value) > 100);
   const datesInvalid = Boolean(form.startsAt && form.endsAt && form.endsAt <= form.startsAt);
-  const disabled = pending || !form.code.trim() || valueInvalid || datesInvalid;
+  const monthsInvalid =
+    form.subscriptionDuration === "repeating" &&
+    !(Number(form.subscriptionMonths) >= 1 && Number(form.subscriptionMonths) <= 36);
+  const disabled = pending || !form.code.trim() || valueInvalid || datesInvalid || monthsInvalid;
 
   const submit = () =>
     onSubmit({
@@ -122,6 +132,9 @@ export function CouponForm({
       first_purchase_only: form.firstPurchaseOnly,
       is_active: form.isActive,
       customer_id: coupon?.customer_id ?? null,
+      product_types: form.subscriptions ? ["subscription"] : [],
+      subscription_duration: form.subscriptionDuration,
+      subscription_months: form.subscriptionDuration === "repeating" ? toInt(form.subscriptionMonths) : null,
     });
 
   return (
@@ -190,6 +203,44 @@ export function CouponForm({
           {t("بدون اختيار يسري الكوبون على الطلب كله.", "With nothing selected the coupon applies to the whole order.")}
         </span>
       </div>
+
+      <Check
+        id="coupon-subscriptions"
+        label={t("يسري على الاشتراكات", "Valid on subscriptions")}
+        hint={t("كل خطط الاشتراك والوصول غير المحدود", "every subscription / unlimited-access plan")}
+        checked={form.subscriptions}
+        onChange={set("subscriptions")}
+      />
+      {form.subscriptions || form.productIds.length > 0 ? (
+        <div className="ma-form-grid ma-form-grid--2">
+          <Field
+            id="coupon-sub-duration"
+            label={t("مدة الخصم على الاشتراك", "Discount length on subscriptions")}
+            options={[
+              ["once", t("أول فترة فقط", "First period only")],
+              ["repeating", t("عدد من الأشهر", "A number of months")],
+              ["forever", t("كل التجديدات", "Every renewal")],
+            ]}
+            value={form.subscriptionDuration}
+            onChange={(v) => set("subscriptionDuration")(v as FormState["subscriptionDuration"])}
+            hint={t("يُطبَّق في Stripe على فواتير الاشتراك.", "Applied by Stripe to the subscription invoices.")}
+          />
+          {form.subscriptionDuration === "repeating" ? (
+            <Field
+              id="coupon-sub-months"
+              type="number"
+              dir="ltr"
+              min={1}
+              max={36}
+              label={t("عدد الأشهر", "Months")}
+              value={form.subscriptionMonths}
+              onChange={set("subscriptionMonths")}
+            />
+          ) : (
+            <span aria-hidden="true" />
+          )}
+        </div>
+      ) : null}
 
       <Check id="coupon-first" label={t("أول عملية شراء فقط", "First purchase only")} hint={t("للعملاء الذين لم يدفعوا من قبل", "customers with no paid order yet")} checked={form.firstPurchaseOnly} onChange={set("firstPurchaseOnly")} />
       <Check id="coupon-active" label={t("مفعّل", "Active")} checked={form.isActive} onChange={set("isActive")} />

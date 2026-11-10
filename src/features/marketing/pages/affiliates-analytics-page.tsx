@@ -29,9 +29,9 @@ export default function AffiliatesAnalyticsPage() {
       <PageState error={analytics.error}>
         {analytics.isLoading || !d ? <Loading /> : (
           <>
-            {n(totals.sync_failures) ? (
-              <Alert kind="warning" title={t(`${n(totals.sync_failures)} عنصر لم يُرسل لـ Tolt`, `${n(totals.sync_failures)} items not synced to Tolt`)}>
-                <AppLink className="ma-link" to="/marketing/commissions">{t("مزامنة الآن", "Sync now")}</AppLink>
+            {n(totals.payout_failures) ? (
+              <Alert kind="warning" title={t(`${n(totals.payout_failures)} تحويل لم يكتمل`, `${n(totals.payout_failures)} payouts did not go through`)}>
+                <AppLink className="ma-link" to="/marketing/payouts">{t("عرض الدفعات", "View batches")}</AppLink>
               </Alert>
             ) : null}
             <div className="ma-kpis">
@@ -44,7 +44,7 @@ export default function AffiliatesAnalyticsPage() {
             <div className="ma-kpis">
               <Kpi label={t("عمولات معلّقة", "Pending commission")} value={formatMinor(n(totals.c_pending))} icon="clock" />
               <Kpi label={t("عمولات معتمدة", "Approved commission")} value={formatMinor(n(totals.c_approved))} icon="check" />
-              <Kpi label={t("عمولات دفعها Tolt", "Paid by Tolt")} value={formatMinor(n(totals.c_paid))} icon="card" />
+              <Kpi label={t("عمولات حُوّلت", "Paid commission")} value={formatMinor(n(totals.c_paid))} icon="card" />
               <Kpi label={t("مكافآت الطلاب", "Student rewards")} value={formatNumber(n(totals.rewards))} meta={t(`${formatMinor(n(totals.rewards_value))} مُنحت`, `${formatMinor(n(totals.rewards_value))} granted`)} icon="tag" />
             </div>
             <div className="ma-cols ma-cols--main-side">

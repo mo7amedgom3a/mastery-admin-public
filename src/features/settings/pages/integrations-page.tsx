@@ -74,8 +74,8 @@ export default function IntegrationsPage() {
       <PageHead
         title={t("التكاملات", "Integrations")}
         sub={t(
-          "إعدادات التشغيل والأسرار: سترايب وتمارا وLiveKit وTolt وTemporal وResend وPostHog والموديلات وS3 وروابط المتجر.",
-          "Runtime configuration and secrets: Stripe, Tamara, LiveKit, Tolt, Temporal, Resend, PostHog, AI models, S3 and storefront links.",
+          "إعدادات التشغيل والأسرار: سترايب وتمارا وLiveKit وTemporal وResend وPostHog والموديلات وS3 وروابط المتجر.",
+          "Runtime configuration and secrets: Stripe, Tamara, LiveKit, Temporal, Resend, PostHog, AI models, S3 and storefront links.",
         )}
         actions={
           <div className="flex flex-wrap items-center gap-2">

@@ -137,7 +137,8 @@ export default function TicketDetailPage() {
   const customerQuery = useQuery({
     queryKey: b2cTicketsKeys.customer(ticketId),
     queryFn: () => getB2CSupportTicketCustomer(ticketId),
-    enabled: Boolean(ticketId),
+    // A guest ticket has no account to load.
+    enabled: Boolean(ticketId) && Boolean(ticketQuery.data?.ticket.customer_id),
   });
 
   const activityQuery = useQuery({
@@ -370,6 +371,9 @@ export default function TicketDetailPage() {
                     <h2 className="ma-chat__subject">{ticketInfo.subject}</h2>
                   </div>
                   <div className="ma-chat__contact">
+                    {ticketInfo.is_guest ? (
+                      <span className="ma-tag ma-tag--soft text-[10px]">{t("ضيف", "Guest")}</span>
+                    ) : null}
                     <span className="font-semibold text-foreground">{ticketInfo.customer_name}</span>
                     <span className="ma-dot">•</span>
                     <span>{ticketInfo.customer_email}</span>
@@ -644,7 +648,28 @@ export default function TicketDetailPage() {
               {/* Customer 360 */}
               <section className="ma-info__sec">
                 <h3><User className="size-3.5" /><span>{t("بطاقة العميل", "Customer 360")}</span></h3>
-                {customer ? (
+                {ticketInfo.is_guest ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="ma-info__profile">
+                      <Avatar initials={(ticketInfo.customer_name || "G").slice(0, 2).toUpperCase()} />
+                      <div className="min-w-0">
+                        <div className="ma-info__name">{ticketInfo.customer_name || t("ضيف", "Guest")}</div>
+                        <CopyRow icon="mail" value={ticketInfo.customer_email ?? ticketInfo.guest_email ?? ""} />
+                      </div>
+                    </div>
+                    <p className="m-0 text-xs leading-6 text-muted-foreground">
+                      {t(
+                        "تذكرة من زائر بدون حساب. رُبطت بالإيميل فقط؛ لا يوجد ملف عميل بعد.",
+                        "Guest ticket, no account yet. It is linked by email only, so there is no customer profile.",
+                      )}
+                    </p>
+                    {ticketInfo.email_verified_at ? (
+                      <span className="ma-tag ma-tag--soft w-fit text-[10px]">{t("الإيميل موثّق", "Email verified")}</span>
+                    ) : (
+                      <span className="ma-tag ma-tag--soft w-fit text-[10px]">{t("بانتظار تسجيل الدخول", "Awaiting sign-in")}</span>
+                    )}
+                  </div>
+                ) : customer ? (
                   <div className="flex flex-col gap-3">
                     <div className="ma-info__profile">
                       <Avatar initials={(customer.full_name || "C").slice(0, 2).toUpperCase()} />

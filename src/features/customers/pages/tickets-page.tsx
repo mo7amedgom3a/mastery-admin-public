@@ -205,6 +205,11 @@ export default function TicketsPage() {
               title={t("رسائل جديدة غير مقروءة", "New unread messages")}
             />
           ) : null}
+          {row.is_guest ? (
+            <span className="ma-tag ma-tag--soft text-[10px]" title={t("تذكرة زائر بدون حساب", "Guest ticket, no account")}>
+              {t("ضيف", "Guest")}
+            </span>
+          ) : null}
         </div>
       ),
     },

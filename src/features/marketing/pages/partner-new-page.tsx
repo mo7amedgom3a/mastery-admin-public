@@ -22,7 +22,7 @@ export default function PartnerNewPage() {
     <>
       <PageHead
         title={t("إضافة مسوّق", "Add affiliate")}
-        sub={t("يُنشأ هنا وفي Tolt مع رابط إحالة خاص به.", "Created here and in Tolt, with their own referral link.")}
+        sub={t("يُنشأ مع رابط إحالة خاص به، ويربط حساب Stripe من لوحته لاستلام الأرباح.", "Created with their own referral link; they connect Stripe from their dashboard to get paid.")}
         back={{ href: "/marketing/affiliates", label: t("المسوقون", "Affiliates") }}
       />
       <Card title={t("بيانات المسوّق", "Affiliate details")}>

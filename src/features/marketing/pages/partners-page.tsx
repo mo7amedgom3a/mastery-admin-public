@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
-import { affiliatesKeys, affiliatesQueries, listPartners, type Partner } from "@/lib/api";
+import { affiliatesKeys, listPartners, type Partner } from "@/lib/api";
 import { formatDate, formatMinor, formatNumber } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { can } from "@/lib/permissions";
@@ -12,7 +11,7 @@ import { type Column } from "@/components/ui/data-table";
 import { PagedList, type ListFilter } from "@/components/ui/paged-list";
 
 import LegacyAffiliatesPage from "./affiliates-page";
-import { partnerStatusBadge, syncStatusBadge } from "../lib/affiliates";
+import { connectStatusBadge, partnerStatusBadge } from "../lib/affiliates";
 import { AffiliateProgramSettingsModal } from "../components/affiliate-program-settings-modal";
 
 type View = "marketer" | "student" | "legacy";
@@ -42,7 +41,7 @@ function PartnerList({ kind }: { kind: "marketer" | "student" }) {
     { key: "revenue", header: t("المبيعات", "Revenue"), align: "end", exportKind: "number", exportValue: (r) => r.stats.revenue_minor / 100, cell: (r) => <span className="ma-num">{formatMinor(r.stats.revenue_minor)}</span> },
     { key: "commission", header: t("العمولات", "Commissions"), align: "end", exportKind: "number", exportValue: (r) => (r.stats.commission_pending_minor + r.stats.commission_approved_minor + r.stats.commission_paid_minor) / 100, cell: (r) => <span className="ma-num">{formatMinor(r.stats.commission_pending_minor + r.stats.commission_approved_minor + r.stats.commission_paid_minor)}</span> },
     { key: "status", header: t("الحالة", "Status"), exportValue: (r) => r.status, cell: (r) => <Badge def={partnerStatusBadge(r.status)} /> },
-    { key: "sync", header: "Tolt", exportValue: (r) => r.sync_status, cell: (r) => <Badge def={syncStatusBadge(r.sync_status)} /> },
+    { key: "connect", header: t("التحويل", "Payouts"), exportValue: (r) => r.connect_status, cell: (r) => (r.kind === "marketer" ? <Badge def={r.payout_hold ? { label: { ar: "موقوفة", en: "On hold" }, tone: "danger" } : connectStatusBadge(r.connect_status)} /> : "—") },
     { key: "created", header: t("انضم", "Joined"), exportKind: "datetime", exportValue: (r) => r.created_at ?? null, cell: (r) => formatDate(r.created_at) },
   ];
   const filters: ListFilter[] = [
@@ -79,19 +78,17 @@ export default function PartnersPage() {
   const view = (params.get("view") as View | null) ?? "marketer";
   const select = (next: View) => setParams((prev) => { const n = new URLSearchParams(prev); n.set("view", next); return n; }, { replace: true });
   const canWrite = can("affiliatesWrite.manage");
-  const portalUrl = useQuery(affiliatesQueries.affiliateProgram()).data?.portal_url ?? null;
 
   return (
     <>
       <PageHead
         title={t("المسوقون بالعمولة", "Affiliates")}
         sub={t(
-          "المسوقون وطلاب برنامج الإحالة، متزامنون مع Tolt. يُفعَّل المسوّق فور تقديمه، ويعتمد Tolt العمولات ويدفعها.",
-          "Marketers and referral students, synced to Tolt. Applicants are activated at once; Tolt approves and pays commissions.",
+          "المسوقون وطلاب برنامج الإحالة. يُفعَّل المسوّق فور تقديمه، وتُعتمد العمولات تلقائيًا بعد فترة الاسترداد وتُحوَّل عبر Stripe في أول كل شهر.",
+          "Marketers and referral students. Applicants are activated at once; commissions are approved after the refund hold and paid through Stripe on the 1st of every month.",
         )}
         actions={canWrite ? (
           <>
-            {portalUrl ? <Button icon="link" label={t("بوابة Tolt", "Tolt portal")} href={portalUrl} target="_blank" rel="noreferrer" /> : null}
             <Button icon="settings" label={t("إعدادات البرنامج", "Program terms")} onClick={() => setSettingsOpen(true)} />
             <Button icon="upload" label={t("استيراد من النظام القديم", "Import legacy")} href="/marketing/affiliates/import" />
             <Button kind="primary" icon="plus" label={t("إضافة مسوّق", "Add affiliate")} href="/marketing/affiliates/new" />

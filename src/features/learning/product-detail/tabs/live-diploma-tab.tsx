@@ -186,6 +186,7 @@ function CohortsCard({
 
   return (
     <Card title={t("الدفعات (Cohorts)", "Cohorts")}>
+      <p className="ma-cell-sub">{t("عند إغلاق دفعة، تنتقل العناصر المحفوظة والسلال إلى أحدث دفعة بها مقاعد، أو يتوقف الدفع حتى تتوفر دفعة جديدة.", "Closing a cohort moves saved items and carts to the newest cohort with seats, or blocks checkout until one is available.")}</p>
       <ErrorAlert error={create.error || remove.error || openClose.error} title={t("تعذّر تحديث الدفعات", "Couldn't update cohorts")} />
       {cohorts.length === 0 ? (
         <Empty text={t("لا دفعات.", "No cohorts yet.")} />

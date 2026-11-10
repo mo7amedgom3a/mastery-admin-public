@@ -39,7 +39,7 @@ const AREA_SCOPE: Record<string, string | string[]> = {
   fulfillment: ["admin:fulfillment:read", "admin:fulfillment:write"],
   qa: "admin:operations:read",
   customers: "admin:customers:read",
-  tickets: "admin:operations:read",
+  tickets: ["admin:support:read", "admin:operations:read"],
   affiliates: ["admin:affiliates:read", "admin:operations:read"],
   // Create/approve affiliates, issue their coupons, approve commissions, referral program settings.
   affiliatesWrite: ["admin:affiliates:manage", "admin:operations:manage"],
@@ -69,7 +69,7 @@ const ACTION_SCOPE: Record<string, string[]> = {
   "courses.write": ["admin:catalog:write"],
   "categories.write": ["admin:catalog:write"],
   "customers.write": ["admin:customers:write"],
-  "tickets.write": ["admin:customers:write", "admin:operations:manage"],
+  "tickets.write": ["admin:support:write", "admin:customers:write", "admin:operations:manage"],
   "marketing.write": ["admin:marketing:write", "admin:catalog:write"],
   "operations.manage": ["admin:operations:manage"],
   "settings.write": ["admin:operations:manage"],
@@ -143,7 +143,12 @@ export function resolveActiveItem(path: string, scopes?: string[]): FlatNavItem 
   );
   const pool = allowed.length ? allowed : matches;
   return pool.reduce<FlatNavItem | null>(
-    (best, item) => (!best || item.href.length > best.href.length ? item : best),
+    (best, item) =>
+      !best ||
+      item.href.length > best.href.length ||
+      (item.href.length === best.href.length && (item.priority ?? 0) > (best.priority ?? 0))
+        ? item
+        : best,
     null,
   );
 }
