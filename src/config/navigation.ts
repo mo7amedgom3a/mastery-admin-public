@@ -5,6 +5,12 @@ export type NavItem = {
   href: string;
   permission?: string;
   badge?: string;
+  /**
+   * Tie-break when the same destination appears under more than one module: the higher
+   * priority owns the rail highlight. Used by Tickets, reachable from both Customers and
+   * the top-level Support module.
+   */
+  priority?: number;
   children?: NavItem[];
 };
 export type NavSection = { title: Label; items: NavItem[] };
@@ -242,6 +248,28 @@ export const navigation: NavModule[] = [
     ],
   },
   {
+    // Main-rail entry for customer support. The same page stays linked from Customers above,
+    // so both paths keep working; `priority` makes this the module the rail highlights.
+    id: "support",
+    title: { ar: "الدعم", en: "Support" },
+    icon: "ticket",
+    scopes: ["admin:support:read", "admin:customers:read", "admin:operations:read"],
+    sections: [
+      {
+        title: { ar: "الدعم الفني", en: "Customer support" },
+        items: [
+          {
+            title: { ar: "التذاكر", en: "Tickets" },
+            href: "/customers/tickets",
+            permission: "tickets.read",
+            badge: "tickets",
+            priority: 1,
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: "marketing",
     title: { ar: "التسويق", en: "Marketing" },
     icon: "megaphone",
@@ -391,7 +419,13 @@ export function matchActive(path: string, items: FlatNavItem[] = flatItems()): F
   let best: FlatNavItem | null = null;
   for (const item of items) {
     if (path === item.href || path.startsWith(`${item.href}/`)) {
-      if (!best || item.href.length > best.href.length) best = item;
+      if (
+        !best ||
+        item.href.length > best.href.length ||
+        (item.href.length === best.href.length && (item.priority ?? 0) > (best.priority ?? 0))
+      ) {
+        best = item;
+      }
     }
   }
   return best;

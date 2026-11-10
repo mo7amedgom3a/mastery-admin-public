@@ -36709,7 +36709,7 @@
           "Admin Affiliates"
         ],
         "summary": "Create Partner",
-        "description": "Creates the marketer in B2C, then in Tolt (partner + `?ref=` link). A Tolt failure leaves\n`sync_status=failed` for retry; the partner is still created.",
+        "description": "Creates the marketer with its `?ref=` code. They sign in with this email to reach /marketer.",
         "operationId": "create_partner_api_v1_admin_affiliates_partners_post",
         "security": [
           {
@@ -36794,16 +36794,6 @@
             }
           },
           {
-            "name": "include_tolt_stats",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": true,
-              "title": "Include Tolt Stats"
-            }
-          },
-          {
             "name": "b2c_admin_access_token",
             "in": "cookie",
             "required": false,
@@ -36850,7 +36840,7 @@
           "Admin Affiliates"
         ],
         "summary": "Update Partner",
-        "description": "Email and referral code are fixed once created (Tolt identity and live links).",
+        "description": "Email and referral code are fixed once created (identity and live links).",
         "operationId": "update_partner_api_v1_admin_affiliates_partners__partner_id__put",
         "security": [
           {
@@ -36925,7 +36915,7 @@
           "Admin Affiliates"
         ],
         "summary": "Archive Partner",
-        "description": "Archives the partner here and rejects it in Tolt. Sales and commissions stay.",
+        "description": "Archives the partner. Sales, commissions and payouts stay.",
         "operationId": "archive_partner_api_v1_admin_affiliates_partners__partner_id__delete",
         "security": [
           {
@@ -36992,7 +36982,7 @@
           "Admin Affiliates"
         ],
         "summary": "Set Partner Status",
-        "description": "Approve (`active`), suspend or reject; mirrored to Tolt.",
+        "description": "Approve (`active`), suspend or reject. Suspended partners are not paid out.",
         "operationId": "set_partner_status_api_v1_admin_affiliates_partners__partner_id__status_post",
         "security": [
           {
@@ -37039,72 +37029,6 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PartnerOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/partners/{partner_id}/resync": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Resync Partner",
-        "operationId": "resync_partner_api_v1_admin_affiliates_partners__partner_id__resync_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "partner_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Partner Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -37296,7 +37220,7 @@
           "Admin Affiliates"
         ],
         "summary": "Create Partner Coupon",
-        "description": "A coupon owned by the partner: customers who use it are attributed to them (also a Tolt promotion code).",
+        "description": "A coupon owned by the partner: customers who use it are attributed to them.",
         "operationId": "create_partner_coupon_api_v1_admin_affiliates_partners__partner_id__coupons_post",
         "security": [
           {
@@ -37350,66 +37274,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CouponOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/groups": {
-      "get": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Tolt Groups",
-        "operationId": "tolt_groups_api_v1_admin_affiliates_groups_get",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ToltGroupOut"
-                  },
-                  "title": "Response Tolt Groups Api V1 Admin Affiliates Groups Get"
                 }
               }
             }
@@ -37907,7 +37771,7 @@
           "Admin Affiliates"
         ],
         "summary": "Set Commission",
-        "description": "Decline a Tolt commission (e.g. after a partial refund). Tolt approves commissions itself.",
+        "description": "`approve` skips the rest of the refund hold; `decline` reverses it (clawed back if already paid).",
         "operationId": "set_commission_api_v1_admin_affiliates_commissions__commission_id__post",
         "security": [
           {
@@ -37956,67 +37820,6 @@
         "responses": {
           "204": {
             "description": "Successful Response"
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/sync": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Sync Now",
-        "description": "Push everything pending to Tolt now and pull commissions (the sweep, on demand).",
-        "operationId": "sync_now_api_v1_admin_affiliates_sync_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "integer"
-                  },
-                  "title": "Response Sync Now Api V1 Admin Affiliates Sync Post"
-                }
-              }
-            }
           },
           "422": {
             "description": "Validation Error",
@@ -38211,6 +38014,7 @@
           "Admin Affiliates"
         ],
         "summary": "Save Affiliate Program Settings",
+        "description": "Default commission, refund hold, minimum payout and the automatic payouts switch.",
         "operationId": "save_affiliate_program_settings_api_v1_admin_affiliates_program_put",
         "security": [
           {
@@ -38518,7 +38322,7 @@
           "Admin Affiliates"
         ],
         "summary": "Legacy Import",
-        "description": "Copies legacy affiliates into B2C (keeping their codes). Tolt is not touched.",
+        "description": "Copies legacy affiliates into B2C (keeping their codes).",
         "operationId": "legacy_import_api_v1_admin_affiliates_import_legacy_post",
         "security": [
           {
@@ -38562,73 +38366,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyImportOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/affiliates/import/legacy/push": {
-      "post": {
-        "tags": [
-          "Admin Affiliates"
-        ],
-        "summary": "Legacy Push",
-        "description": "Creates the next batch of imported active partners in Tolt (no welcome email).",
-        "operationId": "legacy_push_api_v1_admin_affiliates_import_legacy_push_post",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyPushIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyPushOut"
                 }
               }
             }
@@ -38796,7 +38533,7 @@
           "Referrals"
         ],
         "summary": "Join Referrals",
-        "description": "Get a personal referral link (mirrored to Tolt in the background).",
+        "description": "Get a personal referral link. Friends who buy through it earn the student a store-credit reward.",
         "operationId": "join_referrals_api_v1_me_referrals_join_post",
         "security": [
           {
@@ -39357,7 +39094,7 @@
           "Affiliate earnings"
         ],
         "summary": "Save Marketer Profile",
-        "description": "Name, phone, country, city and channels. Name and country are mirrored to Tolt.",
+        "description": "Name, phone, country, city and channels.",
         "operationId": "save_marketer_profile_api_v1_me_affiliate_profile_put",
         "security": [
           {
@@ -39416,38 +39153,13 @@
         }
       }
     },
-    "/api/v1/affiliates/webhooks/tolt": {
-      "post": {
-        "tags": [
-          "Affiliate Webhooks"
-        ],
-        "summary": "Tolt Webhook",
-        "operationId": "tolt_webhook_api_v1_affiliates_webhooks_tolt_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "additionalProperties": {
-                    "type": "boolean"
-                  },
-                  "type": "object",
-                  "title": "Response Tolt Webhook Api V1 Affiliates Webhooks Tolt Post"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/affiliates/program": {
       "get": {
         "tags": [
           "Affiliate program"
         ],
         "summary": "Affiliate Program",
-        "description": "Terms shown on the storefront marketers page, plus the Tolt partner portal URL.",
+        "description": "Terms shown on the storefront marketers page.",
         "operationId": "affiliate_program_api_v1_affiliates_program_get",
         "responses": {
           "200": {
@@ -39491,7 +39203,7 @@
           "Affiliate program"
         ],
         "summary": "Apply As Marketer",
-        "description": "Join as a marketer: approved immediately and created in Tolt, which emails the portal invite.",
+        "description": "Join as a marketer: approved immediately; the dashboard opens when they sign in with this email.",
         "operationId": "apply_as_marketer_api_v1_affiliates_applications_post",
         "requestBody": {
           "content": {
@@ -39537,6 +39249,7 @@
           "Affiliate program"
         ],
         "summary": "Resolve Referral Code",
+        "description": "What a `?ref=` link gives the visitor. Also counts the click (once per visitor and day).",
         "operationId": "resolve_referral_code_api_v1_affiliates_referrals_resolve_get",
         "parameters": [
           {
@@ -46233,6 +45946,1970 @@
                     "type": "string"
                   },
                   "title": "Response Get Admin Attachment Download Api V1 Admin Support Attachments  Attachment Id  Download Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/partners/{partner_id}/commission": {
+      "put": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Set Partner Commission",
+        "description": "The partner's own commission rate for future sales (null: the program default).",
+        "operationId": "set_partner_commission_api_v1_admin_affiliates_partners__partner_id__commission_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Partner Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommissionRateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/partners/{partner_id}/payout-hold": {
+      "post": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Set Partner Payout Hold",
+        "description": "Pause (or resume) automatic payouts to this partner. Commissions keep accruing.",
+        "operationId": "set_partner_payout_hold_api_v1_admin_affiliates_partners__partner_id__payout_hold_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Partner Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayoutHoldIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/partners/{partner_id}/payouts": {
+      "get": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Partner Payouts",
+        "operationId": "partner_payouts_api_v1_admin_affiliates_partners__partner_id__payouts_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "partner_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Partner Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Page size (max items returned).",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Page size (max items returned)."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip (for paging).",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip (for paging)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payout-batches": {
+      "get": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "List Payout Batches",
+        "operationId": "list_payout_batches_api_v1_admin_affiliates_payout_batches_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Page size (max items returned).",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Page size (max items returned)."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip (for paging).",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip (for paging)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutBatchPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payout-batches/run": {
+      "post": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Run Payout Batch",
+        "description": "Run the payout batch now (e.g. after the monthly run failed on the platform balance).\n\nIt is the same automatic workflow: it pays whoever is eligible and never pays a partner twice.\n409 `payouts_disabled` while automatic payouts are switched off.",
+        "operationId": "run_payout_batch_api_v1_admin_affiliates_payout_batches_run_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Run Payout Batch Api V1 Admin Affiliates Payout Batches Run Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payout-batches/{batch_id}": {
+      "get": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Get Payout Batch",
+        "operationId": "get_payout_batch_api_v1_admin_affiliates_payout_batches__batch_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "batch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Batch Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutBatchDetailOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/balance": {
+      "get": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Balance",
+        "description": "Pending (in the refund hold), available (paid on the 1st) and paid totals, and the payout state.",
+        "operationId": "marketer_balance_api_v1_me_affiliate_balance_get",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketerBalanceOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/payouts": {
+      "get": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Payouts",
+        "operationId": "marketer_payouts_api_v1_me_affiliate_payouts_get",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/payouts/connect": {
+      "post": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Connect",
+        "description": "Start or continue Stripe-hosted onboarding of the payout account.\n\nThe country (body, else the profile) picks the route: Connect for the platform's transfer countries\n(UK), a Global Payouts bank recipient otherwise. 422 `country_required` without one, 422\n`country_unsupported` when Stripe cannot pay that country. The return to the dashboard does not mean\nonboarding is complete: the page re-reads the account (`/payouts/account`).",
+        "operationId": "marketer_connect_api_v1_me_affiliate_payouts_connect_post",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ConnectStartIn"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectLinkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/payouts/connect/dashboard": {
+      "post": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Connect Dashboard",
+        "description": "A one-time link to manage the payout account: the Express dashboard (Connect), or the Stripe-hosted\nform to update the bank details (Global Payouts).",
+        "operationId": "marketer_connect_dashboard_api_v1_me_affiliate_payouts_connect_dashboard_post",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectLinkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/payouts/connect/refresh": {
+      "post": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Connect Refresh",
+        "description": "Re-read the Stripe account after the marketer returns from onboarding.",
+        "operationId": "marketer_connect_refresh_api_v1_me_affiliate_payouts_connect_refresh_post",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketerBalanceOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payouts/sender-status": {
+      "get": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Payout Sender Status",
+        "description": "Can the platform fund payouts? Global Payouts financial accounts (USD) and the Connect balance.",
+        "operationId": "payout_sender_status_api_v1_admin_affiliates_payouts_sender_status_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutSenderStatusOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payouts/{payout_id}/cancel": {
+      "post": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Cancel Payout",
+        "description": "Stop a bank payout that has not posted; the amount returns to the affiliate's balance.",
+        "operationId": "cancel_payout_api_v1_admin_affiliates_payouts__payout_id__cancel_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "payout_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Payout Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Cancel Payout Api V1 Admin Affiliates Payouts  Payout Id  Cancel Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/affiliates/payouts/{payout_id}/confirm": {
+      "post": {
+        "tags": [
+          "Admin Affiliates"
+        ],
+        "summary": "Confirm Payout",
+        "description": "Accept the exchange rate and fees of a bank payout over the automatic fee limit and send it.",
+        "operationId": "confirm_payout_api_v1_admin_affiliates_payouts__payout_id__confirm_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "payout_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Payout Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Confirm Payout Api V1 Admin Affiliates Payouts  Payout Id  Confirm Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/affiliates/webhooks/stripe-v2": {
+      "post": {
+        "tags": [
+          "Affiliate Webhooks"
+        ],
+        "summary": "Stripe V2 Webhook",
+        "description": "Stripe event destination for v2 thin events of marketer payouts.\n\nSubscribe it to `v2.money_management.payout_intent.*`, `v2.money_management.outbound_payment.*`,\n`v2.core.account[configuration.recipient].capability_status_updated` and `v2.core.account_link.returned`.\nEvery event re-reads its object from Stripe; the daily job polls the same objects as a fallback.\nSnapshot events (connected accounts, transfers) arrive on `/payments/webhooks/stripe` instead.",
+        "operationId": "stripe_v2_webhook_api_v1_affiliates_webhooks_stripe_v2_post",
+        "parameters": [
+          {
+            "name": "Stripe-Signature",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Stripe-Signature"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "title": "Response Stripe V2 Webhook Api V1 Affiliates Webhooks Stripe V2 Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/affiliate/payouts/account": {
+      "get": {
+        "tags": [
+          "Affiliate earnings"
+        ],
+        "summary": "Marketer Payout Account",
+        "description": "The payout account as Stripe sees it now: route, readiness, missing details and the masked bank.",
+        "operationId": "marketer_payout_account_api_v1_me_affiliate_payouts_account_get",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutAccountOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/announcements/active": {
+      "get": {
+        "tags": [
+          "Announcements"
+        ],
+        "summary": "Live announcement bars",
+        "operationId": "active_announcements_api_v1_announcements_active_get",
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 10,
+              "default": "ar",
+              "title": "Lang"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicBarsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements": {
+      "get": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Announcement bars",
+        "operationId": "list_bars_api_v1_admin_announcements_get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "draft",
+                    "active",
+                    "paused",
+                    "archived"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Create a bar",
+        "operationId": "create_bar_api_v1_admin_announcements_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}": {
+      "get": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "One bar with its items",
+        "operationId": "get_bar_api_v1_admin_announcements__bar_id__get",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Edit a bar",
+        "operationId": "update_bar_api_v1_admin_announcements__bar_id__patch",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}/status": {
+      "put": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Activate, pause or archive a bar",
+        "operationId": "set_bar_status_api_v1_admin_announcements__bar_id__status_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}/duplicate": {
+      "post": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Copy a bar (as a draft) with its items",
+        "operationId": "duplicate_bar_api_v1_admin_announcements__bar_id__duplicate_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}/items": {
+      "post": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Add an item",
+        "operationId": "create_item_api_v1_admin_announcements__bar_id__items_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}/items/{item_id}": {
+      "patch": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Edit an item",
+        "operationId": "update_item_api_v1_admin_announcements__bar_id__items__item_id__patch",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Remove an item",
+        "operationId": "delete_item_api_v1_admin_announcements__bar_id__items__item_id__delete",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/announcements/{bar_id}/items/order": {
+      "put": {
+        "tags": [
+          "Admin Announcements"
+        ],
+        "summary": "Reorder a bar's items",
+        "operationId": "reorder_items_api_v1_admin_announcements__bar_id__items_order_put",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Bar Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/subscriptions/quote": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Price a plan with an optional coupon",
+        "description": "Same pricing as `/checkout`: the coupon comes off the pre-tax subtotal, then VAT. An unusable\ncoupon is reported in `coupon_status` (never an error) so the plan page can explain it.",
+        "operationId": "quote_subscription_api_v1_subscriptions_quote_post",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionQuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionQuoteOut"
                 }
               }
             }
@@ -60681,7 +62358,10 @@
         "properties": {
           "action": {
             "type": "string",
-            "const": "decline",
+            "enum": [
+              "approve",
+              "decline"
+            ],
             "title": "Action"
           }
         },
@@ -60694,9 +62374,9 @@
       },
       "CommissionOut": {
         "properties": {
-          "tolt_commission_id": {
+          "commission_id": {
             "type": "string",
-            "title": "Tolt Commission Id"
+            "title": "Commission Id"
           },
           "partner_id": {
             "anyOf": [
@@ -60728,20 +62408,26 @@
           },
           "status": {
             "type": "string",
-            "title": "Status"
+            "title": "Status",
+            "description": "pending | approved | paid | reversed"
           },
-          "payout_id": {
+          "origin": {
+            "type": "string",
+            "title": "Origin",
+            "description": "local, or tolt for history imported from Tolt"
+          },
+          "rate_bps": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "integer"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Payout Id"
+            "title": "Rate Bps"
           },
-          "tolt_created_at": {
+          "payable_at": {
             "anyOf": [
               {
                 "type": "string",
@@ -60751,7 +62437,20 @@
                 "type": "null"
               }
             ],
-            "title": "Tolt Created At"
+            "title": "Payable At",
+            "description": "When the refund hold ends and it is approved automatically."
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
           },
           "order_id": {
             "anyOf": [
@@ -60810,26 +62509,22 @@
               }
             ],
             "title": "Settled At"
-          },
-          "effective_status": {
-            "type": "string",
-            "title": "Effective Status",
-            "description": "The Tolt status (Tolt approves and pays commissions)."
           }
         },
         "type": "object",
         "required": [
-          "tolt_commission_id",
+          "commission_id",
           "partner_id",
           "conversion_id",
           "amount_minor",
           "status",
-          "payout_id",
-          "tolt_created_at",
+          "origin",
+          "rate_bps",
+          "payable_at",
+          "created_at",
           "order_id",
           "partner_name",
-          "customer_email",
-          "effective_status"
+          "customer_email"
         ],
         "title": "CommissionOut"
       },
@@ -63176,6 +64871,40 @@
             ],
             "title": "Customer Id",
             "description": "Personal coupon: only this customer can use it."
+          },
+          "product_types": {
+            "items": {
+              "type": "string",
+              "const": "subscription"
+            },
+            "type": "array",
+            "title": "Product Types",
+            "description": "`subscription` makes the coupon valid on every subscription plan."
+          },
+          "subscription_duration": {
+            "type": "string",
+            "enum": [
+              "once",
+              "repeating",
+              "forever"
+            ],
+            "title": "Subscription Duration",
+            "description": "On subscriptions: first period only, N months, or every renewal.",
+            "default": "once"
+          },
+          "subscription_months": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 36.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subscription Months",
+            "description": "For `repeating`."
           }
         },
         "additionalProperties": false,
@@ -63353,6 +65082,40 @@
             ],
             "title": "Customer Id",
             "description": "Personal coupon: only this customer can use it."
+          },
+          "product_types": {
+            "items": {
+              "type": "string",
+              "const": "subscription"
+            },
+            "type": "array",
+            "title": "Product Types",
+            "description": "`subscription` makes the coupon valid on every subscription plan."
+          },
+          "subscription_duration": {
+            "type": "string",
+            "enum": [
+              "once",
+              "repeating",
+              "forever"
+            ],
+            "title": "Subscription Duration",
+            "description": "On subscriptions: first period only, N months, or every renewal.",
+            "default": "once"
+          },
+          "subscription_months": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 36.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subscription Months",
+            "description": "For `repeating`."
           },
           "promotion_id": {
             "type": "string",
@@ -70209,38 +71972,6 @@
         ],
         "title": "LegacyPreviewOut"
       },
-      "LegacyPushIn": {
-        "properties": {
-          "limit": {
-            "type": "integer",
-            "maximum": 200.0,
-            "minimum": 1.0,
-            "title": "Limit",
-            "default": 50
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "LegacyPushIn"
-      },
-      "LegacyPushOut": {
-        "properties": {
-          "attempted": {
-            "type": "integer",
-            "title": "Attempted"
-          },
-          "pushed": {
-            "type": "integer",
-            "title": "Pushed"
-          }
-        },
-        "type": "object",
-        "required": [
-          "attempted",
-          "pushed"
-        ],
-        "title": "LegacyPushOut"
-      },
       "LiveDiplomaView": {
         "properties": {
           "slug": {
@@ -70900,7 +72631,7 @@
           "status": {
             "type": "string",
             "title": "Status",
-            "description": "Tolt status: pending | approved | paid | rejected | refunded."
+            "description": "pending | approved | paid | reversed"
           },
           "created_at": {
             "anyOf": [
@@ -70913,6 +72644,19 @@
               }
             ],
             "title": "Created At"
+          },
+          "payable_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payable At",
+            "description": "When the refund hold ends."
           },
           "settled_at": {
             "anyOf": [
@@ -71265,10 +73009,10 @@
               }
             ]
           },
-          "tolt": {
+          "tracking": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/MarketerToltOut"
+                "$ref": "#/components/schemas/MarketerTrackingOut"
               },
               {
                 "type": "null"
@@ -71290,7 +73034,7 @@
           "program"
         ],
         "title": "MarketerOverviewOut",
-        "description": "Everything the dashboard home needs. Stats, series and Tolt are absent while pending."
+        "description": "Everything the dashboard home needs. Stats, series and tracking are absent while pending."
       },
       "MarketerPartnerOut": {
         "properties": {
@@ -71451,7 +73195,7 @@
           "full_name"
         ],
         "title": "MarketerProfileIn",
-        "description": "Contact details. Email and referral code are fixed (Tolt identity and live links)."
+        "description": "Contact details. Email and referral code are fixed (identity and live links).\n\nThe country is needed before payouts can be set up (the Stripe account is created in it)."
       },
       "MarketerProfileOut": {
         "properties": {
@@ -71503,7 +73247,8 @@
           "commission_percent": {
             "type": "string",
             "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Commission Percent"
+            "title": "Commission Percent",
+            "description": "The marketer's own rate (or the program default)."
           },
           "cookie_days": {
             "type": "integer",
@@ -71516,6 +73261,11 @@
           "minimum_payout_minor": {
             "type": "integer",
             "title": "Minimum Payout Minor"
+          },
+          "hold_days": {
+            "type": "integer",
+            "title": "Hold Days",
+            "default": 30
           }
         },
         "type": "object",
@@ -71704,49 +73454,6 @@
           "commission_paid_minor"
         ],
         "title": "MarketerStatsOut"
-      },
-      "MarketerToltOut": {
-        "properties": {
-          "connected": {
-            "type": "boolean",
-            "title": "Connected"
-          },
-          "sync_status": {
-            "type": "string",
-            "title": "Sync Status"
-          },
-          "clicks": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Clicks",
-            "description": "Link clicks counted by Tolt (null when Tolt did not answer)."
-          },
-          "customers": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Customers"
-          }
-        },
-        "type": "object",
-        "required": [
-          "connected",
-          "sync_status",
-          "clicks",
-          "customers"
-        ],
-        "title": "MarketerToltOut"
       },
       "MediaResponse": {
         "properties": {
@@ -74405,19 +76112,6 @@
             "title": "Referral Code",
             "description": "?ref= value; generated when empty."
           },
-          "tolt_group_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Group Id",
-            "description": "Tolt group (commission plan)."
-          },
           "notes": {
             "anyOf": [
               {
@@ -74510,43 +76204,6 @@
             ],
             "title": "Customer Id"
           },
-          "tolt_partner_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Partner Id"
-          },
-          "tolt_group_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Group Id"
-          },
-          "sync_status": {
-            "type": "string",
-            "title": "Sync Status"
-          },
-          "sync_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sync Error"
-          },
           "legacy_affiliate_id": {
             "anyOf": [
               {
@@ -74584,18 +76241,6 @@
           "stats": {
             "$ref": "#/components/schemas/PartnerStatsOut"
           },
-          "tolt_stats": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Stats"
-          },
           "source": {
             "type": "string",
             "title": "Source",
@@ -74612,6 +76257,80 @@
               }
             ],
             "title": "Application"
+          },
+          "commission_rate_bps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commission Rate Bps",
+            "description": "Own rate; null = the program default."
+          },
+          "connect_status": {
+            "type": "string",
+            "title": "Connect Status",
+            "description": "none | onboarding | enabled | restricted | unsupported",
+            "default": "none"
+          },
+          "stripe_account_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stripe Account Id"
+          },
+          "payout_hold": {
+            "type": "boolean",
+            "title": "Payout Hold",
+            "default": false
+          },
+          "payout_hold_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payout Hold Reason"
+          },
+          "payout_provider": {
+            "type": "string",
+            "title": "Payout Provider",
+            "description": "none | connect | global",
+            "default": "none"
+          },
+          "payout_method_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payout Method Label",
+            "description": "Masked bank account."
+          },
+          "payout_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payout Currency"
           }
         },
         "type": "object",
@@ -74626,10 +76345,6 @@
           "referral_code",
           "referral_link",
           "customer_id",
-          "tolt_partner_id",
-          "tolt_group_id",
-          "sync_status",
-          "sync_error",
           "legacy_affiliate_id",
           "notes",
           "created_at",
@@ -79615,30 +81330,6 @@
             ],
             "title": "Ref",
             "description": "The ?ref= value (partner code)."
-          },
-          "tolt_click_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Click Id"
-          },
-          "tolt_partner_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Tolt Partner Id"
           }
         },
         "type": "object",
@@ -84156,6 +85847,19 @@
                 "type": "null"
               }
             ]
+          },
+          "coupon_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Code",
+            "description": "A coupon that covers subscriptions (by plan product or the `subscription` product type)."
           }
         },
         "type": "object",
@@ -86600,8 +88304,15 @@
             "title": "Ticket Number"
           },
           "customer_id": {
-            "type": "string",
-            "format": "uuid",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Customer Id"
           },
           "customer_name": {
@@ -86625,6 +88336,45 @@
               }
             ],
             "title": "Customer Email"
+          },
+          "guest_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Name"
+          },
+          "guest_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guest Email"
+          },
+          "is_guest": {
+            "type": "boolean",
+            "title": "Is Guest",
+            "default": false
+          },
+          "email_verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email Verified At"
           },
           "category_id": {
             "type": "string",
@@ -86873,40 +88623,6 @@
           "refresh_expires_in"
         ],
         "title": "TokenResponse"
-      },
-      "ToltGroupOut": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "is_default": {
-            "type": "boolean",
-            "title": "Is Default",
-            "default": false
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name"
-        ],
-        "title": "ToltGroupOut"
       },
       "TrackingTag": {
         "properties": {
@@ -89802,7 +91518,7 @@
               }
             ],
             "title": "Commission Percent",
-            "description": "Shown on the public page; keep it in line with the Tolt group."
+            "description": "Default commission of every marketer."
           },
           "cookie_days": {
             "type": "integer",
@@ -89815,25 +91531,48 @@
             "maxLength": 300,
             "minLength": 1,
             "title": "Payout Terms",
-            "description": "Display text; Tolt runs the payouts."
+            "description": "Display text on the public page."
           },
           "minimum_payout_minor": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Minimum Payout Minor",
-            "description": "Display only; the real minimum is set in Tolt."
+            "description": "A marketer is paid once the balance reaches it (cents)."
           },
-          "portal_url": {
+          "auto_payouts_enabled": {
+            "type": "boolean",
+            "title": "Auto Payouts Enabled",
+            "description": "Kill switch of the monthly Stripe batch.",
+            "default": false
+          },
+          "hold_days": {
+            "type": "integer",
+            "maximum": 180.0,
+            "minimum": 0.0,
+            "title": "Hold Days",
+            "description": "Refund hold before a commission is approved.",
+            "default": 30
+          },
+          "max_fee_bps": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Max Fee Bps",
+            "description": "Bank payouts are confirmed automatically while fees are at most this (basis points).",
+            "default": 500
+          },
+          "financial_account_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 255
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Portal Url",
-            "description": "Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save."
+            "title": "Financial Account Id",
+            "description": "Global Payouts source; empty uses the first USD account."
           }
         },
         "additionalProperties": false,
@@ -89846,7 +91585,7 @@
           "minimum_payout_minor"
         ],
         "title": "AffiliateProgramIO",
-        "description": "Public marketer-programme terms (also edited by the admin)."
+        "description": "Marketer program terms (public page) and payout rules (edited by the admin)."
       },
       "AffiliateProgramIO-Output": {
         "properties": {
@@ -89858,7 +91597,7 @@
             "type": "string",
             "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
             "title": "Commission Percent",
-            "description": "Shown on the public page; keep it in line with the Tolt group."
+            "description": "Default commission of every marketer."
           },
           "cookie_days": {
             "type": "integer",
@@ -89871,25 +91610,48 @@
             "maxLength": 300,
             "minLength": 1,
             "title": "Payout Terms",
-            "description": "Display text; Tolt runs the payouts."
+            "description": "Display text on the public page."
           },
           "minimum_payout_minor": {
             "type": "integer",
             "minimum": 0.0,
             "title": "Minimum Payout Minor",
-            "description": "Display only; the real minimum is set in Tolt."
+            "description": "A marketer is paid once the balance reaches it (cents)."
           },
-          "portal_url": {
+          "auto_payouts_enabled": {
+            "type": "boolean",
+            "title": "Auto Payouts Enabled",
+            "description": "Kill switch of the monthly Stripe batch.",
+            "default": false
+          },
+          "hold_days": {
+            "type": "integer",
+            "maximum": 180.0,
+            "minimum": 0.0,
+            "title": "Hold Days",
+            "description": "Refund hold before a commission is approved.",
+            "default": 30
+          },
+          "max_fee_bps": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Max Fee Bps",
+            "description": "Bank payouts are confirmed automatically while fees are at most this (basis points).",
+            "default": 500
+          },
+          "financial_account_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 255
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Portal Url",
-            "description": "Tolt partner portal (read-only, from `TOLT_PORTAL_URL`); ignored on save."
+            "title": "Financial Account Id",
+            "description": "Global Payouts source; empty uses the first USD account."
           }
         },
         "additionalProperties": false,
@@ -89902,7 +91664,2715 @@
           "minimum_payout_minor"
         ],
         "title": "AffiliateProgramIO",
-        "description": "Public marketer-programme terms (also edited by the admin)."
+        "description": "Marketer program terms (public page) and payout rules (edited by the admin)."
+      },
+      "CommissionRateIn": {
+        "properties": {
+          "commission_percent": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commission Percent",
+            "description": "The partner's own rate for future sales; null = program default."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CommissionRateIn"
+      },
+      "ConnectLinkOut": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Stripe-hosted page; redirect the marketer to it."
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "ConnectLinkOut"
+      },
+      "MarketerBalanceOut": {
+        "properties": {
+          "pending_minor": {
+            "type": "integer",
+            "title": "Pending Minor",
+            "description": "Commissions still inside the refund hold."
+          },
+          "available_minor": {
+            "type": "integer",
+            "title": "Available Minor",
+            "description": "Approved and not paid yet: goes out in the next batch."
+          },
+          "paid_minor": {
+            "type": "integer",
+            "title": "Paid Minor",
+            "description": "Paid out so far."
+          },
+          "reversed_minor": {
+            "type": "integer",
+            "title": "Reversed Minor",
+            "description": "Taken back after refunds."
+          },
+          "minimum_payout_minor": {
+            "type": "integer",
+            "title": "Minimum Payout Minor"
+          },
+          "hold_days": {
+            "type": "integer",
+            "title": "Hold Days"
+          },
+          "next_payout_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Next Payout Date"
+          },
+          "auto_payouts_enabled": {
+            "type": "boolean",
+            "title": "Auto Payouts Enabled"
+          },
+          "connect_status": {
+            "type": "string",
+            "title": "Connect Status",
+            "description": "none | onboarding | enabled | restricted | unsupported"
+          },
+          "payout_provider": {
+            "type": "string",
+            "title": "Payout Provider",
+            "description": "none | connect | global",
+            "default": "none"
+          },
+          "payout_method_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payout Method Label",
+            "description": "Masked bank account, e.g. Bank ••0002."
+          },
+          "payout_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payout Currency"
+          },
+          "payout_hold": {
+            "type": "boolean",
+            "title": "Payout Hold"
+          },
+          "last_payout_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Payout At"
+          },
+          "will_be_paid": {
+            "type": "boolean",
+            "title": "Will Be Paid",
+            "description": "Whether the next batch will pay the available balance."
+          }
+        },
+        "type": "object",
+        "required": [
+          "pending_minor",
+          "available_minor",
+          "paid_minor",
+          "reversed_minor",
+          "minimum_payout_minor",
+          "hold_days",
+          "next_payout_date",
+          "auto_payouts_enabled",
+          "connect_status",
+          "payout_hold",
+          "last_payout_at",
+          "will_be_paid"
+        ],
+        "title": "MarketerBalanceOut"
+      },
+      "MarketerTrackingOut": {
+        "properties": {
+          "clicks": {
+            "type": "integer",
+            "title": "Clicks",
+            "description": "Unique link visits (one per visitor per day), all time."
+          },
+          "clicks_in_range": {
+            "type": "integer",
+            "title": "Clicks In Range",
+            "description": "The same, within the chart range."
+          }
+        },
+        "type": "object",
+        "required": [
+          "clicks",
+          "clicks_in_range"
+        ],
+        "title": "MarketerTrackingOut"
+      },
+      "PayoutBatchDetailOut": {
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Batch Id"
+          },
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "running | completed | partial | failed"
+          },
+          "payouts_count": {
+            "type": "integer",
+            "title": "Payouts Count"
+          },
+          "paid_count": {
+            "type": "integer",
+            "title": "Paid Count"
+          },
+          "failed_count": {
+            "type": "integer",
+            "title": "Failed Count"
+          },
+          "total_minor": {
+            "type": "integer",
+            "title": "Total Minor"
+          },
+          "paid_minor": {
+            "type": "integer",
+            "title": "Paid Minor"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "payouts": {
+            "items": {
+              "$ref": "#/components/schemas/PayoutOut"
+            },
+            "type": "array",
+            "title": "Payouts",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "batch_id",
+          "period",
+          "status",
+          "payouts_count",
+          "paid_count",
+          "failed_count",
+          "total_minor",
+          "paid_minor",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "PayoutBatchDetailOut"
+      },
+      "PayoutBatchOut": {
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Batch Id"
+          },
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "running | completed | partial | failed"
+          },
+          "payouts_count": {
+            "type": "integer",
+            "title": "Payouts Count"
+          },
+          "paid_count": {
+            "type": "integer",
+            "title": "Paid Count"
+          },
+          "failed_count": {
+            "type": "integer",
+            "title": "Failed Count"
+          },
+          "total_minor": {
+            "type": "integer",
+            "title": "Total Minor"
+          },
+          "paid_minor": {
+            "type": "integer",
+            "title": "Paid Minor"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "batch_id",
+          "period",
+          "status",
+          "payouts_count",
+          "paid_count",
+          "failed_count",
+          "total_minor",
+          "paid_minor",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "PayoutBatchOut"
+      },
+      "PayoutBatchPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PayoutBatchOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "PayoutBatchPage"
+      },
+      "PayoutHoldIn": {
+        "properties": {
+          "hold": {
+            "type": "boolean",
+            "title": "Hold"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "hold"
+        ],
+        "title": "PayoutHoldIn"
+      },
+      "PayoutOut": {
+        "properties": {
+          "payout_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Payout Id"
+          },
+          "partner_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Partner Id"
+          },
+          "batch_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch Id"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor"
+          },
+          "currency_code": {
+            "type": "string",
+            "title": "Currency Code"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "processing | sent | pending_confirmation | paid | failed | returned | cancelled"
+          },
+          "stripe_transfer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stripe Transfer Id"
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Code"
+          },
+          "failure_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure Message"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "paid_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paid At"
+          },
+          "partner_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Partner Name"
+          },
+          "partner_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Partner Email"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "description": "connect (Stripe balance) | global (bank payout)",
+            "default": "connect"
+          },
+          "provider_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Ref",
+            "description": "Stripe transfer (tr_) or PayoutIntent (poi_) id."
+          },
+          "debited_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Debited Minor"
+          },
+          "credited_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credited Minor",
+            "description": "Amount the bank account receives (estimate)."
+          },
+          "credited_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credited Currency"
+          },
+          "fees_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fees Minor"
+          },
+          "fx_rate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fx Rate"
+          },
+          "next_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Action",
+            "description": "e.g. confirm:fees_over_limit"
+          },
+          "bank_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Status",
+            "description": "Connect: paid | failed for the bank payout."
+          },
+          "sent_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sent At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "payout_id",
+          "partner_id",
+          "batch_id",
+          "amount_minor",
+          "currency_code",
+          "status",
+          "stripe_transfer_id",
+          "failure_code",
+          "failure_message",
+          "created_at",
+          "paid_at"
+        ],
+        "title": "PayoutOut"
+      },
+      "PayoutPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PayoutOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "PayoutPage"
+      },
+      "ConnectStartIn": {
+        "properties": {
+          "country_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code",
+            "description": "Where the bank account is; defaults to the profile."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ConnectStartIn"
+      },
+      "PayoutAccountOut": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "description": "none | connect | global"
+          },
+          "connect_status": {
+            "type": "string",
+            "title": "Connect Status"
+          },
+          "method_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method Label"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "requirements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Requirements",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "provider",
+          "connect_status",
+          "method_label",
+          "currency"
+        ],
+        "title": "PayoutAccountOut"
+      },
+      "PayoutSenderStatusOut": {
+        "properties": {
+          "global_enabled": {
+            "type": "boolean",
+            "title": "Global Enabled",
+            "description": "A Global Payouts financial account exists."
+          },
+          "financial_accounts": {
+            "items": {
+              "$ref": "#/components/schemas/SenderAccountOut"
+            },
+            "type": "array",
+            "title": "Financial Accounts"
+          },
+          "connect_available": {
+            "items": {
+              "$ref": "#/components/schemas/SenderBalanceOut"
+            },
+            "type": "array",
+            "title": "Connect Available",
+            "description": "Platform balance that funds Connect transfers."
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "global_enabled",
+          "financial_accounts",
+          "connect_available"
+        ],
+        "title": "PayoutSenderStatusOut"
+      },
+      "SenderAccountOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "usd_available_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Usd Available Minor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "usd_available_minor"
+        ],
+        "title": "SenderAccountOut"
+      },
+      "SenderBalanceOut": {
+        "properties": {
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "currency",
+          "amount_minor"
+        ],
+        "title": "SenderBalanceOut"
+      },
+      "BarAdminOut": {
+        "properties": {
+          "bar_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Bar Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ],
+            "title": "Status"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "starts_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "placements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Placements"
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "all",
+              "guest",
+              "signed_in"
+            ],
+            "title": "Audience"
+          },
+          "layout": {
+            "type": "string",
+            "enum": [
+              "rotate",
+              "marquee",
+              "inline"
+            ],
+            "title": "Layout"
+          },
+          "rotate_interval_ms": {
+            "type": "integer",
+            "title": "Rotate Interval Ms"
+          },
+          "style": {
+            "$ref": "#/components/schemas/BarStyle"
+          },
+          "dismissible": {
+            "type": "boolean",
+            "title": "Dismissible"
+          },
+          "dismiss_days": {
+            "type": "integer",
+            "title": "Dismiss Days"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "live_now": {
+            "type": "boolean",
+            "title": "Live Now"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemAdminOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "archived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bar_id",
+          "name",
+          "status",
+          "priority",
+          "starts_at",
+          "ends_at",
+          "placements",
+          "audience",
+          "layout",
+          "rotate_interval_ms",
+          "style",
+          "dismissible",
+          "dismiss_days",
+          "version",
+          "live_now",
+          "warnings",
+          "items",
+          "created_at",
+          "updated_at",
+          "archived_at"
+        ],
+        "title": "BarAdminOut"
+      },
+      "ItemStyleOverride": {
+        "properties": {
+          "text_color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text Color"
+          },
+          "accent_color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accent Color"
+          },
+          "badge_bg": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge Bg"
+          },
+          "bg_colors": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bg Colors"
+          }
+        },
+        "type": "object",
+        "title": "ItemStyleOverride"
+      },
+      "PublicCoupon": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "percent",
+              "fixed"
+            ],
+            "title": "Kind"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value",
+            "description": "Percent, or the amount in major units of currency_code."
+          },
+          "currency_code": {
+            "type": "string",
+            "title": "Currency Code"
+          },
+          "max_discount_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Discount Minor"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "product_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Product Ids",
+            "description": "Products the coupon is limited to (empty = no product scope)."
+          },
+          "product_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Product Types"
+          },
+          "category_scoped": {
+            "type": "boolean",
+            "title": "Category Scoped"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "kind",
+          "value",
+          "currency_code",
+          "max_discount_minor",
+          "ends_at",
+          "product_ids",
+          "product_types",
+          "category_scoped"
+        ],
+        "title": "PublicCoupon"
+      },
+      "ItemInput": {
+        "properties": {
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "discount",
+                  "unlimited_access",
+                  "free_course",
+                  "new_course",
+                  "event",
+                  "info"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "badge_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge Ar"
+          },
+          "badge_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge En"
+          },
+          "text_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text Ar"
+          },
+          "text_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text En"
+          },
+          "highlight_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlight Ar"
+          },
+          "highlight_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlight En"
+          },
+          "countdown_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countdown To"
+          },
+          "coupon_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Id"
+          },
+          "action_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "copy_coupon",
+                  "apply_coupon_go",
+                  "link",
+                  "product",
+                  "subscription_plan"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Type"
+          },
+          "action_label_ar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Label Ar"
+          },
+          "action_label_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Label En"
+          },
+          "target_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Url"
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "plan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Id"
+          },
+          "style_override": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ItemStyleOverride"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ItemInput"
+      },
+      "BarCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority",
+            "default": 0
+          },
+          "starts_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "placements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Placements"
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "all",
+              "guest",
+              "signed_in"
+            ],
+            "title": "Audience",
+            "default": "all"
+          },
+          "layout": {
+            "type": "string",
+            "enum": [
+              "rotate",
+              "marquee",
+              "inline"
+            ],
+            "title": "Layout",
+            "default": "rotate"
+          },
+          "rotate_interval_ms": {
+            "type": "integer",
+            "title": "Rotate Interval Ms",
+            "default": 5000
+          },
+          "style": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BarStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dismissible": {
+            "type": "boolean",
+            "title": "Dismissible",
+            "default": true
+          },
+          "dismiss_days": {
+            "type": "integer",
+            "title": "Dismiss Days",
+            "default": 7
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "BarCreate"
+      },
+      "CouponRefOut": {
+        "properties": {
+          "promotion_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Promotion Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "currency_code": {
+            "type": "string",
+            "title": "Currency Code"
+          },
+          "starts_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "live": {
+            "type": "boolean",
+            "title": "Live"
+          },
+          "exhausted": {
+            "type": "boolean",
+            "title": "Exhausted"
+          },
+          "scoped": {
+            "type": "boolean",
+            "title": "Scoped"
+          }
+        },
+        "type": "object",
+        "required": [
+          "promotion_id",
+          "code",
+          "kind",
+          "value",
+          "currency_code",
+          "starts_at",
+          "ends_at",
+          "live",
+          "exhausted",
+          "scoped"
+        ],
+        "title": "CouponRefOut"
+      },
+      "BarUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "draft",
+                  "active",
+                  "paused",
+                  "archived"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "starts_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "placements": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Placements"
+          },
+          "audience": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "all",
+                  "guest",
+                  "signed_in"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audience"
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "rotate",
+                  "marquee",
+                  "inline"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layout"
+          },
+          "rotate_interval_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rotate Interval Ms"
+          },
+          "style": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BarStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dismissible": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dismissible"
+          },
+          "dismiss_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dismiss Days"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "BarUpdate"
+      },
+      "ProductRefOut": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Product Id"
+          },
+          "product_type": {
+            "type": "string",
+            "title": "Product Type"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "product_type",
+          "slug",
+          "title"
+        ],
+        "title": "ProductRefOut"
+      },
+      "PlanRefOut": {
+        "properties": {
+          "plan_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Plan Id"
+          },
+          "product_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Product Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plan_id",
+          "product_id",
+          "slug",
+          "title"
+        ],
+        "title": "PlanRefOut"
+      },
+      "ItemAdminOut": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Item Id"
+          },
+          "bar_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Bar Id"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "discount",
+              "unlimited_access",
+              "free_course",
+              "new_course",
+              "event",
+              "info"
+            ],
+            "title": "Kind"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "badge_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge Ar"
+          },
+          "badge_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge En"
+          },
+          "text_ar": {
+            "type": "string",
+            "title": "Text Ar"
+          },
+          "text_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text En"
+          },
+          "highlight_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlight Ar"
+          },
+          "highlight_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlight En"
+          },
+          "countdown_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countdown To"
+          },
+          "coupon_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Id"
+          },
+          "action_type": {
+            "type": "string",
+            "enum": [
+              "none",
+              "copy_coupon",
+              "apply_coupon_go",
+              "link",
+              "product",
+              "subscription_plan"
+            ],
+            "title": "Action Type"
+          },
+          "action_label_ar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Label Ar"
+          },
+          "action_label_en": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Label En"
+          },
+          "target_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Url"
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "plan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Id"
+          },
+          "style_override": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ItemStyleOverride"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CouponRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "plan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hidden_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden Reason",
+            "description": "Why the public bar currently hides this item (coupon_expired, countdown_ended…)."
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_id",
+          "bar_id",
+          "sort_order",
+          "is_active",
+          "kind",
+          "icon",
+          "badge_ar",
+          "badge_en",
+          "text_ar",
+          "text_en",
+          "highlight_ar",
+          "highlight_en",
+          "countdown_to",
+          "coupon_id",
+          "action_type",
+          "action_label_ar",
+          "action_label_en",
+          "target_url",
+          "product_id",
+          "plan_id",
+          "style_override",
+          "coupon",
+          "product",
+          "plan",
+          "updated_at"
+        ],
+        "title": "ItemAdminOut"
+      },
+      "BarStyle": {
+        "properties": {
+          "preset": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
+          },
+          "bg": {
+            "$ref": "#/components/schemas/BarBackground"
+          },
+          "text_color": {
+            "type": "string",
+            "title": "Text Color",
+            "default": "#ffffff"
+          },
+          "accent_color": {
+            "type": "string",
+            "title": "Accent Color",
+            "default": "#ffe14d"
+          },
+          "badge_bg": {
+            "type": "string",
+            "title": "Badge Bg",
+            "default": "#1a1033"
+          },
+          "height": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "regular"
+            ],
+            "title": "Height",
+            "default": "regular"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bg"
+        ],
+        "title": "BarStyle"
+      },
+      "BarAdminPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BarAdminOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "BarAdminPage"
+      },
+      "PublicBar": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "placements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Placements"
+          },
+          "audience": {
+            "type": "string",
+            "enum": [
+              "all",
+              "guest",
+              "signed_in"
+            ],
+            "title": "Audience"
+          },
+          "layout": {
+            "type": "string",
+            "enum": [
+              "rotate",
+              "marquee",
+              "inline"
+            ],
+            "title": "Layout"
+          },
+          "rotate_interval_ms": {
+            "type": "integer",
+            "title": "Rotate Interval Ms"
+          },
+          "style": {
+            "$ref": "#/components/schemas/BarStyle"
+          },
+          "dismissible": {
+            "type": "boolean",
+            "title": "Dismissible"
+          },
+          "dismiss_days": {
+            "type": "integer",
+            "title": "Dismiss Days"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PublicItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "placements",
+          "audience",
+          "layout",
+          "rotate_interval_ms",
+          "style",
+          "dismissible",
+          "dismiss_days",
+          "ends_at",
+          "items"
+        ],
+        "title": "PublicBar"
+      },
+      "BarStatusUpdate": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "paused",
+              "archived"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "BarStatusUpdate"
+      },
+      "PublicItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "discount",
+              "unlimited_access",
+              "free_course",
+              "new_course",
+              "event",
+              "info"
+            ],
+            "title": "Kind"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "badge": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "highlight": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlight"
+          },
+          "countdown_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countdown To"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "none",
+              "copy_coupon",
+              "apply_coupon_go",
+              "link",
+              "product",
+              "subscription_plan"
+            ],
+            "title": "Action"
+          },
+          "action_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Label"
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PublicCoupon"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PublicTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "style_override": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ItemStyleOverride"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "icon",
+          "badge",
+          "text",
+          "highlight",
+          "countdown_to",
+          "action",
+          "action_label",
+          "coupon",
+          "target",
+          "style_override"
+        ],
+        "title": "PublicItem"
+      },
+      "ItemOrder": {
+        "properties": {
+          "item_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Item Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_ids"
+        ],
+        "title": "ItemOrder"
+      },
+      "BarBackground": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "solid",
+              "gradient"
+            ],
+            "title": "Type",
+            "default": "gradient"
+          },
+          "colors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Colors"
+          },
+          "angle": {
+            "type": "integer",
+            "maximum": 360.0,
+            "minimum": 0.0,
+            "title": "Angle",
+            "default": 90
+          },
+          "animated": {
+            "type": "boolean",
+            "title": "Animated",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "colors"
+        ],
+        "title": "BarBackground"
+      },
+      "PublicTarget": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "product",
+              "plan",
+              "url"
+            ],
+            "title": "Kind"
+          },
+          "href": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Href",
+            "description": "Site path for kind=url."
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "product_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Type"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug",
+            "description": "Product slug (course-123) or plan slug."
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "PublicTarget"
+      },
+      "PublicBarsOut": {
+        "properties": {
+          "bars": {
+            "items": {
+              "$ref": "#/components/schemas/PublicBar"
+            },
+            "type": "array",
+            "title": "Bars"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bars"
+        ],
+        "title": "PublicBarsOut"
+      },
+      "SubscriptionQuoteRequest": {
+        "properties": {
+          "plan_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Id"
+          },
+          "product_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Id"
+          },
+          "seat_count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seat Count"
+          },
+          "coupon_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Code"
+          }
+        },
+        "type": "object",
+        "title": "SubscriptionQuoteRequest"
+      },
+      "SubscriptionQuoteOut": {
+        "properties": {
+          "seats": {
+            "type": "integer",
+            "title": "Seats"
+          },
+          "currency_code": {
+            "type": "string",
+            "title": "Currency Code"
+          },
+          "unit_price": {
+            "type": "string",
+            "title": "Unit Price"
+          },
+          "subtotal": {
+            "type": "string",
+            "title": "Subtotal"
+          },
+          "discount": {
+            "type": "string",
+            "title": "Discount"
+          },
+          "tax_percent": {
+            "type": "string",
+            "title": "Tax Percent"
+          },
+          "tax": {
+            "type": "string",
+            "title": "Tax"
+          },
+          "total": {
+            "type": "string",
+            "title": "Total"
+          },
+          "renewal_total": {
+            "type": "string",
+            "title": "Renewal Total",
+            "description": "Each later period (after a `once` discount ends), tax included."
+          },
+          "coupon_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Code"
+          },
+          "coupon_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon Status",
+            "description": "applied, invalid, expired, not_applicable, … (null without a coupon)."
+          },
+          "discount_duration": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "once",
+                  "repeating",
+                  "forever"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Duration"
+          },
+          "discount_months": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount Months"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seats",
+          "currency_code",
+          "unit_price",
+          "subtotal",
+          "discount",
+          "tax_percent",
+          "tax",
+          "total",
+          "renewal_total",
+          "coupon_code",
+          "coupon_status",
+          "discount_duration",
+          "discount_months"
+        ],
+        "title": "SubscriptionQuoteOut",
+        "description": "What the first Stripe invoice will charge, and what renewals charge."
       }
     },
     "securitySchemes": {

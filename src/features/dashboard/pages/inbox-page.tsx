@@ -14,7 +14,7 @@ export default function InboxPage() {
   const payouts = useQuery({ queryKey: ["dashboard", "inbox", "payouts"], queryFn: () => listReferralPayouts({ limit: 100 }) });
   const failures = useQuery({ queryKey: ["dashboard", "inbox", "failures"], queryFn: () => listPaymentFailures({ limit: 1 }) });
 
-  // Legacy-system requests only: Tolt pays the new programme's marketers.
+  // Legacy-system requests only: the new programme pays marketers automatically (monthly Stripe batch).
   const pendingPayouts = (payouts.data?.items ?? []).filter((row) => row.status === 1).length;
 
   const items = [

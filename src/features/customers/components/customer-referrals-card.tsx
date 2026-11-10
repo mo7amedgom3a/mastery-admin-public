@@ -9,13 +9,13 @@ import { AppLink } from "@/components/ui/app-link";
 import { Badge, Button, Card, Dl, ErrorAlert, Field, Loading } from "@/components/ui/kit";
 import { PageState } from "@/components/ui/primitives";
 
-import { rewardStatusBadge, syncStatusBadge } from "@/features/marketing/lib/affiliates";
+import { rewardStatusBadge } from "@/features/marketing/lib/affiliates";
 
 const SOURCE: Record<string, { ar: string; en: string }> = {
   link: { ar: "رابط إحالة", en: "Referral link" },
   coupon: { ar: "كوبون المسوّق", en: "Affiliate coupon" },
   admin: { ar: "تعيين يدوي", en: "Assigned by admin" },
-  tolt_lead: { ar: "Tolt", en: "Tolt" },
+  tolt_lead: { ar: "رابط (قبل الانتقال)", en: "Link (before cutover)" },
 };
 
 /** Affiliate / referral picture of one customer: who brought them and whom they brought. */
@@ -59,7 +59,6 @@ export function CustomerReferralsCard({ customerId }: { customerId: string }) {
                       [t("الكود", "Code"), <bdi key="c" className="ma-num">{a.ref_value ?? a.partner_code}</bdi>],
                       [t("التاريخ", "Date"), formatDateTime(a.attributed_at)],
                       [t("طلبات مدفوعة عبره", "Paid orders via partner"), `${formatNumber(a.paid_orders)} · ${formatMinor(a.revenue_minor)}`],
-                      ["Tolt", <Badge key="s" def={syncStatusBadge(a.sync_status)} />],
                     ]}
                   />
                   {canWrite && a.paid_orders === 0 ? (

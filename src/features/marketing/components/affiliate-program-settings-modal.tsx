@@ -29,16 +29,24 @@ export function AffiliateProgramSettingsModal({
   const [openApplications, setOpenApplications] = useState(true);
   const [commissionPercent, setCommissionPercent] = useState<number | string>(20);
   const [cookieDays, setCookieDays] = useState<number>(30);
-  const [payoutTerms, setPayoutTerms] = useState<string>("PayPal · NET-15");
-  const [minPayoutMajor, setMinPayoutMajor] = useState<number>(0);
+  const [payoutTerms, setPayoutTerms] = useState<string>("Stripe · monthly");
+  const [minPayoutMajor, setMinPayoutMajor] = useState<number>(50);
+  const [autoPayouts, setAutoPayouts] = useState(false);
+  const [holdDays, setHoldDays] = useState<number>(30);
+  const [maxFeePercent, setMaxFeePercent] = useState<number | string>(5);
+  const [financialAccountId, setFinancialAccountId] = useState<string>("");
 
   useEffect(() => {
     if (settings) {
       setOpenApplications(settings.applications_open);
       setCommissionPercent(Number(settings.commission_percent) || 20);
       setCookieDays(settings.cookie_days || 30);
-      setPayoutTerms(settings.payout_terms || "PayPal · NET-15");
+      setPayoutTerms(settings.payout_terms || "Stripe · monthly");
       setMinPayoutMajor(Math.round((settings.minimum_payout_minor || 0) / 100));
+      setAutoPayouts(Boolean(settings.auto_payouts_enabled));
+      setHoldDays(settings.hold_days ?? 30);
+      setMaxFeePercent((settings.max_fee_bps ?? 500) / 100);
+      setFinancialAccountId(settings.financial_account_id ?? "");
     }
   }, [settings]);
 
@@ -59,6 +67,10 @@ export function AffiliateProgramSettingsModal({
       cookie_days: Number(cookieDays),
       payout_terms: payoutTerms.trim(),
       minimum_payout_minor: Math.round(Number(minPayoutMajor) * 100),
+      auto_payouts_enabled: autoPayouts,
+      hold_days: Number(holdDays),
+      max_fee_bps: Math.round(Number(maxFeePercent) * 100),
+      financial_account_id: financialAccountId.trim() || null,
     });
   };
 
@@ -66,7 +78,7 @@ export function AffiliateProgramSettingsModal({
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title={t("إعدادات برنامج المسوقين (الصفحة العامة)", "Marketer Program Terms")}
+      title={t("إعدادات برنامج المسوقين", "Marketer Program Settings")}
       size="md"
     >
       {isLoading ? (
@@ -97,12 +109,32 @@ export function AffiliateProgramSettingsModal({
             </label>
           </div>
 
+          <div className="flex items-center justify-between gap-4 rounded-ctl border border-line p-3 bg-surface-alt">
+            <div>
+              <span className="text-sm font-bold block">{t("التحويلات التلقائية", "Automatic payouts")}</span>
+              <span className="text-xs text-fg-muted">
+                {t(
+                  "في أول كل شهر تُحوَّل أرباح كل المسوقين الذين بلغ رصيدهم الحد الأدنى وحسابهم جاهز: عبر Stripe Connect في بريطانيا، وتحويلًا بنكيًا (Global Payouts) في مصر والإمارات وغيرها. أوقفه لإيقاف كل التحويلات.",
+                  "On the 1st of every month, every marketer whose balance reached the minimum and whose account is ready is paid: Stripe Connect in the UK, a Global Payouts bank transfer in Egypt, the UAE and elsewhere. Turn off to stop all payouts.",
+                )}
+              </span>
+            </div>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoPayouts}
+                onChange={(e) => setAutoPayouts(e.target.checked)}
+                className="size-5 rounded border-line text-accent"
+              />
+            </label>
+          </div>
+
           <Field
             id="commission-percent"
             label={t("نسبة العمولة الافتراضية (%)", "Default Commission (%)")}
             hint={t(
-              "النسبة المعروضة على الصفحة العامة (احرص على مطابقتها لمجموعة Tolt)",
-              "Displayed on public page; keep in line with the Tolt group",
+              "تُطبَّق على مبيعات كل مسوّق ليست له نسبة خاصة، وتظهر على الصفحة العامة",
+              "Applied to the sales of every marketer without an own rate; shown on the public page",
             )}
             required
           >
@@ -138,11 +170,68 @@ export function AffiliateProgramSettingsModal({
           </Field>
 
           <Field
+            id="hold-days"
+            label={t("فترة الاسترداد قبل الاعتماد (بالأيام)", "Refund hold before approval (days)")}
+            hint={t("تُعتمد العمولة تلقائيًا بعد هذه المدة من الدفع إذا لم يُسترد الطلب", "A commission is approved this many days after payment unless the order is refunded")}
+            required
+          >
+            <input
+              id="hold-days"
+              type="number"
+              min={0}
+              max={180}
+              required
+              className="ma-ctl"
+              value={holdDays}
+              onChange={(e) => setHoldDays(Number(e.target.value))}
+            />
+          </Field>
+
+          <Field
+            id="max-fee"
+            label={t("حد الرسوم للتأكيد التلقائي (%)", "Auto-confirm fee limit (%)")}
+            hint={t(
+              "التحويل البنكي الدولي يُؤكَّد تلقائيًا ما دامت رسومه لا تتجاوز هذه النسبة وسعر الصرف مثبّتًا؛ وإلا ينتظر تأكيدك في صفحة التحويلات",
+              "International bank payouts are confirmed automatically while fees stay within this share and the FX rate is locked; otherwise they wait for you on the payouts page",
+            )}
+            required
+          >
+            <input
+              id="max-fee"
+              type="number"
+              min={0}
+              max={100}
+              step="0.1"
+              required
+              className="ma-ctl"
+              value={maxFeePercent}
+              onChange={(e) => setMaxFeePercent(e.target.value)}
+            />
+          </Field>
+
+          <Field
+            id="financial-account"
+            label={t("الحساب المالي للتحويلات البنكية (اختياري)", "Bank payouts financial account (optional)")}
+            hint={t("فارغ = أول حساب مالي بالدولار في Stripe", "Empty uses the first USD financial account in Stripe")}
+          >
+            <input
+              id="financial-account"
+              type="text"
+              dir="ltr"
+              maxLength={255}
+              className="ma-ctl"
+              placeholder="fa_…"
+              value={financialAccountId}
+              onChange={(e) => setFinancialAccountId(e.target.value)}
+            />
+          </Field>
+
+          <Field
             id="payout-terms"
             label={t("شروط وطريقة الدفع", "Payout Terms")}
             hint={t(
-              "نص يظهر في صفحة المسوقين فقط؛ يدفع Tolt العمولات حسب إعدادات الدفع في لوحته. مثال: PayPal · NET-15",
-              "Shown on the marketers page only; Tolt pays commissions per its payout settings. e.g. PayPal · NET-15",
+              "نص يظهر في صفحة المسوقين العامة. مثال: Stripe · شهريًا",
+              "Shown on the public marketers page. e.g. Stripe · monthly",
             )}
             required
           >
@@ -159,10 +248,10 @@ export function AffiliateProgramSettingsModal({
 
           <Field
             id="min-payout"
-            label={t("الحد الأدنى للسحب ($)", "Minimum Payout ($)")}
+            label={t("الحد الأدنى للتحويل ($)", "Minimum Payout ($)")}
             hint={t(
-              "للعرض فقط؛ اضبط الحد الأدنى الفعلي في إعدادات الدفع في Tolt (0 يعني بدون حد أدنى)",
-              "Display only; set the real minimum in Tolt's payout settings (0 = no minimum)",
+              "لا يُحوَّل الرصيد قبل أن يبلغ هذا المبلغ؛ يُرحَّل للشهر التالي",
+              "A balance below this is carried to the next month",
             )}
             required
           >

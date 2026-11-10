@@ -8,17 +8,20 @@ const PARTNER: Record<string, BadgeDef> = {
   suspended: def("موقوف", "Suspended", "danger"),
   rejected: def("مرفوض", "Rejected", "neutral"),
 };
-const SYNC: Record<string, BadgeDef> = {
-  synced: def("متزامن مع Tolt", "Synced to Tolt", "success"),
-  pending: def("بانتظار المزامنة", "Sync pending", "info"),
-  failed: def("فشلت المزامنة", "Sync failed", "danger"),
-  skipped: def("غير مرسل لـ Tolt", "Not in Tolt", "neutral"),
+const CONNECT: Record<string, BadgeDef> = {
+  none: def("لم يربط Stripe", "Stripe not connected", "neutral"),
+  onboarding: def("يكمل بيانات Stripe", "Stripe onboarding", "info"),
+  enabled: def("جاهز للتحويل", "Payouts ready", "success"),
+  restricted: def("Stripe يطلب بيانات", "Stripe restricted", "danger"),
+  unsupported: def("بلد غير مدعوم", "Country unsupported", "danger"),
 };
 const CONVERSION: Record<string, BadgeDef> = {
-  synced: def("مرسلة لـ Tolt", "In Tolt", "success"),
-  pending_sync: def("بانتظار الإرسال", "Sending", "info"),
-  failed: def("فشل الإرسال", "Send failed", "danger"),
-  refund_pending: def("استرداد قيد الإرسال", "Refund sending", "warning"),
+  recorded: def("مسجّلة", "Recorded", "success"),
+  // History from before the move off Tolt.
+  synced: def("مسجّلة", "Recorded", "success"),
+  pending_sync: def("مسجّلة", "Recorded", "success"),
+  failed: def("مسجّلة", "Recorded", "success"),
+  refund_pending: def("مستردة", "Refunded", "neutral"),
   refunded: def("مستردة", "Refunded", "neutral"),
   partially_refunded: def("استرداد جزئي", "Partly refunded", "warning"),
   skipped: def("بدون مبلغ نقدي", "No cash", "neutral"),
@@ -27,8 +30,24 @@ const COMMISSION: Record<string, BadgeDef> = {
   pending: def("معلّقة", "Pending", "warning"),
   approved: def("معتمدة", "Approved", "success"),
   paid: def("مدفوعة", "Paid", "success"),
+  reversed: def("ملغاة", "Reversed", "neutral"),
   rejected: def("مرفوضة", "Rejected", "neutral"),
   refunded: def("مستردة", "Refunded", "neutral"),
+};
+const PAYOUT: Record<string, BadgeDef> = {
+  processing: def("قيد التحويل", "Processing", "info"),
+  sent: def("أُرسلت للبنك", "Sent to bank", "info"),
+  pending_confirmation: def("بانتظار التأكيد", "Needs confirmation", "warning"),
+  paid: def("حُوّلت", "Paid", "success"),
+  failed: def("فشل التحويل", "Failed", "danger"),
+  returned: def("أعادها البنك", "Returned", "danger"),
+  cancelled: def("أُلغيت", "Cancelled", "neutral"),
+};
+const BATCH: Record<string, BadgeDef> = {
+  running: def("قيد التنفيذ", "Running", "info"),
+  completed: def("مكتملة", "Completed", "success"),
+  partial: def("مكتملة جزئيًا", "Partial", "warning"),
+  failed: def("فشلت", "Failed", "danger"),
 };
 const REWARD: Record<string, BadgeDef> = {
   pending: def("فترة انتظار", "Holding", "info"),
@@ -40,7 +59,17 @@ const pick = (map: Record<string, BadgeDef>) => (status: string | null | undefin
   map[status ?? ""] ?? def(status ?? "—", status ?? "—", "neutral");
 
 export const partnerStatusBadge = pick(PARTNER);
-export const syncStatusBadge = pick(SYNC);
+export const connectStatusBadge = pick(CONNECT);
+export const payoutStatusBadge = pick(PAYOUT);
+
+const PROVIDER: Record<string, { ar: string; en: string }> = {
+  connect: { ar: "Stripe Connect", en: "Stripe Connect" },
+  global: { ar: "تحويل بنكي (Global Payouts)", en: "Bank payout (Global Payouts)" },
+  none: { ar: "غير محدد", en: "Not set" },
+};
+export const payoutProviderLabel = (provider: string | null | undefined, lang: "ar" | "en"): string =>
+  PROVIDER[provider ?? "none"]?.[lang] ?? provider ?? "—";
+export const batchStatusBadge = pick(BATCH);
 export const conversionStatusBadge = pick(CONVERSION);
 export const commissionStatusBadge = pick(COMMISSION);
 export const rewardStatusBadge = pick(REWARD);
