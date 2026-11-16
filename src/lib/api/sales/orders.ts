@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { apiGet, apiPost } from "@/lib/api/client";
-import type { PathParams, QueryParams, SuccessResponse } from "@/lib/api/operation-types";
+import { apiGet, apiPatch, apiPost } from "@/lib/api/client";
+import type { PathParams, QueryParams, RequestBody, SuccessResponse } from "@/lib/api/operation-types";
 
 type ListOrdersOp = "search_orders_api_v1_admin_orders_get";
 type GetOrderOp = "get_order_api_v1_admin_orders__order_ref__get";
@@ -15,6 +15,13 @@ export type AdminOrderLine = NonNullable<AdminOrderDetail["lines"]>[number];
 export type AdminOrderInvoice = NonNullable<AdminOrderDetail["invoices"]>[number];
 export type AdminOrderTransaction = NonNullable<AdminOrderDetail["transactions"]>[number];
 export type AdminOrdersParams = QueryParams<ListOrdersOp>;
+
+type FollowUpOp = "set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch";
+export type OrderFollowUpStatus = RequestBody<FollowUpOp>["follow_up_status"];
+
+export function setOrderFollowUp(order_ref: string, follow_up_status: OrderFollowUpStatus): Promise<AdminOrderDetail> {
+  return apiPatch("admin/orders/{order_ref}/follow-up", { path: { order_ref }, body: { follow_up_status } });
+}
 
 export type OrderStatus = "created" | "pending_payment" | "paid" | "fulfilled" | "cancelled";
 export type PaymentStatus = "pending" | "succeeded" | "failed" | "refunded" | "incomplete";

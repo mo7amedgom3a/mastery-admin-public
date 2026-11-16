@@ -16919,6 +16919,29 @@
             "description": "`all` (default), `b2c` or `legacy`."
           },
           {
+            "name": "follow_up_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "new",
+                    "in_progress",
+                    "failure",
+                    "success",
+                    "not_completed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Follow Up Status"
+            }
+          },
+          {
             "name": "status",
             "in": "query",
             "required": false,
@@ -54010,6 +54033,81 @@
           }
         }
       }
+    },
+    "/api/v1/admin/orders/{order_ref}/follow-up": {
+      "patch": {
+        "tags": [
+          "Admin orders"
+        ],
+        "summary": "Update admin order follow-up",
+        "operationId": "set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Order Ref"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderFollowUpUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOrderDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -58718,6 +58816,18 @@
             "type": "integer",
             "title": "Invoice Count",
             "default": 0
+          },
+          "follow_up_status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "in_progress",
+              "failure",
+              "success",
+              "not_completed"
+            ],
+            "title": "Follow Up Status",
+            "default": "new"
           }
         },
         "type": "object",
@@ -58910,6 +59020,18 @@
             "type": "integer",
             "title": "Invoice Count",
             "default": 0
+          },
+          "follow_up_status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "in_progress",
+              "failure",
+              "success",
+              "not_completed"
+            ],
+            "title": "Follow Up Status",
+            "default": "new"
           },
           "lines": {
             "items": {
@@ -107548,6 +107670,27 @@
           "created_at"
         ],
         "title": "MessageResponse"
+      },
+      "OrderFollowUpUpdate": {
+        "properties": {
+          "follow_up_status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "in_progress",
+              "failure",
+              "success",
+              "not_completed"
+            ],
+            "title": "Follow Up Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "follow_up_status"
+        ],
+        "title": "OrderFollowUpUpdate"
       }
     },
     "securitySchemes": {

@@ -11444,6 +11444,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/orders/{order_ref}/follow-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update admin order follow-up */
+        patch: operations["set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -12956,6 +12973,12 @@ export interface components {
              * @default 0
              */
             invoice_count: number;
+            /**
+             * Follow Up Status
+             * @default new
+             * @enum {string}
+             */
+            follow_up_status: "new" | "in_progress" | "failure" | "success" | "not_completed";
         };
         /** AdminOrderDetail */
         AdminOrderDetail: {
@@ -13003,6 +13026,12 @@ export interface components {
              * @default 0
              */
             invoice_count: number;
+            /**
+             * Follow Up Status
+             * @default new
+             * @enum {string}
+             */
+            follow_up_status: "new" | "in_progress" | "failure" | "success" | "not_completed";
             /** Lines */
             lines?: components["schemas"]["AdminOrderLine"][];
             /** Invoices */
@@ -29267,6 +29296,14 @@ export interface components {
             /** Attachments */
             attachments?: components["schemas"]["AttachmentResponse"][];
         };
+        /** OrderFollowUpUpdate */
+        OrderFollowUpUpdate: {
+            /**
+             * Follow Up Status
+             * @enum {string}
+             */
+            follow_up_status: "new" | "in_progress" | "failure" | "success" | "not_completed";
+        };
     };
     responses: never;
     parameters: never;
@@ -36765,6 +36802,7 @@ export interface operations {
             query?: {
                 /** @description `all` (default), `b2c` or `legacy`. */
                 source?: "all" | "b2c" | "legacy";
+                follow_up_status?: ("new" | "in_progress" | "failure" | "success" | "not_completed") | null;
                 /** @description Order status. */
                 status?: string | null;
                 /** @description Payment status. */
@@ -54129,6 +54167,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdvisorHealthResponse"];
+                };
+            };
+        };
+    };
+    set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderFollowUpUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

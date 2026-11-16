@@ -27,6 +27,8 @@ import { customerHref, isLegacy, paymentHref, productHref, refParam, refundCaseH
 import { createRefundCase, refundCasesQueries } from "@/lib/api/sales/refund-cases";
 import { useCan } from "@/lib/permissions";
 
+import { OrderFollowUp } from "../components/order-follow-up";
+
 export default function OrderDetailPage() {
   const t = useT();
   const lang = useLang();
@@ -120,6 +122,7 @@ export default function OrderDetailPage() {
               <Card title={t("ملخص الطلب", "Order summary")}>
                 <Dl
                   rows={[
+                    [t("حالة المتابعة", "Follow-up status"), <OrderFollowUp key="follow-up" orderRef={data.ref} value={data.follow_up_status} />],
                     [t("الحالة", "Status"), <Badge key="s" def={orderStatusBadge(data.status)} />],
                     [t("الإجمالي", "Total"), <span className="ma-num" key="t">{formatMinor(data.amount_minor, data.currency_code)}</span>],
                     [t("حالة الدفع", "Payment status"), <Badge key="p" def={paymentStatusBadge(data.payment_status)} />],

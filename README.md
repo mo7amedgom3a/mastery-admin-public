@@ -55,6 +55,17 @@ Audit & tracing) backed by `/api/v1/admin/iam/*`:
 Full feature guide (model, scopes, delegation boundaries, resource conditions, API, security):
 [../docs/admin/iam_access_management.md](../docs/admin/iam_access_management.md).
 
+## Practice labs (design)
+
+A **Practice labs** section will sit under **Learning** (`/learning/labs`): a list, a full-width
+Studio for admin-authored scenarios, a Multi-Choice Pathway (MCP) builder, dynamic
+fields/requirements/rubrics, versions/publish/rollout, live-session operations and analytics.
+
+The design, routes, Studio tabs, state model, permissions and API module are in
+[docs/labs-admin.md](docs/labs-admin.md). The backend module is specified in
+`../newwebsitebackend/app/modules/labs/README.md`; the interim contract and mock server are in
+`../mastery-front/src/features/labs/api/`. There is no admin lab code yet.
+
 ## Where it comes from
 
 The prototype (`admin_demo/`) is the source of truth for layout, styles and interaction. This app

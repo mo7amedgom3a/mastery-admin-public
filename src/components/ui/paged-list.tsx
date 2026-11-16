@@ -11,6 +11,8 @@ import { SelectField } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Pagination } from "@/components/ui/primitives";
 
+import { KanbanBoard, ViewToggle, type KanbanConfig } from "@/components/ui/kanban-board";
+
 export type PageResult<T> = {
   items: T[];
   total: number;
@@ -41,6 +43,8 @@ export type PagedListProps<T> = {
     sort?: SortState;
   }) => Promise<PageResult<T>>;
   columns: Column<T>[];
+  board?: Omit<KanbanConfig<T>, "queryKey" | "fetchPage"> & { stageFilterKey: string };
+
   searchPlaceholder?: string;
   /** Select filters wired straight to API query params. */
   filters?: ListFilter[];
@@ -79,6 +83,7 @@ export function PagedList<T>({
   queryKeyBase,
   fetchPage,
   columns,
+  board,
   searchPlaceholder,
   filters,
   multiFilters,
@@ -90,6 +95,7 @@ export function PagedList<T>({
   exportConfig,
 }: PagedListProps<T>) {
   const t = useT();
+  const [view, setView] = useState<"board" | "table">(board ? "board" : "table");
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
@@ -103,6 +109,7 @@ export function PagedList<T>({
   };
 
   const result = useQuery({
+    enabled: !board || view === "table",
     queryKey: [...queryKeyBase, { search, offset, values, multiValues, order }],
     queryFn: () =>
       fetchPage({ query: search || undefined, offset, limit: pageSize, filters: values, multi: multiValues, sort: order }),
@@ -128,34 +135,7 @@ export function PagedList<T>({
     searchPlaceholder || (filters && filters.length) || (multiFilters && multiFilters.length) || toolbar || sort,
   );
 
-  return (
-    <Card flush>
-      <DataTable
-        columns={columns}
-        rows={result.data?.items ?? []}
-        empty={empty}
-        loading={result.isLoading}
-        error={result.error}
-        exportConfig={
-          exportConfig
-            ? {
-                filename: exportConfig.filename,
-                title: exportConfig.title,
-                pdf: exportConfig.pdf,
-                extraColumns: exportConfig.extraColumns,
-                meta: { filters: [...(exportConfig.describe?.() ?? []), ...activeFilters] },
-                fetchAll: async (max, onProgress) => {
-                  const all = await fetchAllPages(
-                    (from, limit) =>
-                      fetchPage({ query: search || undefined, offset: from, limit, filters: values, multi: multiValues, sort: order }),
-                    { pageSize: exportConfig.fetchSize, max, onProgress },
-                  );
-                  return { items: all.items, truncated: all.truncated };
-                },
-              }
-            : undefined
-        }
-        toolbar={
+  const controls = (
           hasToolbar ? (
             <>
               {searchPlaceholder ? (
@@ -215,6 +195,42 @@ export function PagedList<T>({
               {toolbar}
             </>
           ) : undefined
+  );
+  return (
+    <Card flush>
+      {board ? <div className="ma-board-toolbar"><ViewToggle value={view} onChange={setView} />{controls}</div> : null}
+      {board && view === "board" ? <KanbanBoard {...board}
+        visibleStage={values[board.stageFilterKey] || undefined}
+        queryKey={[...queryKeyBase, "board", { search, values, multiValues, order }]}
+        fetchPage={(stage, offset) => fetchPage({ query: search || undefined, offset, limit: 25,
+          filters: { ...values, [board.stageFilterKey]: stage }, multi: multiValues, sort: order })}
+      /> : (
+
+      <DataTable
+        toolbar={board ? undefined : controls}
+        columns={columns}
+        rows={result.data?.items ?? []}
+        empty={empty}
+        loading={result.isLoading}
+        error={result.error}
+        exportConfig={
+          exportConfig
+            ? {
+                filename: exportConfig.filename,
+                title: exportConfig.title,
+                pdf: exportConfig.pdf,
+                extraColumns: exportConfig.extraColumns,
+                meta: { filters: [...(exportConfig.describe?.() ?? []), ...activeFilters] },
+                fetchAll: async (max, onProgress) => {
+                  const all = await fetchAllPages(
+                    (from, limit) =>
+                      fetchPage({ query: search || undefined, offset: from, limit, filters: values, multi: multiValues, sort: order }),
+                    { pageSize: exportConfig.fetchSize, max, onProgress },
+                  );
+                  return { items: all.items, truncated: all.truncated };
+                },
+              }
+            : undefined
         }
         serverSort={sort ? order : undefined}
         onServerSort={sort ? changeSort : undefined}
@@ -222,6 +238,7 @@ export function PagedList<T>({
           result.data ? <Pagination total={result.data.total} limit={result.data.limit} offset={result.data.offset} onPage={setOffset} /> : null
         }
       />
+      )}
     </Card>
   );
 }

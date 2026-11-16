@@ -380,7 +380,7 @@ export const navigation: NavModule[] = [
     id: "companies",
     title: { ar: "الشركات", en: "Companies" },
     icon: "building",
-    scopes: ["admin:catalog:write", "admin:entitlements:read"],
+    scopes: ["admin:catalog:read", "admin:catalog:write", "admin:entitlements:read"],
     sections: [{
       title: { ar: "الطلبات والاشتراكات", en: "Requests & subscriptions" },
       items: [

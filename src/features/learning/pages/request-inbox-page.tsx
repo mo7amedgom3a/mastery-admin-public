@@ -12,6 +12,9 @@ import { Button, Card, Dl, Empty, ErrorAlert, Kpi, PageHead } from "@/components
 import { Pagination } from "@/components/ui/primitives";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
+import { KanbanBoard, ViewToggle } from "@/components/ui/kanban-board";
+import { useCan } from "@/lib/permissions";
+
 type Kind = "company-training" | "trainer-applications";
 type RequestRecord = { request_id: string; name: string; email: string; company_name: string | null; status: string;
   submitted_at: string; assigned_admin_id: string | null; payload: Record<string, unknown>;
@@ -105,6 +108,8 @@ export function RequestInboxPage({ kind }: { kind: Kind }) {
   const t = useT();
   const client = useQueryClient();
   const company = kind === "company-training";
+  const [view, setView] = useState<"board" | "table">(company ? "board" : "table");
+  const canMove = useCan("catalog.write");
   const base = company ? "/companies" : "/learning/applications";
   const { id: selectedId = null } = useParams();
   const navigate = useNavigate();
@@ -125,7 +130,7 @@ export function RequestInboxPage({ kind }: { kind: Kind }) {
     step: company ? formStep || undefined : undefined };
   const list = useQuery({ queryKey: ["public-requests", kind, "list", filters, offset],
     queryFn: (): Promise<RequestPage> => apiGet(`admin/requests/${kind}`, { query: { ...filters, limit: 25, offset } }),
-    refetchInterval: 30_000 });
+    refetchInterval: 30_000, enabled: !selectedId && (!company || view === "table") });
   const stats = useQuery({ queryKey: ["public-requests", kind, "stats", filters],
     queryFn: (): Promise<Stats> => apiGet(`admin/requests/stats/${kind}`, { query: filters }),
     refetchInterval: 30_000 });
@@ -144,8 +149,8 @@ export function RequestInboxPage({ kind }: { kind: Kind }) {
     queryFn: (): Promise<Note[]> => apiGet(`admin/requests/${selectedId}/notes`), enabled: !!selectedId });
   const attachments = useQuery({ queryKey: ["public-requests", "attachments", selectedId],
     queryFn: (): Promise<Attachment[]> => apiGet(`admin/requests/${selectedId}/attachments`), enabled: !!selectedId });
-  const update = useMutation({ mutationFn: (body: { status?: string; assigned_admin_id?: string | null }) =>
-    apiPatch(`admin/requests/${selectedId}`, { body }), onSuccess: () => { void client.invalidateQueries({ queryKey: ["public-requests"] }); } });
+  const update = useMutation({ mutationFn: ({ requestId, ...body }: { requestId: string; status?: string; assigned_admin_id?: string | null }) =>
+    apiPatch(`admin/requests/${requestId}`, { body }), onSuccess: () => { void client.invalidateQueries({ queryKey: ["public-requests"] }); } });
   const addNote = useMutation({ mutationFn: (body: string) => apiPost(`admin/requests/${selectedId}/notes`, { body: { body } }),
     onSuccess: () => { setNote(""); void client.invalidateQueries({ queryKey: ["public-requests", "notes", selectedId] }); } });
   const pick = (label: string, value: string, set: (value: string) => void, items: Option[]) =>
@@ -252,10 +257,26 @@ export function RequestInboxPage({ kind }: { kind: Kind }) {
           onClick={() => { setQuery(""); setStatus(""); setFormState(""); setFormStep(""); setAssignee(""); setCategory(""); setSkill(""); setFromDate(""); setToDate(""); setOffset(0); }} /></div>
       </div>
     </Card>
-    <Card title={t("الطلبات", "Requests")} flush>
+    {company ? <ViewToggle value={view} onChange={setView} /> : null}
+    {company && view === "board" ? <KanbanBoard<RequestRecord>
+      columns={statuses(true).map((value) => ({ value, label: statusName(value, t) }))}
+      visibleStage={status || undefined}
+      queryKey={["public-requests", kind, "board", filters]}
+      getId={(row) => row.request_id} getStage={(row) => row.status} canMove={canMove}
+      fetchPage={(stage, offset) => apiGet(`admin/requests/${kind}`, { query: { ...filters, status: stage, limit: 25, offset } })}
+      move={(row, stage) => apiPatch(`admin/requests/${row.request_id}`, { body: { status: stage } })}
+      invalidateKeys={[["public-requests"]]}
+      renderCard={(row) => <>
+        <AppLink className="ma-link ma-cell-main" to={`${base}/${row.request_id}`}>{row.company_name || row.name}</AppLink>
+        <span>{row.name}</span><a className="ma-link" href={`mailto:${row.email}`}><bdi>{row.email}</bdi></a>
+        <span className="ma-cell-sub">{t("المسؤول", "Assignee")}: {assignees.data?.find((person) => person.id === row.assigned_admin_id?.toLowerCase())?.name ?? t("غير معين", "Unassigned")}</span>
+        <span className="ma-cell-sub">{formatDateTime(row.submitted_at)}</span>
+        <span className="ma-tag">{row.form_state === "completed" ? t("الطلب مكتمل", "Form completed") : t("الطلب غير مكتمل", "Form incomplete")}</span>
+      </>}
+    /> : <Card title={t("الطلبات", "Requests")} flush>
       <DataTable columns={columns} rows={list.data?.items ?? []} loading={list.isLoading} error={list.error}
         empty={t("لا توجد طلبات مطابقة.", "No matching requests.")} footer={<Pagination total={list.data?.total ?? 0} limit={25} offset={offset} onPage={setOffset} />} />
-    </Card>
+    </Card>}
     </> : null}
     {selectedId ? <div>
       <PageHead title={company ? t("تفاصيل طلب الشركة", "Company request details") : t("تفاصيل طلب المدرب", "Trainer application details")}
@@ -288,10 +309,10 @@ export function RequestInboxPage({ kind }: { kind: Kind }) {
         <div className="grid content-start gap-4">
           <Card title={t("إدارة الطلب", "Manage request")}><div className="grid gap-4">
             <label className="ma-field"><span className="ma-label">{t("الحالة", "Status")}</span><select className="ma-select" value={detail.data.status}
-              disabled={update.isPending} onChange={(event) => update.mutate({ status: event.target.value })}>
+              disabled={update.isPending || !canMove} onChange={(event) => update.mutate({ requestId: selectedId, status: event.target.value })}>
               {statuses(company).map((value) => <option key={value} value={value} disabled={value === "legacy"}>{statusName(value, t)}</option>)}</select></label>
             <label className="ma-field"><span className="ma-label">{t("المسؤول", "Assignee")}</span><select className="ma-select" value={detail.data.assigned_admin_id ?? ""}
-              disabled={update.isPending} onChange={(event) => update.mutate({ assigned_admin_id: event.target.value || null })}>
+              disabled={update.isPending || !canMove} onChange={(event) => update.mutate({ requestId: selectedId, assigned_admin_id: event.target.value || null })}>
               <option value="">{t("غير معين", "Unassigned")}</option>
               {assignees.data?.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
             {update.error ? <ErrorAlert error={update.error} /> : null}</div></Card>
