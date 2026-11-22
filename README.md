@@ -17,7 +17,7 @@ npm run dev        # http://localhost:5173 (or any free port)
   legacy-platform data together (items carry `source` and a `ref`). How the two sides talk, and why,
   is in [ADMIN_API.md](ADMIN_API.md).
 - **Deploy (Cloudflare Pages, company account):** project `mastery-admin`, production at
-  https://mastery-admin.pages.dev. A push to `prod` builds and deploys it
+  https://admin.emasteryacademy.com (custom domain; https://mastery-admin.pages.dev also works). A push to `prod` builds and deploys it
   (`.github/workflows/deploy-pages.yml`); other branches deploy as previews only via
   `workflow_dispatch`, and pull requests only build. Release by fast-forwarding `prod` to `main`.
   Manual: `VITE_STOREFRONT_ORIGIN=https://landing.emasteryacademy.com npm run build && npx wrangler pages deploy dist --project-name mastery-admin --branch prod`.

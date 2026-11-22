@@ -1,6 +1,7 @@
 # Admin dashboard → Cloudflare Pages project `mastery-admin` (company account).
 #
-#   push to prod      -> build + deploy to production (https://mastery-admin.pages.dev)
+#   push to prod      -> build + deploy to production (https://admin.emasteryacademy.com,
+#                        also https://mastery-admin.pages.dev)
 #   pull request      -> build only (type-check + vite build)
 #   workflow_dispatch -> redeploy the chosen branch (prod = production, anything else = preview)
 #
@@ -65,7 +66,7 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref_name == 'prod'
         run: |
           set -euo pipefail
-          base=https://mastery-admin.pages.dev
+          base=https://admin.emasteryacademy.com
           for i in $(seq 1 12); do
             code=$(curl -s -o /dev/null -w '%{http_code}' "$base/login") && [ "$code" = 200 ] && break
             sleep 5
