@@ -16,12 +16,15 @@ npm run dev        # http://localhost:5173 (or any free port)
 - The dashboard has **one backend API**: the admin module (`/api/v1/admin/*`), which serves B2C and
   legacy-platform data together (items carry `source` and a `ref`). How the two sides talk, and why,
   is in [ADMIN_API.md](ADMIN_API.md).
-- Cloudflare Pages: set the project root to this directory, build with `npm run build`, and use
-  `dist` as the output directory. The Pages Function in `functions/api/[[path]].js` proxies
-  `/api/*` to the runtime `API_PROXY_TARGET` binding (for example,
-  `https://masteryacademy.site`). Publish with Git integration or Wrangler so Pages deploys
-  the Function alongside the static assets. The `public/_routes.json` file limits Function
-  invocations to API requests.
+- **Deploy (Cloudflare Pages, company account):** project `mastery-admin`, production at
+  https://mastery-admin.pages.dev. A push to `prod` builds and deploys it
+  (`.github/workflows/deploy-pages.yml`); other branches deploy as previews only via
+  `workflow_dispatch`, and pull requests only build. Release by fast-forwarding `prod` to `main`.
+  Manual: `VITE_STOREFRONT_ORIGIN=https://landing.emasteryacademy.com npm run build && npx wrangler pages deploy dist --project-name mastery-admin --branch prod`.
+  The Pages Function in `functions/api/[[path]].js` proxies `/api/*` to `API_PROXY_TARGET`, a
+  runtime variable on the project (production `https://api.v3.emasteryacademy.com`, preview the dev
+  API `https://masteryacademy.site`), so the admin cookies stay first-party. `public/_routes.json`
+  limits Function invocations to API requests. Build-time `VITE_*` values are set in the workflow.
 - Sign in at `/login` (`admin@masteryacademy.site` / `Admin@12345` in dev). Session store:
   `src/lib/auth/store.ts` (zustand, silent refresh, cross-tab BroadcastChannel).
 
