@@ -225,7 +225,8 @@ svg.ma-icon--fill { fill: currentColor; stroke: none; }
 .ma-cols--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ma-cols--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .ma-cols--main-side { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
-@media (max-width: 1100px) { .ma-cols--main-side { grid-template-columns: minmax(0, 1fr); } .ma-cols--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ma-cols--side-main { grid-template-columns: minmax(14rem, 1fr) minmax(0, 2.2fr); align-items: start; }
+@media (max-width: 1100px) { .ma-cols--main-side, .ma-cols--side-main { grid-template-columns: minmax(0, 1fr); } .ma-cols--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 900px) { .ma-cols--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .ma-cols--3, .ma-cols--2, .ma-cols--4 { grid-template-columns: minmax(0, 1fr); } }
 .ma-form { display: grid; gap: var(--space-4); }

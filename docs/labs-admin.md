@@ -229,3 +229,133 @@ contract, including admin routes. For admin UI development before the backend:
 4. How much of the MCP canvas is canvas-only vs. form/JSON editing for accessibility?
 5. Do we expose attempt transcripts to support/ops, and under what consent?
 6. Which analytics are real-time vs. nightly aggregates?
+
+---
+
+## 7. Implemented screens (16 Nov 2026)
+
+The back office now ships under **Learning → Practice labs**:
+
+| Route | Screen |
+| --- | --- |
+| `/learning/labs` | List, KPIs, filters (status, engine) and quick actions |
+| `/learning/labs/new` | Create a draft from an engine (starter scenario included) |
+| `/learning/labs/:labId` | Overview: health, scenarios, release, validation issues, links |
+| `/learning/labs/:labId/edit` | Full-width Studio (tabs in `?tab=`): Basics, Briefing, Requirements, Scoring, Quizzes, Recommendations, Scenarios, Versions, Settings |
+| `/learning/labs/:labId/edit?tab=scenarios&scenario=:id` | Scenario document editor: generated form, raw JSON, validate, metadata |
+| `/learning/labs/:labId/attempts[/:attemptId]` | Attempt list and detail; flag, void and override with a reason |
+| `/learning/labs/:labId/analytics` | Funnel, branch, dimension, signal and score-distribution views |
+| `/learning/labs/:labId/assignments` | Cohort/company/user assignments |
+
+Code: `src/lib/api/learning/labs.ts` (services, keys, query options), `src/features/learning/labs/`
+(pages, tabs, `schema-form.tsx`). Permissions: `admin:labs:{read,write,publish,analytics,assign}`
+(`labs.read`, `labs.write`, `labs.publish`, `labs.analytics`, `labs.assign` in the UI). The Studio is
+a full-width route (`handle.studio`); preview opens the storefront from
+`VITE_STOREFRONT_ORIGIN`.
+
+Scenario metadata (key/title/weight/status) saves with the document, using the scenario's own
+`draft_revision`. Engines whose document schema is open (`additionalProperties`) default to the raw
+JSON tab; known fields still render in the form with an extra-properties JSON block.
+
+---
+
+## 8. Composable block builder (16 Nov 2026)
+
+For labs with `engine_key = blocks`, the Studio opens on a **Builder** tab instead of the fixed
+Briefing/Pathway form. It is a Notion-style editor over the backend document API:
+
+- Pages are tabs; add/rename/delete pages (the document keeps at least one).
+- The canvas lists typed blocks with move up/down, duplicate and delete.
+- **Add block** opens the server catalog (`GET /admin/labs/block-types`) grouped by category.
+- Selecting a block opens an inspector generated from that block's `props_schema` (same
+  `schema-form.tsx` renderer as the rest of the Studio), with a raw JSON tab and an admin-only toggle.
+- Fields and personas are edited as JSON in the library card and saved with the whole document.
+- **Validate** calls `POST /document/validate`; issues appear above the canvas and inline in the
+  inspector. **Preview** opens the storefront with a draft token.
+- Saves use the scenario revision; every page/block mutation returns the fresh document, so the
+  editor and revision stay in sync. A stale revision returns a conflict instead of overwriting.
+
+New labs: choosing the **Composable pages** engine sends a starter definition (one `judgement`
+dimension) and the backend creates `brief → decision → debrief` with a scored choice, so the first
+publish works without extra setup.
+
+**Live preview.** The Builder's **Live preview** button frames the storefront `/preview/lab` page and
+posts the *unsaved* draft (`{type:"render", blocks, page_id}`) through the shared preview channel.
+Switch the section, desktop/mobile, or reload the frame from the card header. Preview runs in studio
+mode: it never starts a session, writes attempts or emits analytics.
+
+**Engines & artifacts.** `/learning/labs/engines` lists every registered engine (key, version,
+catalog/schema versions, server/client scorer, description) and the full block catalog grouped by
+category, including the `chat`, `table`, `form`, `choice`, `dialogue` and `scorecard` artifacts. Each
+engine card links to the new-lab form with that engine preselected.
+
+**Planned AI/MCP management.** Full engine/lab/scenario authoring through MCP (so an AI agent can
+create complete labs instead of manual Studio work) is planned in
+`newwebsitebackend/app/modules/labs/PLAN-AI-MCP.md`. It is not implemented yet.
+
+**Conversion.** Schema labs show **Convert to blocks** in their actions. It creates a separate
+blocks-engine copy (default slug `<slug>-blocks`); the source lab is unchanged. Unsupported pathway
+node types are listed as errors instead of being dropped.
+
+## 9. AI authoring: review requests, quality check, AI access (17 Nov 2026)
+
+AI clients build lab drafts over MCP (backend `labs/ai`, README §21) and can only **request**
+publication. Three screens make the human side of that loop.
+
+| Route | Page | Permission |
+| --- | --- | --- |
+| `/learning/labs/changes` | Review requests: filter by status (awaiting review by default), requester badge (AI · client), summary | `labs.read` |
+| `/learning/labs/changes/:id` | One request (details below) | read; approving or rejecting needs `labs.publish` |
+| `/learning/labs/ai` | AI access (details below) | `labs.ai` (`admin:labs:ai`) |
+
+**One request.** The page shows:
+- the summary, the requester and model, and the changelog;
+- the **quality check stored at request time**;
+- a **structural diff** of the current draft against the version it builds on.
+
+It offers these actions:
+- preview of the draft, and open in Studio;
+- **Approve & publish**, with an optional note;
+- **Reject**, with a required note that the AI reads back;
+- cancel (the author, or anyone who can publish).
+
+A stale request shows why it cannot be approved.
+
+**AI access.** The page shows:
+- the MCP URL with copyable Claude Code and `mcp.json` snippets;
+- a warning when `/mcp` is disabled;
+- your tokens: name, prefix, scopes, status, last use and client, expiry, and **Revoke**;
+- a create dialog with name, scopes (only those you hold: read, write, analytics) and an expiry of
+  7/30/60/90 days. The secret is shown once.
+
+**Connected apps (OAuth, 18 Nov 2026).** claude.ai, ChatGPT, VS Code and other connector UIs need
+no token.
+- The admin pastes the connector URL into the platform. The platform sends the browser to
+  `/oauth/consent?request=…`: a route outside the shell, behind `RequireAdmin`, which goes through
+  login with `?next=` when needed.
+- The consent page shows the app, whether it is a known platform or an app on this computer, the
+  host the browser will return to, and scope checkboxes (only scopes you hold, never publish). It
+  offers **Allow & connect** and **Deny**.
+- Approving creates a *grant*. The AI access page lists grants under **Connected apps**, with
+  **Disconnect**.
+- The connection card shows the connector URL and the steps for each platform once
+  `LABS_MCP_OAUTH_ENABLED` is on.
+
+**Quality check** (`components/quality-report.tsx`) is a button in every lab action bar and in the
+engine Studio header. It runs `POST …/check`: validation, style rules and path exploration (best and
+worst score per scenario, constant dimensions). An **AI review request** badge links to the open
+request for that lab or engine.
+
+**Diff** (`ai-model.ts` → `structuralDiff`):
+- Arrays of objects with an `id` (stages, choices, pages, blocks) are matched by id.
+- Same-length arrays are compared item by item.
+- Values missing on one side and empty or zero on the other are equal, so defaults filled at
+  publish time (`any: []`, `min_select: 0`) are not reported.
+- The injected `engine` block is ignored.
+
+API layer: `src/lib/api/learning/lab-ai.ts`. The types come from `openapi.json`, where the 10 new
+paths were merged in (`npm run api:types`).
+
+Checked on 17 Nov 2026 against the local preview API with a real AI request created through the
+toolkit: list → detail (the diff showed only the edited line) → reject with a note → create and
+revoke a token → quality check on a lab. There were no console errors.

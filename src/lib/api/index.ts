@@ -40,6 +40,9 @@ export * from "@/lib/api/learning/pricing";
 export * from "@/lib/api/learning/consultations";
 export * from "@/lib/api/learning/consultants";
 export * from "@/lib/api/learning/expert-profiles";
+export * from "@/lib/api/learning/labs";
+export * from "@/lib/api/learning/lab-engines";
+export * from "@/lib/api/learning/lab-ai";
 export * from "@/lib/api/learning/experts";
 export * from "@/lib/api/learning/instructors";
 

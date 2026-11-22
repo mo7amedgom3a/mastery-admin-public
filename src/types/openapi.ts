@@ -3371,6 +3371,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/orders/{order_ref}/follow-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update admin order follow-up */
+        patch: operations["set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch"];
+        trace?: never;
+    };
     "/api/v1/admin/payments": {
         parameters: {
             query?: never;
@@ -7696,6 +7713,1515 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/labs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published labs */
+        get: operations["labs_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/labs/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Runtime definition of a published lab (or a draft with an admin preview token) */
+        get: operations["labs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/labs/{slug}/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a lab session
+         * @description Pins the published version and a scenario (requested, assigned or picked by the lab), evaluates requirements (403 `requirements_not_met` lists them) and returns the seed.
+         */
+        post: operations["labs_start_session"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Session */
+        get: operations["labs_get_session"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/sessions/{session_id}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Session Action
+         * @description Append one action. `seq` must equal the session's current seq (409 when stale); a repeated `client_action_id` is replayed idempotently.
+         */
+        post: operations["labs_session_action"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/sessions/{session_id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete Session
+         * @description Score the run on the server (or store the client scorecard for engines not ported yet, with `verified=false`) and persist the attempt. Idempotent once completed.
+         */
+        post: operations["labs_complete_session"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/sessions/{session_id}/abandon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Abandon Session */
+        post: operations["labs_abandon_session"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Attempts */
+        get: operations["labs_my_attempts"];
+        put?: never;
+        post?: never;
+        /** Reset my practice history (attempts are voided, badges removed) */
+        delete: operations["labs_reset_attempts"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/attempts/{attempt_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Attempt */
+        get: operations["labs_my_attempt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Insights */
+        get: operations["labs_my_insights"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/labs/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move anonymous runs (sessions, attempts, badges) to the signed-in account */
+        post: operations["labs_claim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/runtimes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Code runtimes with their scenario, config and rubric JSON Schemas */
+        get: operations["admin_labs_runtimes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin engines (HR, sales…) and the system engines that mirror code runtimes */
+        get: operations["admin_labs_engine_defs_list"];
+        put?: never;
+        /** Create an engine on a runtime (or duplicate one with `duplicate_of`) */
+        post: operations["admin_labs_engine_defs_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Engine Def */
+        get: operations["admin_labs_engine_defs_get"];
+        put?: never;
+        post?: never;
+        /** Delete an unused draft engine, otherwise archive it */
+        delete: operations["admin_labs_engine_defs_delete"];
+        options?: never;
+        head?: never;
+        /** Update Engine Def */
+        patch: operations["admin_labs_engine_defs_update"];
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save Engine Draft
+         * @description Save the engine definition with `base_revision` (409 when stale).
+         */
+        put: operations["admin_labs_engine_defs_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate the saved draft, or an unsaved `definition` */
+        post: operations["admin_labs_engine_defs_validate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Snapshot the engine; labs pick it up when they are republished */
+        post: operations["admin_labs_engine_defs_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Engine Def Status */
+        post: operations["admin_labs_engine_defs_status"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Engine Def Versions */
+        get: operations["admin_labs_engine_defs_versions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/versions/{version_no}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Engine Def Version */
+        get: operations["admin_labs_engine_defs_version"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/versions/{version_no}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy a published version into the draft */
+        post: operations["admin_labs_engine_defs_restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Labs built on the engine and the engine version their live version pinned */
+        get: operations["admin_labs_engine_defs_usage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Read-only lifecycle graph of an engine (saved draft or an unsaved definition) */
+        post: operations["admin_labs_engine_defs_graph"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Score a sample run of a scenario with the engine draft (nothing is saved) */
+        post: operations["admin_labs_engine_defs_test"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/personas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Personas */
+        get: operations["admin_labs_personas_list"];
+        put?: never;
+        /** Create Persona */
+        post: operations["admin_labs_personas_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/personas/{persona_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Persona */
+        get: operations["admin_labs_personas_get"];
+        put?: never;
+        post?: never;
+        /** Delete an unused persona, otherwise archive it */
+        delete: operations["admin_labs_personas_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Persona
+         * @description Send `base_revision` to get a 409 when someone else saved first.
+         */
+        patch: operations["admin_labs_personas_update"];
+        trace?: never;
+    };
+    "/api/v1/admin/labs/personas/{persona_id}/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Persona Usage */
+        get: operations["admin_labs_personas_usage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engine-defs/{engine_id}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Quality check an engine draft: validation, style rules, starter scenario exploration */
+        post: operations["admin_labs_engine_defs_check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Quality check a lab draft: validation, style rules, path exploration per scenario */
+        post: operations["admin_labs_check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/change-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Publish requests (open first by default filter); open ones whose draft moved turn stale */
+        get: operations["admin_labs_change_requests_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/change-requests/{change_request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One publish request with its stored quality report */
+        get: operations["admin_labs_change_requests_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/change-requests/{change_request_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish exactly the requested draft (fails and marks the request stale if it moved) */
+        post: operations["admin_labs_change_requests_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/change-requests/{change_request_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject a publish request; the note is what the author (or AI) reads next */
+        post: operations["admin_labs_change_requests_reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/change-requests/{change_request_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw an open request (its author, or anyone who can publish) */
+        post: operations["admin_labs_change_requests_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether /mcp is enabled, its URL, and client configuration snippets */
+        get: operations["admin_labs_ai_connection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your AI access tokens (secrets are never returned again) */
+        get: operations["admin_labs_ai_tokens_list"];
+        put?: never;
+        /** Create an AI access token (scopes ⊆ yours; the secret is shown once) */
+        post: operations["admin_labs_ai_tokens_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/tokens/{token_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke one of your AI access tokens (takes effect on the next request) */
+        delete: operations["admin_labs_ai_tokens_revoke"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/engines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Engines and the JSON Schema of their scenario documents */
+        get: operations["admin_labs_engines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/block-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Typed block catalog and document schema for the composable builder */
+        get: operations["admin_labs_block_types"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["admin_labs_overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Labs */
+        get: operations["admin_labs_list"];
+        put?: never;
+        /** Create a draft lab with a starter scenario */
+        post: operations["admin_labs_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lab with its draft definition, scenarios and validation issues */
+        get: operations["admin_labs_get"];
+        put?: never;
+        post?: never;
+        /** Delete a never-run draft, otherwise archive it */
+        delete: operations["admin_labs_delete"];
+        options?: never;
+        head?: never;
+        /** Update Lab */
+        patch: operations["admin_labs_update"];
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Draft */
+        get: operations["admin_labs_get_draft"];
+        /**
+         * Save Draft
+         * @description Save the lab-level definition with `base_revision` (409 when stale).
+         */
+        put: operations["admin_labs_save_draft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The blocks document of one scenario (pages, blocks, fields, personas) */
+        get: operations["admin_labs_document"];
+        /** Save a whole blocks document with optimistic concurrency */
+        put: operations["admin_labs_save_document"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate an unsaved blocks document against its engine and the draft rubric */
+        post: operations["admin_labs_validate_document"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a page to the blocks document */
+        post: operations["admin_labs_add_page"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/pages/{page_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a page; the document keeps at least one */
+        delete: operations["admin_labs_delete_page"];
+        options?: never;
+        head?: never;
+        /** Replace one page (blocks included) */
+        patch: operations["admin_labs_update_page"];
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/pages/{page_id}/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a typed block to a page */
+        post: operations["admin_labs_add_block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/blocks/{block_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove one block */
+        delete: operations["admin_labs_delete_block"];
+        options?: never;
+        head?: never;
+        /** Replace one block */
+        patch: operations["admin_labs_update_block"];
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/blocks/{block_id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate a block after itself */
+        post: operations["admin_labs_duplicate_block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/document/blocks/{block_id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a block to another page/index */
+        post: operations["admin_labs_move_block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate Lab */
+        post: operations["admin_labs_validate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a lab to draft, in_review, scheduled, paused or archived */
+        post: operations["admin_labs_set_status"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish
+         * @description Validate, then snapshot the lab and every active scenario into an immutable version.
+         */
+        post: operations["admin_labs_publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pause: no new sessions; in-flight sessions keep their version */
+        post: operations["admin_labs_unpublish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive */
+        post: operations["admin_labs_archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate */
+        post: operations["admin_labs_duplicate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Release window, rollout % and kill switch (apply to new sessions) */
+        put: operations["admin_labs_release"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/convert-to-blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a composable blocks copy of a schema-engine lab */
+        post: operations["admin_labs_convert_to_blocks"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Versions */
+        get: operations["admin_labs_versions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/versions/{version_no}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Version */
+        get: operations["admin_labs_version"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/versions/{version_no}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy a published version back into the draft */
+        post: operations["admin_labs_restore_version"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Scenarios */
+        get: operations["admin_labs_scenarios"];
+        put?: never;
+        /**
+         * Create Scenario
+         * @description Create a scenario; without `content` the engine's starter document is used.
+         */
+        post: operations["admin_labs_create_scenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/{scenario_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Scenario */
+        get: operations["admin_labs_scenario"];
+        /**
+         * Update Scenario
+         * @description Edit scenario metadata and/or its content. Saving `content` needs `base_revision` (409 when stale). Invalid content is saved (autosave) and reported in `issues`; publish blocks.
+         */
+        put: operations["admin_labs_update_scenario"];
+        post?: never;
+        /** Delete an unpublished scenario; a published one is disabled instead */
+        delete: operations["admin_labs_delete_scenario"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/{scenario_id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate Scenario */
+        post: operations["admin_labs_duplicate_scenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/{scenario_id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Draft history of a scenario (newest first; autosaves within 2 minutes are folded) */
+        get: operations["admin_labs_scenario_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/{scenario_id}/history/{snapshot_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One draft snapshot with its content */
+        get: operations["admin_labs_scenario_snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/{scenario_id}/history/{snapshot_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy a snapshot back into the draft (new revision; 409 when base_revision is stale) */
+        post: operations["admin_labs_restore_snapshot"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios-order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Order Scenarios */
+        put: operations["admin_labs_order_scenarios"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/scenarios/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate an unsaved scenario document against the lab's engine and draft rubric */
+        post: operations["admin_labs_validate_scenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Read-only lab or scenario workflow graph (saved draft or an unsaved document) */
+        post: operations["admin_labs_graph"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Short-lived signed token to run the draft on the storefront (no attempts written) */
+        post: operations["admin_labs_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics */
+        get: operations["admin_labs_analytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lab Attempts */
+        get: operations["admin_labs_attempts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/attempts/{attempt_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Attempt */
+        get: operations["admin_labs_attempt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/attempts/{attempt_id}/flag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Flag Attempt */
+        post: operations["admin_labs_flag_attempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/attempts/{attempt_id}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Void an attempt (kept for history, excluded from scores) */
+        post: operations["admin_labs_void_attempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/attempts/{attempt_id}/override-score": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Override the score (original kept; audited) */
+        post: operations["admin_labs_override_attempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Assignments */
+        get: operations["admin_labs_assignments"];
+        put?: never;
+        /** Create Assignment */
+        post: operations["admin_labs_create_assignment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/assignments/{assignment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Assignment */
+        delete: operations["admin_labs_delete_assignment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Assets */
+        get: operations["admin_labs_assets"];
+        put?: never;
+        /** Complete Asset */
+        post: operations["admin_labs_asset_complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/assets/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Asset Upload Url */
+        post: operations["admin_labs_asset_upload_url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/assets/{asset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Asset */
+        delete: operations["admin_labs_asset_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Portable bundle: card, definition, release and scenario drafts */
+        get: operations["admin_labs_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a lab from a bundle (optionally publish it) */
+        post: operations["admin_labs_import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/{lab_id}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Replace a lab's draft definition and scenarios with a bundle */
+        post: operations["admin_labs_import_into"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me/activity/heartbeat": {
         parameters: {
             query?: never;
@@ -11444,7 +12970,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/admin/orders/{order_ref}/follow-up": {
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A pending connection request from an AI app (the consent screen) */
+        get: operations["admin_labs_ai_oauth_request"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect the AI app with the chosen scopes; returns where to send the browser */
+        post: operations["admin_labs_ai_oauth_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/deny": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline the connection; returns where to send the browser */
+        post: operations["admin_labs_ai_oauth_deny"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your connected AI apps (claude.ai, ChatGPT, …) */
+        get: operations["admin_labs_ai_oauth_grants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/grants/{grant_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -11454,11 +13048,11 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /** Disconnect an AI app (its tokens stop working on the next request) */
+        delete: operations["admin_labs_ai_oauth_revoke"];
         options?: never;
         head?: never;
-        /** Update admin order follow-up */
-        patch: operations["set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch"];
+        patch?: never;
         trace?: never;
     };
 }
@@ -11560,6 +13154,38 @@ export interface components {
             status: string;
             /** Expires At */
             expires_at?: string | null;
+        };
+        /** ActionIn */
+        ActionIn: {
+            /** Client Action Id */
+            client_action_id: string;
+            /** Seq */
+            seq: number;
+            /** Action */
+            action: {
+                [key: string]: unknown;
+            };
+            /** At */
+            at?: string | null;
+        };
+        /** ActionOut */
+        ActionOut: {
+            /**
+             * Accepted
+             * @default true
+             * @constant
+             */
+            accepted: true;
+            /**
+             * Replayed
+             * @default false
+             */
+            replayed: boolean;
+            session: components["schemas"]["SessionOut"];
+            /** Effects */
+            effects?: {
+                [key: string]: unknown;
+            } | null;
         };
         /** ActiveRequest */
         ActiveRequest: {
@@ -11761,6 +13387,112 @@ export interface components {
             is_template: boolean;
             /** Created At */
             created_at?: string | null;
+        };
+        /** AdminAttemptListOut */
+        AdminAttemptListOut: {
+            /** Items */
+            items: components["schemas"]["AdminAttemptOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** AdminAttemptOut */
+        AdminAttemptOut: {
+            /**
+             * Attempt Id
+             * Format: uuid
+             */
+            attempt_id: string;
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Slug */
+            slug: string;
+            /** Lab Title */
+            lab_title: string;
+            /** Scenario Key */
+            scenario_key: string;
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Overall */
+            overall: number;
+            /** Readiness */
+            readiness: string;
+            /** Dimensions */
+            dimensions: {
+                [key: string]: unknown;
+            }[];
+            /** Highlights */
+            highlights: {
+                [key: string]: unknown;
+            }[];
+            /** Xp */
+            xp: number;
+            /** Badges */
+            badges: string[];
+            /** Category Legacy Id */
+            category_legacy_id: number | null;
+            /** Category Name */
+            category_name: string | null;
+            /** Minutes */
+            minutes: number;
+            /** Pre */
+            pre: {
+                [key: string]: unknown;
+            } | null;
+            /** Post */
+            post: {
+                [key: string]: unknown;
+            } | null;
+            /** Signals */
+            signals: {
+                [key: string]: unknown;
+            };
+            /** Attempt No */
+            attempt_no: number;
+            /** Lab Version */
+            lab_version: number;
+            /** Source */
+            source: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "scored" | "flagged" | "overridden" | "voided";
+            /** Verified */
+            verified: boolean;
+            /** Customer Id */
+            customer_id: string | null;
+            /** Anonymous Id */
+            anonymous_id: string | null;
+            /** Scorer */
+            scorer: string;
+            /** Client Overall */
+            client_overall: number | null;
+            /** Original Overall */
+            original_overall: number | null;
+            /** Override Reason */
+            override_reason: string | null;
+            /** Flag Reason */
+            flag_reason: string | null;
+            /** Duration Seconds */
+            duration_seconds: number;
+            /** Scorecard */
+            scorecard: {
+                [key: string]: unknown;
+            };
+            /** Actions */
+            actions?: {
+                [key: string]: unknown;
+            }[] | null;
         };
         /** AdminAuditActionCount */
         AdminAuditActionCount: {
@@ -12817,6 +14549,95 @@ export interface components {
             body: string;
             /** Attachment Ids */
             attachment_ids?: string[];
+        };
+        /** AdminLabListOut */
+        AdminLabListOut: {
+            /** Items */
+            items: components["schemas"]["AdminLabOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** AdminLabOut */
+        AdminLabOut: {
+            /** Slug */
+            slug: string;
+            /** Engine Key */
+            engine_key: string;
+            /** Title */
+            title: string;
+            /** Tagline */
+            tagline: string;
+            /** Field Category Id */
+            field_category_id: number | null;
+            /** Category Name */
+            category_name: string | null;
+            /** Difficulty */
+            difficulty: string;
+            /** Minutes */
+            minutes: number;
+            /** Color */
+            color: string;
+            /** Skills */
+            skills: string[];
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "in_review" | "scheduled" | "published" | "paused" | "archived";
+            /** Sort Order */
+            sort_order: number;
+            /**
+             * Scorer
+             * @enum {string}
+             */
+            scorer: "server" | "client";
+            /** Draft Revision */
+            draft_revision: number;
+            /** Published Version */
+            published_version: number | null;
+            /** Scenario Count */
+            scenario_count: number;
+            /** Release */
+            release: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Published At */
+            published_at: string | null;
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Attempt Count
+             * @default 0
+             */
+            attempt_count: number;
+            /**
+             * Completion Rate
+             * @default 0
+             */
+            completion_rate: number;
+            /** Avg Score */
+            avg_score?: number | null;
+            /** Engine Id */
+            engine_id?: string | null;
         };
         /** AdminLegacyImportResponse */
         AdminLegacyImportResponse: {
@@ -14119,20 +15940,126 @@ export interface components {
             /** Active Ticket Count */
             active_ticket_count: number;
         };
-        /** AnalyticsOut */
-        AnalyticsOut: {
-            /** Totals */
-            totals: {
+        /** AiConnectionOut */
+        AiConnectionOut: {
+            /** Enabled */
+            enabled: boolean;
+            /** Mcp Url */
+            mcp_url: string;
+            /** Token Scopes */
+            token_scopes: string[];
+            /** Max Days */
+            max_days: number;
+            /** Claude Code */
+            claude_code: string;
+            /** Mcp Json */
+            mcp_json: {
                 [key: string]: unknown;
             };
-            /** Daily */
-            daily: {
-                [key: string]: unknown;
-            }[];
-            /** Top */
-            top: {
-                [key: string]: unknown;
-            }[];
+            /**
+             * Oauth Enabled
+             * @default false
+             */
+            oauth_enabled: boolean;
+            /**
+             * Connector Url
+             * @description Paste into claude.ai / ChatGPT “add connector”
+             * @default
+             */
+            connector_url: string;
+        };
+        /** AiTokenCreatedOut */
+        AiTokenCreatedOut: {
+            /**
+             * Token Id
+             * Format: uuid
+             */
+            token_id: string;
+            /** Name */
+            name: string;
+            /** Token Prefix */
+            token_prefix: string;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "expired" | "revoked";
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Last Used At */
+            last_used_at?: string | null;
+            /** Last Client */
+            last_client?: string | null;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Secret
+             * @description Shown once; store it in the AI client's settings
+             */
+            secret: string;
+        };
+        /** AiTokenIn */
+        AiTokenIn: {
+            /**
+             * Name
+             * @description Where it is used, e.g. “Claude Code · laptop”
+             */
+            name: string;
+            /**
+             * Scopes
+             * @description Subset of admin:labs:read, admin:labs:write, admin:labs:analytics
+             */
+            scopes: string[];
+            /**
+             * Days
+             * @default 30
+             */
+            days: number;
+        };
+        /** AiTokenOut */
+        AiTokenOut: {
+            /**
+             * Token Id
+             * Format: uuid
+             */
+            token_id: string;
+            /** Name */
+            name: string;
+            /** Token Prefix */
+            token_prefix: string;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "expired" | "revoked";
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Last Used At */
+            last_used_at?: string | null;
+            /** Last Client */
+            last_client?: string | null;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
         /** Announcement */
         Announcement: {
@@ -14166,6 +16093,19 @@ export interface components {
             /** Question */
             question: string;
         };
+        /** AssetCompleteIn */
+        AssetCompleteIn: {
+            /** Filename */
+            filename: string;
+            /** Content Type */
+            content_type: string;
+            /** Size Bytes */
+            size_bytes: number;
+            /** S3 Key */
+            s3_key: string;
+            /** Alt Text */
+            alt_text?: string | null;
+        };
         /** AssetDownloadUrlResponse */
         AssetDownloadUrlResponse: {
             /**
@@ -14186,6 +16126,58 @@ export interface components {
             content_type: string;
             /** Expires In Seconds */
             expires_in_seconds: number;
+        };
+        /** AssetOut */
+        AssetOut: {
+            /**
+             * Asset Id
+             * Format: uuid
+             */
+            asset_id: string;
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Url */
+            url: string | null;
+            /** S3 Key */
+            s3_key: string;
+            /** Filename */
+            filename: string;
+            /** Content Type */
+            content_type: string;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Alt Text */
+            alt_text: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** AssetUploadIn */
+        AssetUploadIn: {
+            /** Filename */
+            filename: string;
+            /** Content Type */
+            content_type: string;
+            /** Size Bytes */
+            size_bytes: number;
+        };
+        /** AssetUploadOut */
+        AssetUploadOut: {
+            /** Upload Url */
+            upload_url: string;
+            /** Fields */
+            fields?: {
+                [key: string]: string;
+            };
+            /** S3 Key */
+            s3_key: string;
+            /** Expires In */
+            expires_in: number;
         };
         /** AssetUploadUrlRequest */
         AssetUploadUrlRequest: {
@@ -14254,6 +16246,53 @@ export interface components {
             /** Customer Id */
             customer_id?: string | null;
         };
+        /** AssignmentIn */
+        AssignmentIn: {
+            /**
+             * Scope Type
+             * @enum {string}
+             */
+            scope_type: "cohort" | "company" | "user";
+            /** Scope Id */
+            scope_id: string;
+            /** Scenario Key */
+            scenario_key?: string | null;
+            /** Due At */
+            due_at?: string | null;
+            /**
+             * Required
+             * @default false
+             */
+            required: boolean;
+        };
+        /** AssignmentOut */
+        AssignmentOut: {
+            /**
+             * Assignment Id
+             * Format: uuid
+             */
+            assignment_id: string;
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Scenario Key */
+            scenario_key: string | null;
+            /** Scope Type */
+            scope_type: string;
+            /** Scope Id */
+            scope_id: string;
+            /** Due At */
+            due_at: string | null;
+            /** Required */
+            required: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
         /** AttachmentPresignRequest */
         AttachmentPresignRequest: {
             /** Filename */
@@ -14320,6 +16359,84 @@ export interface components {
             confirmed_at?: string | null;
             /** Download Url */
             download_url?: string | null;
+        };
+        /** AttemptListOut */
+        AttemptListOut: {
+            /** Items */
+            items: components["schemas"]["AttemptOut"][];
+            /** Total */
+            total: number;
+        };
+        /** AttemptOut */
+        AttemptOut: {
+            /**
+             * Attempt Id
+             * Format: uuid
+             */
+            attempt_id: string;
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Slug */
+            slug: string;
+            /** Lab Title */
+            lab_title: string;
+            /** Scenario Key */
+            scenario_key: string;
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Overall */
+            overall: number;
+            /** Readiness */
+            readiness: string;
+            /** Dimensions */
+            dimensions: {
+                [key: string]: unknown;
+            }[];
+            /** Highlights */
+            highlights: {
+                [key: string]: unknown;
+            }[];
+            /** Xp */
+            xp: number;
+            /** Badges */
+            badges: string[];
+            /** Category Legacy Id */
+            category_legacy_id: number | null;
+            /** Category Name */
+            category_name: string | null;
+            /** Minutes */
+            minutes: number;
+            /** Pre */
+            pre: {
+                [key: string]: unknown;
+            } | null;
+            /** Post */
+            post: {
+                [key: string]: unknown;
+            } | null;
+            /** Signals */
+            signals: {
+                [key: string]: unknown;
+            };
+            /** Attempt No */
+            attempt_no: number;
+            /** Lab Version */
+            lab_version: number;
+            /** Source */
+            source: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "scored" | "flagged" | "overridden" | "voided";
+            /** Verified */
+            verified: boolean;
         };
         /** AttributionOut */
         AttributionOut: {
@@ -15044,6 +17161,161 @@ export interface components {
             end: string;
             /** Points */
             points?: components["schemas"]["BehaviorTrendPointResponse"][];
+        };
+        /** BlockCatalogOut */
+        BlockCatalogOut: {
+            /** Items */
+            items: components["schemas"]["BlockTypeOut"][];
+            /** Document Schema */
+            document_schema: {
+                [key: string]: unknown;
+            };
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+        };
+        /** BlockDocumentOut */
+        BlockDocumentOut: {
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Lab Slug */
+            lab_slug: string;
+            /** Lab Title */
+            lab_title: string;
+            /** Engine Key */
+            engine_key: string;
+            /**
+             * Scenario Id
+             * Format: uuid
+             */
+            scenario_id: string;
+            /** Scenario Key */
+            scenario_key: string;
+            /** Scenario Title */
+            scenario_title: string;
+            /** Schema Version */
+            schema_version: number;
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+            /** Revision */
+            revision: number;
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Issues */
+            issues?: components["schemas"]["IssueOut"][];
+            /**
+             * Has Unpublished Changes
+             * @default false
+             */
+            has_unpublished_changes: boolean;
+        };
+        /** BlockDocumentSaveIn */
+        BlockDocumentSaveIn: {
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+            /** Base Revision */
+            base_revision: number;
+            /** Scenario Key */
+            scenario_key?: string | null;
+        };
+        /** BlockDocumentValidateIn */
+        BlockDocumentValidateIn: {
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+            /** Scenario Key */
+            scenario_key?: string | null;
+            /** Schema Version */
+            schema_version?: number | null;
+        };
+        /** BlockIn */
+        BlockIn: {
+            /** Block */
+            block: {
+                [key: string]: unknown;
+            };
+            /** Page Id */
+            page_id?: string | null;
+            /** Index */
+            index?: number | null;
+            /** Base Revision */
+            base_revision: number;
+            /** Scenario Key */
+            scenario_key?: string | null;
+        };
+        /** BlockMoveIn */
+        BlockMoveIn: {
+            /** Page Id */
+            page_id: string;
+            /** Index */
+            index: number;
+            /** Base Revision */
+            base_revision: number;
+            /** Scenario Key */
+            scenario_key?: string | null;
+        };
+        /** BlockPageIn */
+        BlockPageIn: {
+            /** Page */
+            page: {
+                [key: string]: unknown;
+            };
+            /** Index */
+            index?: number | null;
+            /** Base Revision */
+            base_revision: number;
+            /** Scenario Key */
+            scenario_key?: string | null;
+        };
+        /** BlockTypeOut */
+        BlockTypeOut: {
+            /** Type */
+            type: string;
+            /** Label */
+            label: {
+                [key: string]: string;
+            };
+            /** Category */
+            category: string;
+            /** Description */
+            description: string;
+            /** Icon */
+            icon: string;
+            /** Version */
+            version: number;
+            /** Props Schema */
+            props_schema: {
+                [key: string]: unknown;
+            };
+            /** Defaults */
+            defaults: {
+                [key: string]: unknown;
+            };
+            /** Containers */
+            containers: boolean;
+            /** Singleton */
+            singleton: boolean;
+            /** Supports */
+            supports: {
+                [key: string]: boolean;
+            };
         };
         /** BlogAssetCompleteRequest */
         BlogAssetCompleteRequest: {
@@ -16747,6 +19019,85 @@ export interface components {
             /** Legacy */
             legacy: boolean;
         };
+        /** ChangeDecisionIn */
+        ChangeDecisionIn: {
+            /** Note */
+            note?: string | null;
+        };
+        /** ChangeRequestListOut */
+        ChangeRequestListOut: {
+            /** Items */
+            items: components["schemas"]["ChangeRequestOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** ChangeRequestOut */
+        ChangeRequestOut: {
+            /**
+             * Change Request Id
+             * Format: uuid
+             */
+            change_request_id: string;
+            /**
+             * Target Type
+             * @enum {string}
+             */
+            target_type: "lab" | "engine";
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+            /** Target Key */
+            target_key: string;
+            /** Target Title */
+            target_title: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "open" | "approved" | "rejected" | "cancelled" | "stale" | "superseded";
+            /** Summary */
+            summary: string;
+            /** Changelog */
+            changelog?: string | null;
+            /** Draft Revision */
+            draft_revision: number;
+            /** Base Version No */
+            base_version_no?: number | null;
+            /** Requested By */
+            requested_by?: string | null;
+            /**
+             * Actor Type
+             * @enum {string}
+             */
+            actor_type: "admin" | "ai";
+            /** Client */
+            client?: string | null;
+            /** Model */
+            model?: string | null;
+            /** Decided By */
+            decided_by?: string | null;
+            /** Decided At */
+            decided_at?: string | null;
+            /** Decision Note */
+            decision_note?: string | null;
+            /** Published Version No */
+            published_version_no?: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Check Report */
+            check_report?: {
+                [key: string]: unknown;
+            } | null;
+        };
         /** CheckoutQuoteResponse */
         CheckoutQuoteResponse: {
             coupon?: components["schemas"]["QuotedCouponResponse"] | null;
@@ -16902,6 +19253,20 @@ export interface components {
             /** Remaining Replacements */
             remaining_replacements?: number | null;
         };
+        /** ClaimIn */
+        ClaimIn: {
+            /** Anonymous Id */
+            anonymous_id: string;
+        };
+        /** ClaimOut */
+        ClaimOut: {
+            /** Sessions */
+            sessions: number;
+            /** Attempts */
+            attempts: number;
+            /** Badges */
+            badges: number;
+        };
         /**
          * ClarificationResponse
          * @description A question the advisor needs answered; ``options`` render as quick-reply chips.
@@ -16918,6 +19283,20 @@ export interface components {
              * @default true
              */
             allow_free_text: boolean;
+        };
+        /**
+         * ClientResultIn
+         * @description Scorecard computed by a not-yet-ported engine on the client (stored with `verified=false`).
+         */
+        ClientResultIn: {
+            /** Scorecard */
+            scorecard: {
+                [key: string]: unknown;
+            };
+            /** Signals */
+            signals?: {
+                [key: string]: boolean;
+            };
         };
         /** CohortEnrollmentView */
         CohortEnrollmentView: {
@@ -17407,6 +19786,42 @@ export interface components {
             is_published?: boolean | null;
             /** Sort Order */
             sort_order?: number | null;
+        };
+        /** CompleteIn */
+        CompleteIn: {
+            /** Answers */
+            answers?: {
+                [key: string]: unknown;
+            } | null;
+            /** Run */
+            run?: unknown;
+            client_result?: components["schemas"]["ClientResultIn"] | null;
+            pre?: components["schemas"]["QuizResultIn"] | null;
+            post?: components["schemas"]["QuizResultIn"] | null;
+            /**
+             * Elapsed Seconds
+             * @default 0
+             */
+            elapsed_seconds: number;
+        };
+        /** CompleteOut */
+        CompleteOut: {
+            attempt: components["schemas"]["AttemptOut"] | null;
+            /** Scorecard */
+            scorecard: {
+                [key: string]: unknown;
+            };
+            /** New Badges */
+            new_badges: string[];
+            /** Xp */
+            xp: number;
+            /** Verified */
+            verified: boolean;
+            /**
+             * Preview
+             * @default false
+             */
+            preview: boolean;
         };
         /** CompleteUploadRequest */
         CompleteUploadRequest: {
@@ -17968,6 +20383,13 @@ export interface components {
             dropout: number;
             /** Dropout Rate */
             dropout_rate: number;
+        };
+        /** ConvertToBlocksIn */
+        ConvertToBlocksIn: {
+            /** Slug */
+            slug?: string | null;
+            /** Title */
+            title?: string | null;
         };
         /** Country */
         Country: {
@@ -19484,6 +21906,15 @@ export interface components {
              */
             outcome: "deleted" | "archived";
         };
+        /** DraftSaveIn */
+        DraftSaveIn: {
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Base Revision */
+            base_revision: number;
+        };
         /** DuplicateExpert */
         DuplicateExpert: {
             /** Key */
@@ -19506,10 +21937,286 @@ export interface components {
             /** Duplicates */
             duplicates: components["schemas"]["DuplicateExpert"][];
         };
+        /** DuplicateIn */
+        DuplicateIn: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title?: string | null;
+        };
         /** DuplicatePlanRequest */
         DuplicatePlanRequest: {
             /** Slug */
             slug: string;
+        };
+        /** EngineDefCreateIn */
+        EngineDefCreateIn: {
+            /** Key */
+            key: string;
+            /** Runtime Key */
+            runtime_key?: string | null;
+            name?: components["schemas"]["LocalizedIn"] | null;
+            description?: components["schemas"]["LocalizedIn"] | null;
+            /** Icon */
+            icon?: string | null;
+            /** Color */
+            color?: string | null;
+            /** Field Category Id */
+            field_category_id?: number | null;
+            /** Sort Order */
+            sort_order?: number | null;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Duplicate Of
+             * @description Copy card and definition from this engine
+             */
+            duplicate_of?: string | null;
+        };
+        /** EngineDefDetailOut */
+        EngineDefDetailOut: {
+            engine: components["schemas"]["EngineDefSummaryOut"];
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Has Unpublished Changes */
+            has_unpublished_changes: boolean;
+            /** Issues */
+            issues?: components["schemas"]["IssueOut"][];
+            runtime: components["schemas"]["EngineOut"];
+        };
+        /** EngineDefListOut */
+        EngineDefListOut: {
+            /** Items */
+            items: components["schemas"]["EngineDefSummaryOut"][];
+        };
+        /** EngineDefStatusIn */
+        EngineDefStatusIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "archived";
+        };
+        /** EngineDefSummaryOut */
+        EngineDefSummaryOut: {
+            /**
+             * Engine Id
+             * Format: uuid
+             */
+            engine_id: string;
+            /** Key */
+            key: string;
+            /** Runtime Key */
+            runtime_key: string;
+            /** Is System */
+            is_system: boolean;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "published" | "archived";
+            /** Name */
+            name: {
+                [key: string]: unknown;
+            };
+            /** Description */
+            description: {
+                [key: string]: unknown;
+            };
+            /** Icon */
+            icon: string;
+            /** Color */
+            color: string;
+            /** Field Category Id */
+            field_category_id: number | null;
+            /** Sort Order */
+            sort_order: number;
+            /** Draft Revision */
+            draft_revision: number;
+            /** Published Version */
+            published_version: number | null;
+            /** Lab Count */
+            lab_count: number;
+            /** Authorable */
+            authorable: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Published At */
+            published_at: string | null;
+        };
+        /** EngineDefUpdateIn */
+        EngineDefUpdateIn: {
+            /** Key */
+            key?: string | null;
+            name?: components["schemas"]["LocalizedIn"] | null;
+            description?: components["schemas"]["LocalizedIn"] | null;
+            /** Icon */
+            icon?: string | null;
+            /** Color */
+            color?: string | null;
+            /** Field Category Id */
+            field_category_id?: number | null;
+            /** Sort Order */
+            sort_order?: number | null;
+        };
+        /** EngineDefValidateIn */
+        EngineDefValidateIn: {
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /**
+         * EngineGraphIn
+         * @description Build the engine graph from the saved draft, or from an unsaved `definition`.
+         */
+        EngineGraphIn: {
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** EngineListOut */
+        EngineListOut: {
+            /** Items */
+            items: components["schemas"]["EngineOut"][];
+            /** Definition Schema */
+            definition_schema: {
+                [key: string]: unknown;
+            };
+            /** Release Schema */
+            release_schema: {
+                [key: string]: unknown;
+            };
+            /** Engine Definition Schema */
+            engine_definition_schema?: {
+                [key: string]: unknown;
+            } | null;
+            /** Persona Schema */
+            persona_schema?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** EngineOut */
+        EngineOut: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Description */
+            description: string;
+            /** Version */
+            version: number;
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+            /**
+             * Scorer
+             * @enum {string}
+             */
+            scorer: "server" | "client";
+            /** Schema Version */
+            schema_version: number;
+            /**
+             * Ported
+             * @default true
+             */
+            ported: boolean;
+            /** Scenario Schema */
+            scenario_schema: {
+                [key: string]: unknown;
+            };
+            /** Config Schema */
+            config_schema?: {
+                [key: string]: unknown;
+            } | null;
+            /** Rubric Schema */
+            rubric_schema?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Authorable
+             * @default false
+             */
+            authorable: boolean;
+            /**
+             * Uses Engine Context
+             * @default false
+             */
+            uses_engine_context: boolean;
+        };
+        /** EngineUsageItemOut */
+        EngineUsageItemOut: {
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Status */
+            status: string;
+            /** Lab Version No */
+            lab_version_no: number | null;
+            /** Engine Version No */
+            engine_version_no: number | null;
+        };
+        /** EngineUsageOut */
+        EngineUsageOut: {
+            /** Items */
+            items: components["schemas"]["EngineUsageItemOut"][];
+            /** Published Version */
+            published_version: number | null;
+        };
+        /** EngineVersionListOut */
+        EngineVersionListOut: {
+            /** Items */
+            items: components["schemas"]["EngineVersionOut"][];
+        };
+        /** EngineVersionOut */
+        EngineVersionOut: {
+            /** Version */
+            version: number;
+            /**
+             * Engine Version Id
+             * Format: uuid
+             */
+            engine_version_id: string;
+            /** Runtime Key */
+            runtime_key: string;
+            /** Runtime Version */
+            runtime_version: number;
+            /** Checksum */
+            checksum: string;
+            /** Changelog */
+            changelog: string | null;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            /** Published By */
+            published_by: string | null;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
         };
         /** EntitlementDetailResponse */
         EntitlementDetailResponse: {
@@ -20296,6 +23003,217 @@ export interface components {
              */
             reason: string;
         };
+        /** GraphBadgeOut */
+        GraphBadgeOut: {
+            label: components["schemas"]["GraphTextOut"];
+            /**
+             * Tone
+             * @default neutral
+             * @enum {string}
+             */
+            tone: "neutral" | "info" | "success" | "warning" | "danger";
+        };
+        /** GraphEdgeOut */
+        GraphEdgeOut: {
+            /** Id */
+            id: string;
+            /** Source */
+            source: string;
+            /** Target */
+            target: string;
+            /**
+             * Kind
+             * @default flow
+             * @enum {string}
+             */
+            kind: "flow" | "publish" | "pin" | "choice" | "guard" | "next" | "reference" | "archive";
+            label?: components["schemas"]["GraphTextOut"] | null;
+            /**
+             * Tone
+             * @default neutral
+             * @enum {string}
+             */
+            tone: "neutral" | "info" | "success" | "warning" | "danger";
+            /**
+             * Animated
+             * @default false
+             */
+            animated: boolean;
+        };
+        /** GraphGroupOut */
+        GraphGroupOut: {
+            /** Id */
+            id: string;
+            label: components["schemas"]["GraphTextOut"];
+            /**
+             * Kind
+             * @default stage
+             * @enum {string}
+             */
+            kind: "stage" | "page" | "starter" | "context";
+            /**
+             * Collapsed By Default
+             * @default true
+             */
+            collapsed_by_default: boolean;
+            /**
+             * Count
+             * @default 0
+             */
+            count: number;
+        };
+        /** GraphIssueOut */
+        GraphIssueOut: {
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "error" | "warning";
+            /** Message */
+            message: string;
+            /** Path */
+            path: string;
+        };
+        /**
+         * GraphLinkOut
+         * @description Where a node action goes; the Studio pages decide how to resolve it.
+         */
+        GraphLinkOut: {
+            /** Tab */
+            tab?: string | null;
+            /** Href */
+            href?: string | null;
+            /** Scenario Id */
+            scenario_id?: string | null;
+            /** Stage Id */
+            stage_id?: string | null;
+            /** Node Id */
+            node_id?: string | null;
+            /** Page Id */
+            page_id?: string | null;
+            /** Block Id */
+            block_id?: string | null;
+        };
+        /** GraphMessageOut */
+        GraphMessageOut: {
+            /**
+             * Level
+             * @default info
+             * @enum {string}
+             */
+            level: "info" | "warning" | "error";
+            text: components["schemas"]["GraphTextOut"];
+        };
+        /** GraphNodeOut */
+        GraphNodeOut: {
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "lifecycle" | "version" | "lab" | "engine" | "scenario" | "phase" | "stage" | "dialogue_node" | "option" | "field" | "page" | "block" | "pathway_node" | "speaker" | "meter" | "fact" | "document" | "constraint" | "persona" | "summary" | "truncated";
+            label: components["schemas"]["GraphTextOut"];
+            sublabel?: components["schemas"]["GraphTextOut"] | null;
+            description?: components["schemas"]["GraphTextOut"] | null;
+            /** Group */
+            group?: string | null;
+            /** Expand Group */
+            expand_group?: string | null;
+            /**
+             * Lane
+             * @default 0
+             */
+            lane: number;
+            /**
+             * Column
+             * @default 0
+             */
+            column: number;
+            /**
+             * Order
+             * @default 0
+             */
+            order: number;
+            /**
+             * Status
+             * @default neutral
+             * @enum {string}
+             */
+            status: "neutral" | "info" | "success" | "warning" | "danger";
+            /** Badges */
+            badges?: components["schemas"]["GraphBadgeOut"][];
+            /** Count */
+            count?: number | null;
+            /** Issues */
+            issues?: components["schemas"]["GraphIssueOut"][];
+            link?: components["schemas"]["GraphLinkOut"] | null;
+        };
+        /** GraphOut */
+        GraphOut: {
+            /** Graph Id */
+            graph_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "engine" | "lab" | "scenario";
+            /** Runtime Key */
+            runtime_key?: string | null;
+            title: components["schemas"]["GraphTextOut"];
+            subtitle?: components["schemas"]["GraphTextOut"] | null;
+            /**
+             * Source
+             * @default saved
+             * @enum {string}
+             */
+            source: "saved" | "draft";
+            /** Revision */
+            revision?: number | null;
+            /**
+             * Valid
+             * @default true
+             */
+            valid: boolean;
+            /**
+             * Errors
+             * @default 0
+             */
+            errors: number;
+            /**
+             * Warnings
+             * @default 0
+             */
+            warnings: number;
+            /**
+             * Truncated
+             * @default false
+             */
+            truncated: boolean;
+            /** Nodes */
+            nodes?: components["schemas"]["GraphNodeOut"][];
+            /** Edges */
+            edges?: components["schemas"]["GraphEdgeOut"][];
+            /** Groups */
+            groups?: components["schemas"]["GraphGroupOut"][];
+            /** Messages */
+            messages?: components["schemas"]["GraphMessageOut"][];
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+        };
+        /**
+         * GraphTextOut
+         * @description A bilingual label. Dynamic content reuses the same text in both languages.
+         */
+        GraphTextOut: {
+            /** Ar */
+            ar: string;
+            /** En */
+            en?: string | null;
+        };
         /**
          * GuestCreateTicketRequest
          * @description A ticket opened from the public widget, without an account.
@@ -20380,6 +23298,18 @@ export interface components {
                 [key: string]: unknown;
             } | null;
         };
+        /** ImportIn */
+        ImportIn: {
+            /** Bundle */
+            bundle: {
+                [key: string]: unknown;
+            };
+            /**
+             * Publish
+             * @default false
+             */
+            publish: boolean;
+        };
         /** InsightItem */
         InsightItem: {
             /**
@@ -20431,6 +23361,23 @@ export interface components {
              * Format: date-time
              */
             generated_at: string;
+        };
+        /** InsightsOut */
+        InsightsOut: {
+            /** Attempts */
+            attempts: components["schemas"]["AttemptOut"][];
+            /** Total Attempts */
+            total_attempts: number;
+            /** Labs Completed */
+            labs_completed: number;
+            /** Total Minutes */
+            total_minutes: number;
+            /** Total Xp */
+            total_xp: number;
+            /** Badges */
+            badges: string[];
+            /** Average */
+            average: number | null;
         };
         /** InsightsOverviewResponse */
         InsightsOverviewResponse: {
@@ -20605,6 +23552,18 @@ export interface components {
             /** Skill Matches */
             skill_matches: number;
         };
+        /** IssueOut */
+        IssueOut: {
+            /** Path */
+            path: string;
+            /** Message */
+            message: string;
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "error" | "warning";
+        };
         /** ItemAdminOut */
         ItemAdminOut: {
             /**
@@ -20750,6 +23709,216 @@ export interface components {
              * @default true
              */
             show_recording_notice: boolean;
+        };
+        /** LabCreateIn */
+        LabCreateIn: {
+            /** Slug */
+            slug: string;
+            /**
+             * Engine Key
+             * @description Runtime key; ignored when engine_id is set
+             * @default
+             */
+            engine_key: string;
+            /**
+             * Engine Id
+             * @description Admin engine to build the lab on
+             */
+            engine_id?: string | null;
+            /** Title */
+            title: string;
+            /**
+             * Tagline
+             * @default
+             */
+            tagline: string;
+            /** Field Category Id */
+            field_category_id?: number | null;
+            /** Category Name */
+            category_name?: string | null;
+            /**
+             * Difficulty
+             * @default متوسط
+             * @enum {string}
+             */
+            difficulty: "مبتدئ" | "متوسط" | "متقدّم";
+            /**
+             * Minutes
+             * @default 10
+             */
+            minutes: number;
+            /**
+             * Color
+             * @default blue
+             */
+            color: string;
+            /** Skills */
+            skills?: ("communication" | "analysis" | "persuasion" | "empathy" | "decision" | "execution" | "strategy")[];
+            /**
+             * Sort Order
+             * @default 0
+             */
+            sort_order: number;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** LabDetailOut */
+        LabDetailOut: {
+            lab: components["schemas"]["AdminLabOut"];
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Scenarios */
+            scenarios: components["schemas"]["ScenarioOut"][];
+            /** Has Unpublished Changes */
+            has_unpublished_changes: boolean;
+            /** Issues */
+            issues?: components["schemas"]["IssueOut"][];
+            /** Engine */
+            engine?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /**
+         * LabGraphIn
+         * @description Build a lab graph, or one scenario's workflow from a saved/unsaved document.
+         */
+        LabGraphIn: {
+            /**
+             * Scope
+             * @default lab
+             * @enum {string}
+             */
+            scope: "lab" | "scenario";
+            /** Scenario Id */
+            scenario_id?: string | null;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+            /** Content */
+            content?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** LabListOut */
+        LabListOut: {
+            /** Items */
+            items: components["schemas"]["LabSummaryOut"][];
+            /** Total */
+            total: number;
+        };
+        /** LabRuntimeOut */
+        LabRuntimeOut: {
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Version */
+            version: number;
+            /** Engine */
+            engine: string;
+            /**
+             * Scorer
+             * @enum {string}
+             */
+            scorer: "server" | "client";
+            /** Card */
+            card: {
+                [key: string]: unknown;
+            };
+            /** Definition */
+            definition: {
+                [key: string]: unknown;
+            };
+            /** Scenarios */
+            scenarios: components["schemas"]["ScenarioSummaryOut"][];
+            scenario?: components["schemas"]["ScenarioRuntimeOut"] | null;
+            /**
+             * Preview
+             * @default false
+             */
+            preview: boolean;
+            /** Engine Profile */
+            engine_profile?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** LabSummaryOut */
+        LabSummaryOut: {
+            /** Slug */
+            slug: string;
+            /** Engine Key */
+            engine_key: string;
+            /** Title */
+            title: string;
+            /** Tagline */
+            tagline: string;
+            /** Field Category Id */
+            field_category_id: number | null;
+            /** Category Name */
+            category_name: string | null;
+            /** Difficulty */
+            difficulty: string;
+            /** Minutes */
+            minutes: number;
+            /** Color */
+            color: string;
+            /** Skills */
+            skills: string[];
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Version */
+            version: number | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "in_review" | "scheduled" | "published" | "paused" | "archived";
+            /**
+             * Scorer
+             * @enum {string}
+             */
+            scorer: "server" | "client";
+            /**
+             * Attempt Count
+             * @default 0
+             */
+            attempt_count: number;
+            /** Best Score */
+            best_score?: number | null;
+        };
+        /** LabUpdateIn */
+        LabUpdateIn: {
+            /** Slug */
+            slug?: string | null;
+            /** Engine Key */
+            engine_key?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Tagline */
+            tagline?: string | null;
+            /** Field Category Id */
+            field_category_id?: number | null;
+            /** Category Name */
+            category_name?: string | null;
+            /** Difficulty */
+            difficulty?: ("مبتدئ" | "متوسط" | "متقدّم") | null;
+            /** Minutes */
+            minutes?: number | null;
+            /** Color */
+            color?: string | null;
+            /** Skills */
+            skills?: ("communication" | "analysis" | "persuasion" | "empathy" | "decision" | "execution" | "strategy")[] | null;
+            /** Sort Order */
+            sort_order?: number | null;
         };
         /** LandingBannerResponse */
         LandingBannerResponse: {
@@ -21373,6 +24542,13 @@ export interface components {
              * @default false
              */
             cached: boolean;
+        };
+        /** LocalizedIn */
+        LocalizedIn: {
+            /** Ar */
+            ar: string;
+            /** En */
+            en?: string | null;
         };
         /** LoginChallengeResponse */
         LoginChallengeResponse: {
@@ -22263,6 +25439,14 @@ export interface components {
              */
             transactions: components["schemas"]["OrderTransactionResponse"][];
         };
+        /** OrderFollowUpUpdate */
+        OrderFollowUpUpdate: {
+            /**
+             * Follow Up Status
+             * @enum {string}
+             */
+            follow_up_status: "new" | "in_progress" | "failure" | "success" | "not_completed";
+        };
         /** OrderInvoice */
         OrderInvoice: {
             /**
@@ -22487,29 +25671,12 @@ export interface components {
             /** Failure Message */
             failure_message?: string | null;
         };
-        /** OverviewOut */
-        OverviewOut: {
-            /**
-             * Library Ready
-             * @description False until the B2B catalog mirror tables exist; catalog sections are then empty.
-             */
-            library_ready: boolean;
-            /**
-             * Content Ready
-             * @description False until `migrations/20261212_b2b_showcase.sql` has been applied.
-             */
-            content_ready: boolean;
-            /** Stats */
-            stats: components["schemas"]["StatOut"][];
-            /** Categories */
-            categories: components["schemas"]["TrainingAreaOut"][];
-            /** Courses */
-            courses: components["schemas"]["ProgramOut"][];
-            /** Companies */
-            companies: components["schemas"]["CompanyOut"][];
-            /** Stories */
-            stories: components["schemas"]["StoryOut"][];
-            services: components["schemas"]["ServicesOut"];
+        /** OverrideIn */
+        OverrideIn: {
+            /** Overall */
+            overall: number;
+            /** Reason */
+            reason: string;
         };
         /** OwnedProductPageResponse */
         OwnedProductPageResponse: {
@@ -23316,6 +26483,106 @@ export interface components {
             /** Parent Legacy Module Id */
             parent_legacy_module_id: number | null;
         };
+        /** PersonaCreateIn */
+        PersonaCreateIn: {
+            /** Key */
+            key: string;
+            /** Name */
+            name: string;
+            /**
+             * Role
+             * @default
+             */
+            role: string;
+            /** Profile */
+            profile?: {
+                [key: string]: unknown;
+            };
+            /** Tags */
+            tags?: string[];
+            /**
+             * Status
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "archived";
+        };
+        /** PersonaListOut */
+        PersonaListOut: {
+            /** Items */
+            items: components["schemas"]["PersonaOut"][];
+            /** Profile Schema */
+            profile_schema: {
+                [key: string]: unknown;
+            };
+        };
+        /** PersonaOut */
+        PersonaOut: {
+            /**
+             * Persona Id
+             * Format: uuid
+             */
+            persona_id: string;
+            /** Key */
+            key: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "archived";
+            /** Name */
+            name: string;
+            /** Role */
+            role: string;
+            /** Profile */
+            profile: {
+                [key: string]: unknown;
+            };
+            /** Tags */
+            tags: string[];
+            /** Revision */
+            revision: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** PersonaUpdateIn */
+        PersonaUpdateIn: {
+            /** Key */
+            key?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Role */
+            role?: string | null;
+            /** Profile */
+            profile?: {
+                [key: string]: unknown;
+            } | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Status */
+            status?: ("active" | "archived") | null;
+            /** Base Revision */
+            base_revision?: number | null;
+        };
+        /** PersonaUsageOut */
+        PersonaUsageOut: {
+            /** Engines */
+            engines: {
+                [key: string]: unknown;
+            }[];
+            /** Scenarios */
+            scenarios: {
+                [key: string]: unknown;
+            }[];
+        };
         /** PlanDiscountIn */
         PlanDiscountIn: {
             /**
@@ -23933,6 +27200,23 @@ export interface components {
              * @description Kind-specific storefront data, or null when there is none.
              */
             base?: unknown | null;
+        };
+        /** PreviewIn */
+        PreviewIn: {
+            /** Scenario Key */
+            scenario_key?: string | null;
+        };
+        /** PreviewOut */
+        PreviewOut: {
+            /** Token */
+            token: string;
+            /** Path */
+            path: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
         };
         /** PriceBatchDetailResponse */
         PriceBatchDetailResponse: {
@@ -25057,6 +28341,11 @@ export interface components {
             /** Title */
             title?: string | null;
         };
+        /** PublishIn */
+        PublishIn: {
+            /** Changelog */
+            changelog?: string | null;
+        };
         /** PublishRequest */
         PublishRequest: {
             /**
@@ -25069,6 +28358,35 @@ export interface components {
              * @description Publish only if the draft is still at this revision (409 otherwise).
              */
             base_revision?: number | null;
+        };
+        /**
+         * QualityCheckOut
+         * @description `labs.check` / `engines.check`: validation + authoring rules + path exploration.
+         */
+        QualityCheckOut: {
+            /** Ok */
+            ok: boolean;
+            /** Errors */
+            errors: components["schemas"]["IssueOut"][];
+            /** Warnings */
+            warnings: components["schemas"]["IssueOut"][];
+            /** Explore */
+            explore?: {
+                [key: string]: unknown;
+            };
+            /** Draft Revision */
+            draft_revision: number;
+            /** Scenario Revisions */
+            scenario_revisions?: {
+                [key: string]: number;
+            };
+        };
+        /** QuizResultIn */
+        QuizResultIn: {
+            /** Percent */
+            percent: number;
+            /** Style */
+            style?: string | null;
         };
         /** QuoteIncentivesRequest */
         QuoteIncentivesRequest: {
@@ -25201,6 +28519,11 @@ export interface components {
         };
         /** ReasonBody */
         ReasonBody: {
+            /** Reason */
+            reason: string;
+        };
+        /** ReasonIn */
+        ReasonIn: {
             /** Reason */
             reason: string;
         };
@@ -25694,6 +29017,19 @@ export interface components {
             /** Instructors */
             instructors?: components["schemas"]["RelatedInstructorCardResponse"][];
         };
+        /** ReleaseIn */
+        ReleaseIn: {
+            /** Locales */
+            locales?: string[] | null;
+            /** Starts At */
+            starts_at?: string | null;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Rollout Pct */
+            rollout_pct?: number | null;
+            /** Kill Switch */
+            kill_switch?: boolean | null;
+        };
         /** ReopenTicketRequest */
         ReopenTicketRequest: {
             /** Reason */
@@ -25803,6 +29139,32 @@ export interface components {
             status?: string | null;
             /** Assigned Admin Id */
             assigned_admin_id?: string | null;
+        };
+        /** RequirementStatusOut */
+        RequirementStatusOut: {
+            /** Id */
+            id: string;
+            /** Type */
+            type: string;
+            /** Satisfied */
+            satisfied: boolean;
+            /**
+             * On Fail
+             * @default block
+             * @enum {string}
+             */
+            on_fail: "block" | "warn";
+            /** Reason */
+            reason?: string | null;
+            /** Message */
+            message?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** ResetOut */
+        ResetOut: {
+            /** Voided */
+            voided: number;
         };
         /** ResolutionResponse */
         ResolutionResponse: {
@@ -25942,6 +29304,41 @@ export interface components {
             reason: string;
         };
         /**
+         * RubricTestIn
+         * @description Score a sample run against a rubric without saving anything.
+         */
+        RubricTestIn: {
+            /** Scenario */
+            scenario: {
+                [key: string]: unknown;
+            };
+            /** Run */
+            run?: {
+                [key: string]: unknown;
+            };
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** RubricTestOut */
+        RubricTestOut: {
+            /** Scorecard */
+            scorecard: {
+                [key: string]: unknown;
+            };
+            /** Signals */
+            signals: {
+                [key: string]: boolean;
+            };
+            /** Context */
+            context: {
+                [key: string]: unknown;
+            };
+            /** Problems */
+            problems?: string[];
+        };
+        /**
          * SalesPoint
          * @description One day of sales. B2C: `revenue` is gross, `net` = revenue - refunds, in `currency`.
          */
@@ -26016,6 +29413,145 @@ export interface components {
              * @description `draft_revision` the edit started from (0 for a page never saved).
              */
             base_revision: number;
+        };
+        /** ScenarioCreateIn */
+        ScenarioCreateIn: {
+            /** Key */
+            key: string;
+            /** Title */
+            title?: string | null;
+            /**
+             * Status
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "disabled";
+            /**
+             * Weight
+             * @default 1
+             */
+            weight: number;
+            /** Sort Order */
+            sort_order?: number | null;
+            /** Content */
+            content?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** ScenarioDuplicateIn */
+        ScenarioDuplicateIn: {
+            /** Key */
+            key: string;
+            /** Title */
+            title?: string | null;
+        };
+        /** ScenarioOrderIn */
+        ScenarioOrderIn: {
+            /** Scenario Ids */
+            scenario_ids: string[];
+        };
+        /** ScenarioOut */
+        ScenarioOut: {
+            /**
+             * Scenario Id
+             * Format: uuid
+             */
+            scenario_id: string;
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Key */
+            key: string;
+            /** Title */
+            title: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "disabled";
+            /** Sort Order */
+            sort_order: number;
+            /** Weight */
+            weight: number;
+            /** Schema Version */
+            schema_version: number;
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+            /** Draft Revision */
+            draft_revision: number;
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Issues */
+            issues?: components["schemas"]["IssueOut"][];
+        };
+        /** ScenarioRuntimeOut */
+        ScenarioRuntimeOut: {
+            /** Key */
+            key: string;
+            /** Title */
+            title: string;
+            /** Schema Version */
+            schema_version: number;
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+        };
+        /** ScenarioSummaryOut */
+        ScenarioSummaryOut: {
+            /** Key */
+            key: string;
+            /** Title */
+            title: string;
+            /** Weight */
+            weight: number;
+            /** Sort Order */
+            sort_order: number;
+        };
+        /** ScenarioUpdateIn */
+        ScenarioUpdateIn: {
+            /** Key */
+            key?: string | null;
+            /** Title */
+            title?: string | null;
+            /** Status */
+            status?: ("active" | "disabled") | null;
+            /** Weight */
+            weight?: number | null;
+            /** Sort Order */
+            sort_order?: number | null;
+            /** Content */
+            content?: {
+                [key: string]: unknown;
+            } | null;
+            /** Base Revision */
+            base_revision?: number | null;
+        };
+        /** ScenarioValidateIn */
+        ScenarioValidateIn: {
+            /** Content */
+            content: {
+                [key: string]: unknown;
+            };
+            /** Schema Version */
+            schema_version?: number | null;
         };
         /** SearchCategoryOptionResponse */
         SearchCategoryOptionResponse: {
@@ -26389,6 +29925,107 @@ export interface components {
             /** Recorder Token */
             recorder_token?: string | null;
         };
+        /** SessionOut */
+        SessionOut: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Lab Slug */
+            lab_slug: string;
+            /** Lab Version */
+            lab_version: number | null;
+            /** Scenario Key */
+            scenario_key: string;
+            /** Customer Id */
+            customer_id: string | null;
+            /** Anonymous Id */
+            anonymous_id: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "created" | "in_progress" | "completed" | "abandoned" | "expired" | "failed";
+            state: components["schemas"]["SessionStateOut"];
+            /** Seed */
+            seed: number;
+            /** Requirements */
+            requirements: components["schemas"]["RequirementStatusOut"][];
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Preview
+             * @default false
+             */
+            preview: boolean;
+        };
+        /** SessionStartIn */
+        SessionStartIn: {
+            /** Scenario Key */
+            scenario_key?: string | null;
+            /** Source */
+            source?: string | null;
+            /** Assignment Id */
+            assignment_id?: string | null;
+            /**
+             * Consent
+             * @default false
+             */
+            consent: boolean;
+            /** Preview Token */
+            preview_token?: string | null;
+        };
+        /** SessionStartOut */
+        SessionStartOut: {
+            session: components["schemas"]["SessionOut"];
+            scenario: components["schemas"]["ScenarioRuntimeOut"];
+        };
+        /** SessionStateOut */
+        SessionStateOut: {
+            /** Phase Id */
+            phase_id?: string | null;
+            /**
+             * Seq
+             * @default 0
+             */
+            seq: number;
+            /** Answers */
+            answers?: {
+                [key: string]: unknown;
+            };
+            /** Completed Phases */
+            completed_phases?: string[];
+            /**
+             * Actions Count
+             * @default 0
+             */
+            actions_count: number;
+            /** Engine */
+            engine?: {
+                [key: string]: unknown;
+            };
+        };
         /** SessionView */
         SessionView: {
             /** Slot Number */
@@ -26670,6 +30307,64 @@ export interface components {
              */
             ends_at: string;
         };
+        /** SnapshotListOut */
+        SnapshotListOut: {
+            /** Items */
+            items: components["schemas"]["SnapshotOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
+        /** SnapshotOut */
+        SnapshotOut: {
+            /**
+             * Snapshot Id
+             * Format: uuid
+             */
+            snapshot_id: string;
+            /**
+             * Scenario Id
+             * Format: uuid
+             */
+            scenario_id: string;
+            /** Revision */
+            revision: number;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "create" | "save" | "restore" | "import" | "publish";
+            /** Checksum */
+            checksum: string;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Edits */
+            edits: number;
+            /** Created By */
+            created_by: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Content */
+            content?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** SnapshotRestoreIn */
+        SnapshotRestoreIn: {
+            /** Base Revision */
+            base_revision: number;
+        };
         /** SocialLinks */
         SocialLinks: {
             /** Facebook */
@@ -26798,6 +30493,14 @@ export interface components {
             in_progress: number;
             /** By Step */
             by_step?: components["schemas"]["FormStepPoint"][];
+        };
+        /** StatusIn */
+        StatusIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "in_review" | "scheduled" | "paused" | "archived";
         };
         /** StoryAdminOut */
         StoryAdminOut: {
@@ -28752,6 +32455,56 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** ValidationOut */
+        ValidationOut: {
+            /** Valid */
+            valid: boolean;
+            /** Errors */
+            errors: components["schemas"]["IssueOut"][];
+            /** Warnings */
+            warnings: components["schemas"]["IssueOut"][];
+        };
+        /** VersionListOut */
+        VersionListOut: {
+            /** Items */
+            items: components["schemas"]["VersionOut"][];
+        };
+        /** VersionOut */
+        VersionOut: {
+            /** Version */
+            version: number;
+            /**
+             * Lab Version Id
+             * Format: uuid
+             */
+            lab_version_id: string;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            /** Published By */
+            published_by: string | null;
+            /** Checksum */
+            checksum: string;
+            /** Changelog */
+            changelog: string | null;
+            /** Engine Version */
+            engine_version: number;
+            /**
+             * Catalog Version
+             * @default 1
+             */
+            catalog_version: number;
+            /** Definition */
+            definition?: {
+                [key: string]: unknown;
+            } | null;
+            /** Scenarios */
+            scenarios?: {
+                [key: string]: unknown;
+            }[];
+        };
         /** VoucherExpiryIn */
         VoucherExpiryIn: {
             /** Expires At */
@@ -29028,6 +32781,45 @@ export interface components {
              */
             score: number;
         };
+        /** AnalyticsOut */
+        app__modules__affiliates__presentation__schemas__AnalyticsOut: {
+            /** Totals */
+            totals: {
+                [key: string]: unknown;
+            };
+            /** Daily */
+            daily: {
+                [key: string]: unknown;
+            }[];
+            /** Top */
+            top: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** OverviewOut */
+        app__modules__b2b__presentation__schemas__OverviewOut: {
+            /**
+             * Library Ready
+             * @description False until the B2B catalog mirror tables exist; catalog sections are then empty.
+             */
+            library_ready: boolean;
+            /**
+             * Content Ready
+             * @description False until `migrations/20261212_b2b_showcase.sql` has been applied.
+             */
+            content_ready: boolean;
+            /** Stats */
+            stats: components["schemas"]["StatOut"][];
+            /** Categories */
+            categories: components["schemas"]["TrainingAreaOut"][];
+            /** Courses */
+            courses: components["schemas"]["ProgramOut"][];
+            /** Companies */
+            companies: components["schemas"]["CompanyOut"][];
+            /** Stories */
+            stories: components["schemas"]["StoryOut"][];
+            services: components["schemas"]["ServicesOut"];
+        };
         /** ExpertSummaryResponse */
         app__modules__catalog__presentation__browse_router__ExpertSummaryResponse: {
             /** Key */
@@ -29204,6 +32996,69 @@ export interface components {
             refunds_pending: number;
             next_booking: components["schemas"]["BookingResponse"] | null;
         };
+        /** AnalyticsOut */
+        app__modules__labs__presentation__schemas__AnalyticsOut: {
+            /**
+             * Lab Id
+             * Format: uuid
+             */
+            lab_id: string;
+            /** Lab Slug */
+            lab_slug: string;
+            /** Sessions */
+            sessions: number;
+            /** Attempts */
+            attempts: number;
+            /** Completions */
+            completions: number;
+            /** Completion Rate */
+            completion_rate: number;
+            /** Avg Score */
+            avg_score: number | null;
+            /** Avg Minutes */
+            avg_minutes: number | null;
+            /** Funnel */
+            funnel: {
+                [key: string]: unknown;
+            }[];
+            /** Branches */
+            branches: {
+                [key: string]: unknown;
+            }[];
+            /** Dimensions */
+            dimensions: {
+                [key: string]: unknown;
+            }[];
+            /** Signals */
+            signals: {
+                [key: string]: unknown;
+            }[];
+            /** Score Distribution */
+            score_distribution: {
+                [key: string]: unknown;
+            }[];
+            /** Scenarios */
+            scenarios: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** OverviewOut */
+        app__modules__labs__presentation__schemas__OverviewOut: {
+            /** Labs */
+            labs: number;
+            /** Published */
+            published: number;
+            /** Drafts */
+            drafts: number;
+            /** Attempts */
+            attempts: number;
+            /** Completion Rate */
+            completion_rate: number;
+            /** Avg Score */
+            avg_score: number | null;
+            /** Engines */
+            engines: number;
+        };
         /** ProductPriceResponse */
         app__modules__pricing__presentation__admin_router__ProductPriceResponse: {
             /**
@@ -29296,13 +33151,90 @@ export interface components {
             /** Attachments */
             attachments?: components["schemas"]["AttachmentResponse"][];
         };
-        /** OrderFollowUpUpdate */
-        OrderFollowUpUpdate: {
+        /** OAuthApproveIn */
+        OAuthApproveIn: {
             /**
-             * Follow Up Status
+             * Scopes
+             * @description Subset of admin:labs:read, admin:labs:write, admin:labs:analytics you hold
+             */
+            scopes: string[];
+        };
+        /** OAuthGrantOut */
+        OAuthGrantOut: {
+            /**
+             * Grant Id
+             * Format: uuid
+             */
+            grant_id: string;
+            /** Client Id */
+            client_id: string;
+            /** Client Name */
+            client_name: string;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Status
              * @enum {string}
              */
-            follow_up_status: "new" | "in_progress" | "failure" | "success" | "not_completed";
+            status: "active" | "revoked";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Last Used At */
+            last_used_at?: string | null;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /** Revoked Reason */
+            revoked_reason?: string | null;
+        };
+        /** OAuthDecisionOut */
+        OAuthDecisionOut: {
+            /**
+             * Redirect To
+             * @description Send the browser here to return to the AI app
+             */
+            redirect_to: string;
+        };
+        /** OAuthRequestOut */
+        OAuthRequestOut: {
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            /** Client Id */
+            client_id: string;
+            /** Client Name */
+            client_name: string;
+            /** Client Uri */
+            client_uri?: string | null;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "dcr" | "cimd";
+            /** Redirect Host */
+            redirect_host: string;
+            /**
+             * Redirect Kind
+             * @enum {string}
+             */
+            redirect_kind: "web" | "loopback" | "app" | "unknown";
+            /** Verified */
+            verified: boolean;
+            /** Requested Scopes */
+            requested_scopes: string[];
+            /** Offered Scopes */
+            offered_scopes: string[];
+            /** Already Connected */
+            already_connected: boolean;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
         };
     };
     responses: never;
@@ -36927,6 +40859,44 @@ export interface operations {
             };
         };
     };
+    set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_ref: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderFollowUpUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOrderDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_payments_api_v1_admin_payments_get: {
         parameters: {
             query?: {
@@ -40078,7 +44048,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OverviewOut"];
+                    "application/json": components["schemas"]["app__modules__b2b__presentation__schemas__OverviewOut"];
                 };
             };
         };
@@ -46067,6 +50037,3862 @@ export interface operations {
             };
         };
     };
+    labs_list: {
+        parameters: {
+            query?: {
+                /** @description Field (top-level category legacy id) */
+                field?: number | null;
+                engine?: string | null;
+                q?: string | null;
+            };
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_get: {
+        parameters: {
+            query?: {
+                scenario?: string | null;
+                preview?: string | null;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabRuntimeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_start_session: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                slug: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionStartIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionStartOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_get_session: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionStartOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_session_action: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_complete_session: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompleteOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_abandon_session: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_my_attempts: {
+        parameters: {
+            query?: {
+                lab?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_reset_attempts: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_my_attempt: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path: {
+                attempt_id: string;
+            };
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_my_insights: {
+        parameters: {
+            query?: {
+                range?: string | null;
+            };
+            header?: {
+                Authorization?: string | null;
+                "X-Lab-Anonymous-Id"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+                ma_lab_anon?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InsightsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    labs_claim: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_runtimes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_list: {
+        parameters: {
+            query?: {
+                status?: ("draft" | "published" | "archived") | null;
+                runtime?: string | null;
+                q?: string | null;
+                /** @description Include system engines */
+                system?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EngineDefCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EngineDefUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_save_draft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftSaveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_validate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EngineDefValidateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublishIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineVersionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EngineDefStatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_versions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineVersionListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_version: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+                version_no: number;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineVersionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+                version_no: number;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineDefDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_usage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineUsageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_graph: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EngineGraphIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GraphOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_test: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RubricTestIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RubricTestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_list: {
+        parameters: {
+            query?: {
+                status?: ("active" | "archived") | null;
+                q?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonaCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                persona_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                persona_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                persona_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonaUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_personas_usage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                persona_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonaUsageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engine_defs_check: {
+        parameters: {
+            query?: {
+                max_paths?: number;
+            };
+            header?: never;
+            path: {
+                engine_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityCheckOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_check: {
+        parameters: {
+            query?: {
+                max_paths?: number;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityCheckOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_change_requests_list: {
+        parameters: {
+            query?: {
+                status?: ("open" | "approved" | "rejected" | "cancelled" | "stale" | "superseded") | null;
+                target_type?: string | null;
+                target_id?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeRequestListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_change_requests_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                change_request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_change_requests_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                change_request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_change_requests_reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                change_request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_change_requests_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                change_request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChangeRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_connection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiConnectionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_tokens_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiTokenOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_tokens_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiTokenIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiTokenCreatedOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_tokens_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiTokenOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_engines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EngineListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_block_types: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockCatalogOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["app__modules__labs__presentation__schemas__OverviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_list: {
+        parameters: {
+            query?: {
+                status?: ("draft" | "in_review" | "scheduled" | "published" | "paused" | "archived") | null;
+                engine?: string | null;
+                field?: number | null;
+                q?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminLabListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LabCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LabUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_get_draft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_save_draft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftSaveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_document: {
+        parameters: {
+            query?: {
+                scenario?: string | null;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_save_document: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockDocumentSaveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_validate_document: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockDocumentValidateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_add_page: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockPageIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_delete_page: {
+        parameters: {
+            query: {
+                base_revision: number;
+                scenario?: string | null;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+                page_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_update_page: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                page_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockPageIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_add_block: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                page_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_delete_block: {
+        parameters: {
+            query: {
+                base_revision: number;
+                scenario?: string | null;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+                block_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_update_block: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                block_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_duplicate_block: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                block_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_move_block: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                block_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockMoveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlockDocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_validate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_set_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublishIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_unpublish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_duplicate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DuplicateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_release: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_convert_to_blocks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConvertToBlocksIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_versions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_version: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                version_no: number;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_restore_version: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                version_no: number;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_scenarios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_create_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_update_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_delete_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_duplicate_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioDuplicateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_scenario_history: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_scenario_snapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+                snapshot_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_restore_snapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                scenario_id: string;
+                snapshot_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SnapshotRestoreIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_order_scenarios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioOrderIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_validate_scenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScenarioValidateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_graph: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LabGraphIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GraphOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_analytics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["app__modules__labs__presentation__schemas__AnalyticsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_attempts: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                source?: string | null;
+                min_score?: number | null;
+                max_score?: number | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttemptListOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttemptOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_flag_attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttemptOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_void_attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttemptOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_override_attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverrideIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAttemptOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_assignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_create_assignment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_delete_assignment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                assignment_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_assets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_asset_complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssetCompleteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_asset_upload_url: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssetUploadIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetUploadOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_asset_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+                asset_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_export: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_import_into: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lab_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabDetailOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     insights_heartbeat: {
         parameters: {
             query?: never;
@@ -50037,7 +57863,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AnalyticsOut"];
+                    "application/json": components["schemas"]["app__modules__affiliates__presentation__schemas__AnalyticsOut"];
                 };
             };
             /** @description Validation Error */
@@ -54171,12 +61997,46 @@ export interface operations {
             };
         };
     };
-    set_order_follow_up_api_v1_admin_orders__order_ref__follow_up_patch: {
+    admin_labs_ai_oauth_request: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                order_ref: string;
+                request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
             };
             cookie?: {
                 /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
@@ -54185,7 +62045,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OrderFollowUpUpdate"];
+                "application/json": components["schemas"]["OAuthApproveIn"];
             };
         };
         responses: {
@@ -54195,7 +62055,107 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdminOrderDetail"];
+                    "application/json": components["schemas"]["OAuthDecisionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_deny: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDecisionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_grants: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthGrantOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grant_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthGrantOut"];
                 };
             };
             /** @description Validation Error */

@@ -84,7 +84,7 @@ export const navigation: NavModule[] = [
     id: "learning",
     title: { ar: "التعلم", en: "Learning" },
     icon: "book",
-    scopes: ["admin:catalog:write"],
+    scopes: ["admin:catalog:write", "admin:labs:read", "admin:labs:write", "admin:labs:publish", "admin:labs:analytics", "admin:labs:assign", "admin:labs:ai"],
     sections: [
       {
         title: { ar: "البرامج والمقررات", en: "Courses & Programs" },
@@ -140,6 +140,25 @@ export const navigation: NavModule[] = [
         items: [
           { title: { ar: "الكتالوج العام", en: "All catalog" }, href: "/learning/catalog", permission: "courses.read" },
           { title: { ar: "التصنيفات", en: "Categories" }, href: "/learning/categories", permission: "categories.read" },
+        ],
+      },
+      {
+        title: { ar: "المختبرات العملية", en: "Practice labs" },
+        items: [
+          {
+            title: { ar: "المختبرات", en: "Labs" },
+            href: "/learning/labs",
+            permission: "labs.read",
+            children: [
+              { title: { ar: "قائمة المختبرات", en: "All labs" }, href: "/learning/labs", permission: "labs.read" },
+              { title: { ar: "مختبر جديد", en: "New lab" }, href: "/learning/labs/new", permission: "labs.write" },
+              { title: { ar: "المحرّكات", en: "Engines" }, href: "/learning/labs/engines", permission: "labs.read" },
+              { title: { ar: "الشخصيات", en: "Personas" }, href: "/learning/labs/personas", permission: "labs.read" },
+              { title: { ar: "آليات التشغيل والبلوكات", en: "Runtimes & artifacts" }, href: "/learning/labs/runtimes", permission: "labs.read" },
+              { title: { ar: "طلبات المراجعة", en: "Review requests" }, href: "/learning/labs/changes", permission: "labs.read" },
+              { title: { ar: "وصول الذكاء الاصطناعي", en: "AI access" }, href: "/learning/labs/ai", permission: "labs.ai" },
+            ],
+          },
         ],
       },
       {

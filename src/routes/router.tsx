@@ -73,6 +73,24 @@ import InstructorsPage from "@/features/learning/pages/instructors-page";
 import InstructorNewPage from "@/features/learning/pages/instructor-new-page";
 import ExpertStudioPage from "@/features/learning/expert-profile/expert-studio-page";
 import InstructorDetailPage from "@/features/learning/pages/instructor-detail-page";
+import LabsPage from "@/features/learning/labs/pages/labs-page";
+import LabNewPage from "@/features/learning/labs/pages/lab-new-page";
+import LabsCatalogPage from "@/features/learning/labs/pages/labs-catalog-page";
+import EnginesPage from "@/features/learning/labs/pages/engines-page";
+import EngineNewPage from "@/features/learning/labs/pages/engine-new-page";
+import EngineStudioPage from "@/features/learning/labs/pages/engine-studio-page";
+import PersonasPage from "@/features/learning/labs/pages/personas-page";
+import PersonaEditorPage from "@/features/learning/labs/pages/persona-editor-page";
+import LabDetailPage from "@/features/learning/labs/pages/lab-detail-page";
+import LabStudioPage from "@/features/learning/labs/pages/lab-studio-page";
+import LabAttemptsPage from "@/features/learning/labs/pages/lab-attempts-page";
+import LabAttemptPage from "@/features/learning/labs/pages/lab-attempt-page";
+import LabAnalyticsPage from "@/features/learning/labs/pages/lab-analytics-page";
+import LabAssignmentsPage from "@/features/learning/labs/pages/lab-assignments-page";
+import ChangeRequestsPage from "@/features/learning/labs/pages/change-requests-page";
+import ChangeRequestPage from "@/features/learning/labs/pages/change-request-page";
+import AiAccessPage from "@/features/learning/labs/pages/ai-access-page";
+import OAuthConsentPage from "@/features/learning/labs/pages/oauth-consent-page";
 import AnalyticsSalesPage, {
   CouponsReportPage,
   CustomersReportPage,
@@ -111,6 +129,8 @@ const ph = (ar: string, en: string) => <PlaceholderPage titleAr={ar} titleEn={en
 
 export const ROUTER = createBrowserRouter([
   { path: "/login", element: <LoginPage />, errorElement: <RouteErrorPage /> },
+  // AI apps (claude.ai, ChatGPT…) asking to connect over OAuth; signed in, but outside the shell.
+  { path: "/oauth/consent", element: <RequireAdmin><OAuthConsentPage /></RequireAdmin>, errorElement: <RouteErrorPage /> },
   {
     path: "/",
     element: (
@@ -149,6 +169,28 @@ export const ROUTER = createBrowserRouter([
       { path: "sales/offers", element: <OffersPage /> },
 
       // Learning
+      // Practice labs: list, overview, authoring Studio, attempts, analytics and assignments.
+      { path: "learning/labs", element: <LabsPage /> },
+      { path: "learning/labs/new", element: <RequireScope permission="labs.write"><LabNewPage /></RequireScope> },
+      // Engines are admin templates on code runtimes; personas are a reusable library.
+      { path: "learning/labs/engines", element: <EnginesPage /> },
+      { path: "learning/labs/engines/new", element: <RequireScope permission="labs.write"><EngineNewPage /></RequireScope> },
+      { path: "learning/labs/engines/:engineId", element: <EngineStudioPage /> },
+      { path: "learning/labs/engines/:engineId/edit", element: <EngineStudioPage /> },
+      { path: "learning/labs/personas", element: <PersonasPage /> },
+      { path: "learning/labs/personas/new", element: <RequireScope permission="labs.write"><PersonaEditorPage /></RequireScope> },
+      { path: "learning/labs/personas/:personaId", element: <PersonaEditorPage /> },
+      { path: "learning/labs/runtimes", element: <LabsCatalogPage /> },
+      // Publish review requests (AI-authored drafts) and AI access tokens for MCP clients.
+      { path: "learning/labs/changes", element: <ChangeRequestsPage /> },
+      { path: "learning/labs/changes/:changeRequestId", element: <ChangeRequestPage /> },
+      { path: "learning/labs/ai", element: <RequireScope permission="labs.ai"><AiAccessPage /></RequireScope> },
+      { path: "learning/labs/:labId", element: <LabDetailPage /> },
+      { path: "learning/labs/:labId/edit", element: <LabStudioPage />, handle: { studio: true } },
+      { path: "learning/labs/:labId/attempts", element: <LabAttemptsPage /> },
+      { path: "learning/labs/:labId/attempts/:attemptId", element: <LabAttemptPage /> },
+      { path: "learning/labs/:labId/analytics", element: <LabAnalyticsPage /> },
+      { path: "learning/labs/:labId/assignments", element: <LabAssignmentsPage /> },
       { path: "learning/courses", element: <CatalogPage defaultType="course" /> },
       { path: "learning/courses/new", element: <RequireScope permission="catalog.write"><CourseNewPage /></RequireScope> },
       { path: "learning/diplomas", element: <CatalogPage defaultType="diploma" /> },

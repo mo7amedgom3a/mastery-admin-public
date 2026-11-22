@@ -29,6 +29,9 @@ const AREA_SCOPE: Record<string, string | string[]> = {
   instructors: "admin:catalog:read",
   // Manual expert creation and profile writes; the API enforces `admin:catalog:write`.
   instructorsWrite: "admin:catalog:write",
+  // Practice labs: authoring, releases, attempt review and assignments.
+  labs: "admin:labs:read",
+  labsAnalytics: ["admin:labs:analytics", "admin:labs:read"],
   // Subscription plans (catalog scopes) and subscribers (entitlement scopes).
   subscriptions: "admin:catalog:read",
   subscriptionsWrite: "admin:catalog:write",
@@ -74,6 +77,12 @@ const ACTION_SCOPE: Record<string, string[]> = {
   "operations.manage": ["admin:operations:manage"],
   "settings.write": ["admin:operations:manage"],
   "iam.manage": ["admin:iam:manage"],
+  "labs.write": ["admin:labs:write"],
+  "labs.publish": ["admin:labs:publish"],
+  "labs.analytics": ["admin:labs:analytics"],
+  "labs.assign": ["admin:labs:assign"],
+  // AI authoring: MCP access tokens (a per-admin kill switch; tokens never exceed the admin).
+  "labs.ai": ["admin:labs:ai"],
 };
 
 function scopesSatisfy(scopes: string[], needed: string | string[]): boolean {

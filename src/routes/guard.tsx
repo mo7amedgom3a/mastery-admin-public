@@ -16,11 +16,14 @@ export function RequireAdmin({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Come back here after signing in (e.g. an AI app's consent link). Read once, on first mount.
+    const here = `${window.location.pathname}${window.location.search}`;
+    const login = here === "/" ? "/login" : `/login?next=${encodeURIComponent(here)}`;
     bootstrap()
       .then((admin) => {
-        if (!admin) navigate("/login", { replace: true });
+        if (!admin) navigate(login, { replace: true });
       })
-      .catch(() => navigate("/login", { replace: true }));
+      .catch(() => navigate(login, { replace: true }));
   }, [bootstrap, navigate]);
 
   if (status !== "authenticated") {

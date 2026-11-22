@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAdminAuth } from "@/lib/auth/store";
 import { ApiError } from "@/lib/api/client";
 import { useT } from "@/lib/i18n";
 import { Alert, Button, Field } from "@/components/ui/kit";
 
+/** Only same-app paths (`/oauth/consent?…`), never `//host` or absolute URLs. */
+function safeNext(value: string | null): string {
+  return value && value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\") ? value : "/";
+}
+
 export default function LoginPage() {
   const { login, qaLogin } = useAdminAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const t = useT();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +43,7 @@ export default function LoginPage() {
             try {
               if (qaMode) await qaLogin({ email, key: password });
               else await login({ email, password });
-              navigate("/", { replace: true });
+              navigate(safeNext(params.get("next")), { replace: true });
             } catch (err) {
               setError(
                 err instanceof ApiError && err.status === 401
