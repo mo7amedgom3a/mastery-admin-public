@@ -8,10 +8,14 @@
 # Repository settings:
 #   secret   CLOUDFLARE_API_TOKEN   Account > Cloudflare Pages: Edit
 #   variable CLOUDFLARE_ACCOUNT_ID
+#   variable VITE_STOREFRONT_ORIGIN storefront the Course Studio / lab previews frame and message
+#                                   (https://landing.emasteryacademy.com); required
+#   variable VITE_QA_LOGIN_ENABLED  "true" shows the QA login button; anything else hides it
 #
 # Runtime config lives on the Pages project, not here: API_PROXY_TARGET (production =
 # https://api.v3.emasteryacademy.com, preview = the dev API) is read by functions/api/[[path]].js.
-# VITE_* values below are inlined into the bundle at build time and are not secrets.
+# VITE_* values come from repository variables and are inlined into the bundle at build time
+# (public, not secrets).
 name: Deploy admin (Cloudflare Pages)
 
 on:
@@ -34,8 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      VITE_STOREFRONT_ORIGIN: https://landing.emasteryacademy.com
-      VITE_QA_LOGIN_ENABLED: "false"
+      VITE_STOREFRONT_ORIGIN: ${{ vars.VITE_STOREFRONT_ORIGIN }}
+      VITE_QA_LOGIN_ENABLED: ${{ vars.VITE_QA_LOGIN_ENABLED || 'false' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +47,13 @@ jobs:
         with:
           node-version: 24
           cache: npm
+
+      - name: Check build configuration
+        run: |
+          case "$VITE_STOREFRONT_ORIGIN" in
+            https://*) echo "storefront origin: $VITE_STOREFRONT_ORIGIN" ;;
+            *) echo "::error::Set the repository variable VITE_STOREFRONT_ORIGIN (https://…)"; exit 1 ;;
+          esac
 
       - run: npm ci
 
