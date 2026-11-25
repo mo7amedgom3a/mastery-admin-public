@@ -13,6 +13,7 @@ import type { PathParams, QueryParams, RequestBody, SuccessResponse } from "@/li
 type ListProductsOp = "list_products_api_v1_admin_catalog_products_get";
 type GetProductOp = "get_product_api_v1_admin_catalog_products__product_ref__get";
 type SetStatusOp = "set_product_status_api_v1_admin_catalog_products__product_ref__status_post";
+type BulkStatusOp = "set_products_status_bulk_api_v1_admin_catalog_products_bulk_status_post";
 type SalesOp = "product_sales_api_v1_admin_catalog_products__product_ref__sales_get";
 type BehaviorOp = "product_behavior_api_v1_admin_catalog_products__product_ref__behavior_get";
 type TransactionsOp = "product_transactions_api_v1_admin_catalog_products__product_ref__transactions_get";
@@ -72,6 +73,9 @@ export type ProductListStatus = NonNullable<ProductsParams["status"]>;
 export type ProductSort = NonNullable<ProductsParams["sort"]>;
 export type ProductSource = NonNullable<ProductsParams["source"]>;
 export type ProductOrigin = NonNullable<ProductsParams["origin"]>;
+/** `available` / `unavailable` (LMS course missing or inactive, or no real price). */
+export type ProductAvailability = NonNullable<ProductsParams["availability"]>;
+export type BulkStatusResult = SuccessResponse<BulkStatusOp>;
 
 /** Product types an admin can create. */
 export type ProductCreateType = "course" | "diploma" | "package" | "consultation";
@@ -237,6 +241,7 @@ export const productPaths = {
   list: "admin/catalog/products",
   detail: "admin/catalog/products/{product_ref}",
   status: "admin/catalog/products/{product_ref}/status",
+  bulkStatus: "admin/catalog/products/bulk-status",
   restore: "admin/catalog/products/{product_ref}/restore",
   sales: "admin/catalog/products/{product_ref}/sales",
   behavior: "admin/catalog/products/{product_ref}/behavior",
@@ -377,6 +382,11 @@ export function setProductStatus(
   status: ProductStatus,
 ): Promise<ProductView> {
   return apiPost(productPaths.status, { path: { product_ref }, body: { status } });
+}
+
+/** `POST /admin/catalog/products/bulk-status` — one status for up to 200 products; failures are per product. */
+export function setProductsStatusBulk(refs: string[], status: ProductStatus): Promise<BulkStatusResult> {
+  return apiPost(productPaths.bulkStatus, { body: { refs, status } });
 }
 
 /** `GET /admin/catalog/products/facets` — categories, top tags, product types and sources with counts. */

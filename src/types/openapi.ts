@@ -1219,6 +1219,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/catalog/products/bulk-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change the status of several products
+         * @description Sets one status on up to 200 products, e.g. unpublishing every course the `availability=unavailable` filter lists. Each product is changed on its own (one failure doesn't stop the rest) and gets the same audit entry, vector-index sync and legacy sync as the single status route; the storefront is revalidated once for the batch. Requires `admin:catalog:write`.
+         */
+        post: operations["set_products_status_bulk_api_v1_admin_catalog_products_bulk_status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/catalog/products/{product_ref}/restore": {
         parameters: {
             query?: never;
@@ -5020,6 +5040,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/b2b/tracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Curated groups of training fields
+         * @description Named category combinations (e.g. sales + marketing + personal effectiveness) the landing
+         *     can filter by with `/b2b/courses?track=<key>`, with the fields and live program counts.
+         */
+        get: operations["list_tracks_api_v1_b2b_tracks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/b2b/services": {
         parameters: {
             query?: never;
@@ -7470,6 +7511,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/lms/enrollments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lms Enrollments
+         * @description Active courses the LMS has enrolled the student in, read from the LMS database (no LMS
+         *     session needed), so students whose enrollments predate B2C can see and open them.
+         */
+        get: operations["lms_enrollments_api_v1_me_lms_enrollments_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me/lms/summary": {
         parameters: {
             query?: never;
@@ -8360,6 +8422,91 @@ export interface paths {
         post?: never;
         /** Revoke one of your AI access tokens (takes effect on the next request) */
         delete: operations["admin_labs_ai_tokens_revoke"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A pending connection request from an AI app (the consent screen) */
+        get: operations["admin_labs_ai_oauth_request"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect the AI app with the chosen scopes; returns where to send the browser */
+        post: operations["admin_labs_ai_oauth_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/deny": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline the connection; returns where to send the browser */
+        post: operations["admin_labs_ai_oauth_deny"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your connected AI apps (claude.ai, ChatGPT, …) */
+        get: operations["admin_labs_ai_oauth_grants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/labs/ai/oauth/grants/{grant_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Disconnect an AI app (its tokens stop working on the next request) */
+        delete: operations["admin_labs_ai_oauth_revoke"];
         options?: never;
         head?: never;
         patch?: never;
@@ -12965,91 +13112,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** A pending connection request from an AI app (the consent screen) */
-        get: operations["admin_labs_ai_oauth_request"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Connect the AI app with the chosen scopes; returns where to send the browser */
-        post: operations["admin_labs_ai_oauth_approve"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/deny": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Decline the connection; returns where to send the browser */
-        post: operations["admin_labs_ai_oauth_deny"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/labs/ai/oauth/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Your connected AI apps (claude.ai, ChatGPT, …) */
-        get: operations["admin_labs_ai_oauth_grants"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/labs/ai/oauth/grants/{grant_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Disconnect an AI app (its tokens stop working on the next request) */
-        delete: operations["admin_labs_ai_oauth_revoke"];
         options?: never;
         head?: never;
         patch?: never;
@@ -18025,6 +18087,44 @@ export interface components {
              */
             warnings?: string[];
         };
+        /** BulkProductStatusRequest */
+        BulkProductStatusRequest: {
+            /**
+             * Refs
+             * @description Products to change. Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`.
+             */
+            refs: string[];
+            /**
+             * Status
+             * @description New status for every product; only `published` products are sold.
+             * @enum {string}
+             */
+            status: "draft" | "published" | "unpublished" | "archived";
+        };
+        /** BulkProductStatusResponse */
+        BulkProductStatusResponse: {
+            /** Changed */
+            changed: number;
+            /** Failed */
+            failed: number;
+            /** Results */
+            results: components["schemas"]["BulkProductStatusResult"][];
+        };
+        /** BulkProductStatusResult */
+        BulkProductStatusResult: {
+            /** Ref */
+            ref: string;
+            /** Ok */
+            ok: boolean;
+            /** Previous Status */
+            previous_status?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Slug */
+            slug?: string | null;
+            /** Error */
+            error?: string | null;
+        };
         /** BulkSelector */
         BulkSelector: {
             /** Product Ids */
@@ -18474,6 +18574,8 @@ export interface components {
             deleted_at?: string | null;
             /** Deleted Reason */
             deleted_reason?: string | null;
+            /** Availability Issue */
+            availability_issue?: string | null;
         };
         /** CatalogItemDetail */
         CatalogItemDetail: {
@@ -23920,6 +24022,23 @@ export interface components {
             /** Sort Order */
             sort_order?: number | null;
         };
+        /** LabsOverviewOut */
+        LabsOverviewOut: {
+            /** Labs */
+            labs: number;
+            /** Published */
+            published: number;
+            /** Drafts */
+            drafts: number;
+            /** Attempts */
+            attempts: number;
+            /** Completion Rate */
+            completion_rate: number;
+            /** Avg Score */
+            avg_score: number | null;
+            /** Engines */
+            engines: number;
+        };
         /** LandingBannerResponse */
         LandingBannerResponse: {
             /** Text */
@@ -24444,18 +24563,54 @@ export interface components {
              */
             cached: boolean;
         };
-        /** LmsLaunchRequest */
-        LmsLaunchRequest: {
+        /** LmsEnrollmentListResponse */
+        LmsEnrollmentListResponse: {
+            /** Items */
+            items: components["schemas"]["LmsEnrollmentOut"][];
+            /** Total */
+            total: number;
+        };
+        /** LmsEnrollmentOut */
+        LmsEnrollmentOut: {
+            /** Lms Course Id */
+            lms_course_id: number;
+            /** Title */
+            title?: string | null;
+            /** Image Url */
+            image_url?: string | null;
+            /** Trainer */
+            trainer?: string | null;
             /**
-             * Entitlement Id
-             * Format: uuid
+             * Is Diploma
+             * @default false
              */
-            entitlement_id: string;
+            is_diploma: boolean;
+            /** Enrolled At */
+            enrolled_at?: string | null;
+            /** Expires At */
+            expires_at?: string | null;
+            /** Entitlement Id */
+            entitlement_id?: string | null;
+            /** Product Slug */
+            product_slug?: string | null;
+        };
+        /**
+         * LmsLaunchRequest
+         * @description Exactly one of `entitlement_id` (a B2C purchase) or `lms_course_id` (an enrollment the LMS
+         *     holds, e.g. from before B2C; checked against the LMS database).
+         */
+        LmsLaunchRequest: {
+            /** Entitlement Id */
+            entitlement_id?: string | null;
+            /** Lms Course Id */
+            lms_course_id?: number | null;
+            /** Browser Refresh Token */
+            browser_refresh_token?: string | null;
         };
         /**
          * LmsLaunchResponse
-         * @description `cookie`: set the legacy `refreshToken` cookie on the shared parent domain, then redirect.
-         *     `login`: redirect to the LMS sign-in page.
+         * @description `cookie`: set `refresh_token` (when present) as the legacy `refreshToken` cookie on the shared
+         *     parent domain, then open `redirect_url`. `login`: no usable LMS session; sign in to the site again.
          */
         LmsLaunchResponse: {
             /**
@@ -24464,7 +24619,7 @@ export interface components {
              */
             mode: "cookie" | "login";
             /** Redirect Url */
-            redirect_url: string;
+            redirect_url?: string | null;
             /** Refresh Token */
             refresh_token?: string | null;
             /** Refresh Expires At */
@@ -24571,6 +24726,8 @@ export interface components {
         LogoutRequest: {
             /** Refresh Token */
             refresh_token?: string | null;
+            /** Legacy Refresh Token */
+            legacy_refresh_token?: string | null;
         };
         /** MarketerBalanceOut */
         MarketerBalanceOut: {
@@ -25271,6 +25428,91 @@ export interface components {
             /** Email */
             email: string | null;
         };
+        /** OAuthApproveIn */
+        OAuthApproveIn: {
+            /**
+             * Scopes
+             * @description Subset of admin:labs:read, admin:labs:write, admin:labs:analytics you hold
+             */
+            scopes: string[];
+        };
+        /** OAuthDecisionOut */
+        OAuthDecisionOut: {
+            /**
+             * Redirect To
+             * @description Send the browser here to return to the AI app
+             */
+            redirect_to: string;
+        };
+        /** OAuthGrantOut */
+        OAuthGrantOut: {
+            /**
+             * Grant Id
+             * Format: uuid
+             */
+            grant_id: string;
+            /** Client Id */
+            client_id: string;
+            /** Client Name */
+            client_name: string;
+            /** Scopes */
+            scopes: string[];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "revoked";
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Last Used At */
+            last_used_at?: string | null;
+            /** Revoked At */
+            revoked_at?: string | null;
+            /** Revoked Reason */
+            revoked_reason?: string | null;
+        };
+        /** OAuthRequestOut */
+        OAuthRequestOut: {
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            /** Client Id */
+            client_id: string;
+            /** Client Name */
+            client_name: string;
+            /** Client Uri */
+            client_uri?: string | null;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "dcr" | "cimd";
+            /** Redirect Host */
+            redirect_host: string;
+            /**
+             * Redirect Kind
+             * @enum {string}
+             */
+            redirect_kind: "web" | "loopback" | "app" | "unknown";
+            /** Verified */
+            verified: boolean;
+            /** Requested Scopes */
+            requested_scopes: string[];
+            /** Offered Scopes */
+            offered_scopes: string[];
+            /** Already Connected */
+            already_connected: boolean;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
         /** Offer */
         Offer: {
             /** Legacy Offer Id */
@@ -25677,6 +25919,30 @@ export interface components {
             overall: number;
             /** Reason */
             reason: string;
+        };
+        /** OverviewOut */
+        OverviewOut: {
+            /**
+             * Library Ready
+             * @description False until the B2B catalog mirror tables exist; catalog sections are then empty.
+             */
+            library_ready: boolean;
+            /**
+             * Content Ready
+             * @description False until `migrations/20261212_b2b_showcase.sql` has been applied.
+             */
+            content_ready: boolean;
+            /** Stats */
+            stats: components["schemas"]["StatOut"][];
+            /** Categories */
+            categories: components["schemas"]["TrainingAreaOut"][];
+            /** Courses */
+            courses: components["schemas"]["ProgramOut"][];
+            /** Companies */
+            companies: components["schemas"]["CompanyOut"][];
+            /** Stories */
+            stories: components["schemas"]["StoryOut"][];
+            services: components["schemas"]["ServicesOut"];
         };
         /** OwnedProductPageResponse */
         OwnedProductPageResponse: {
@@ -28072,7 +28338,20 @@ export interface components {
             lesson_count: number;
             /** Duration Seconds */
             duration_seconds: number | null;
+            /** @description Primary category (first by display order). */
             category: components["schemas"]["CategoryRefOut"] | null;
+            /**
+             * Categories
+             * @description Every category the program belongs to.
+             * @default []
+             */
+            categories: components["schemas"]["CategoryRefOut"][];
+            /**
+             * Trainers
+             * @description Up to 3 trainers (name + avatar).
+             * @default []
+             */
+            trainers: components["schemas"]["TrainerRefOut"][];
             /**
              * Sub Libraries
              * @default []
@@ -28116,7 +28395,20 @@ export interface components {
             lesson_count: number;
             /** Duration Seconds */
             duration_seconds: number | null;
+            /** @description Primary category (first by display order). */
             category: components["schemas"]["CategoryRefOut"] | null;
+            /**
+             * Categories
+             * @description Every category the program belongs to.
+             * @default []
+             */
+            categories: components["schemas"]["CategoryRefOut"][];
+            /**
+             * Trainers
+             * @description Up to 3 trainers (name + avatar).
+             * @default []
+             */
+            trainers: components["schemas"]["TrainerRefOut"][];
             /**
              * Sub Libraries
              * @default []
@@ -31967,6 +32259,32 @@ export interface components {
             /** Refresh Expires In */
             refresh_expires_in: number;
         };
+        /** TrackListOut */
+        TrackListOut: {
+            /** Items */
+            items: components["schemas"]["TrackOut"][];
+        };
+        /** TrackOut */
+        TrackOut: {
+            /**
+             * Key
+             * @description Pass as `/b2b/courses?track=<key>`.
+             */
+            key: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Category Ids */
+            category_ids: number[];
+            /** Categories */
+            categories: components["schemas"]["CategoryRefOut"][];
+            /**
+             * Program Count
+             * @description Distinct programs in at least one of the track's categories.
+             */
+            program_count: number;
+        };
         /** TrackingTag */
         TrackingTag: {
             /** Legacy Id */
@@ -32068,6 +32386,20 @@ export interface components {
             cvAttachmentId?: string | null;
             /** Portfolioattachmentids */
             portfolioAttachmentIds?: string[];
+        };
+        /** TrainerRefOut */
+        TrainerRefOut: {
+            /** Trainer Id */
+            trainer_id: number;
+            /** Name */
+            name: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /**
+             * Expert Key
+             * @description Key for `/catalog/experts/{key}` when the trainer has a B2C profile.
+             */
+            expert_key?: string | null;
         };
         /** TrainingAreaListOut */
         TrainingAreaListOut: {
@@ -32796,30 +33128,6 @@ export interface components {
                 [key: string]: unknown;
             }[];
         };
-        /** OverviewOut */
-        app__modules__b2b__presentation__schemas__OverviewOut: {
-            /**
-             * Library Ready
-             * @description False until the B2B catalog mirror tables exist; catalog sections are then empty.
-             */
-            library_ready: boolean;
-            /**
-             * Content Ready
-             * @description False until `migrations/20261212_b2b_showcase.sql` has been applied.
-             */
-            content_ready: boolean;
-            /** Stats */
-            stats: components["schemas"]["StatOut"][];
-            /** Categories */
-            categories: components["schemas"]["TrainingAreaOut"][];
-            /** Courses */
-            courses: components["schemas"]["ProgramOut"][];
-            /** Companies */
-            companies: components["schemas"]["CompanyOut"][];
-            /** Stories */
-            stories: components["schemas"]["StoryOut"][];
-            services: components["schemas"]["ServicesOut"];
-        };
         /** ExpertSummaryResponse */
         app__modules__catalog__presentation__browse_router__ExpertSummaryResponse: {
             /** Key */
@@ -33042,23 +33350,6 @@ export interface components {
                 [key: string]: unknown;
             }[];
         };
-        /** OverviewOut */
-        app__modules__labs__presentation__schemas__OverviewOut: {
-            /** Labs */
-            labs: number;
-            /** Published */
-            published: number;
-            /** Drafts */
-            drafts: number;
-            /** Attempts */
-            attempts: number;
-            /** Completion Rate */
-            completion_rate: number;
-            /** Avg Score */
-            avg_score: number | null;
-            /** Engines */
-            engines: number;
-        };
         /** ProductPriceResponse */
         app__modules__pricing__presentation__admin_router__ProductPriceResponse: {
             /**
@@ -33150,91 +33441,6 @@ export interface components {
             created_at: string;
             /** Attachments */
             attachments?: components["schemas"]["AttachmentResponse"][];
-        };
-        /** OAuthApproveIn */
-        OAuthApproveIn: {
-            /**
-             * Scopes
-             * @description Subset of admin:labs:read, admin:labs:write, admin:labs:analytics you hold
-             */
-            scopes: string[];
-        };
-        /** OAuthGrantOut */
-        OAuthGrantOut: {
-            /**
-             * Grant Id
-             * Format: uuid
-             */
-            grant_id: string;
-            /** Client Id */
-            client_id: string;
-            /** Client Name */
-            client_name: string;
-            /** Scopes */
-            scopes: string[];
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "active" | "revoked";
-            /**
-             * Created At
-             * Format: date-time
-             */
-            created_at: string;
-            /** Last Used At */
-            last_used_at?: string | null;
-            /** Revoked At */
-            revoked_at?: string | null;
-            /** Revoked Reason */
-            revoked_reason?: string | null;
-        };
-        /** OAuthDecisionOut */
-        OAuthDecisionOut: {
-            /**
-             * Redirect To
-             * @description Send the browser here to return to the AI app
-             */
-            redirect_to: string;
-        };
-        /** OAuthRequestOut */
-        OAuthRequestOut: {
-            /**
-             * Request Id
-             * Format: uuid
-             */
-            request_id: string;
-            /** Client Id */
-            client_id: string;
-            /** Client Name */
-            client_name: string;
-            /** Client Uri */
-            client_uri?: string | null;
-            /**
-             * Source
-             * @enum {string}
-             */
-            source: "dcr" | "cimd";
-            /** Redirect Host */
-            redirect_host: string;
-            /**
-             * Redirect Kind
-             * @enum {string}
-             */
-            redirect_kind: "web" | "loopback" | "app" | "unknown";
-            /** Verified */
-            verified: boolean;
-            /** Requested Scopes */
-            requested_scopes: string[];
-            /** Offered Scopes */
-            offered_scopes: string[];
-            /** Already Connected */
-            already_connected: boolean;
-            /**
-             * Expires At
-             * Format: date-time
-             */
-            expires_at: string;
         };
     };
     responses: never;
@@ -35577,6 +35783,8 @@ export interface operations {
                 duration_hours_max?: number | null;
                 level?: ("beginner" | "intermediate" | "advanced") | null;
                 language?: string | null;
+                /** @description `unavailable`: courses, diplomas and packages that can't really be sold (LMS course missing or inactive, no price, or a 0 price that isn't a USD free price); `availability_issue` says why. `available`: the rest. B2C products only. */
+                availability?: ("available" | "unavailable") | null;
                 /** @description Sort key. */
                 sort?: "updated" | "created" | "price" | "title" | "paid_orders" | "rating";
                 /** @description Sort direction. */
@@ -36001,6 +36209,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CatalogProductView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_products_status_bulk_api_v1_admin_catalog_products_bulk_status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkProductStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkProductStatusResponse"];
                 };
             };
             /** @description Validation Error */
@@ -44048,7 +44292,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["app__modules__b2b__presentation__schemas__OverviewOut"];
+                    "application/json": components["schemas"]["OverviewOut"];
                 };
             };
         };
@@ -44056,8 +44300,12 @@ export interface operations {
     list_courses_api_v1_b2b_courses_get: {
         parameters: {
             query?: {
-                /** @description Legacy category id (`/b2b/categories`). */
-                category_id?: number | null;
+                /** @description Legacy category id (`/b2b/categories`). Repeat to combine: `?category_id=3&category_id=27`. */
+                category_id?: number[] | null;
+                /** @description Curated category group from `/b2b/tracks`, e.g. `sales-growth`. */
+                track?: string | null;
+                /** @description `any`: in at least one of the categories; `all`: in every one of them. */
+                match?: "any" | "all";
                 /** @description B2B academy (sub-library) id. */
                 sub_library_id?: number | null;
                 /** @description Only diplomas (`true`) or only courses (`false`). */
@@ -44145,6 +44393,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TrainingAreaListOut"];
+                };
+            };
+        };
+    };
+    list_tracks_api_v1_b2b_tracks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrackListOut"];
                 };
             };
         };
@@ -49396,6 +49664,37 @@ export interface operations {
             };
         };
     };
+    lms_enrollments_api_v1_me_lms_enrollments_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                b2c_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LmsEnrollmentListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     lms_summary_api_v1_me_lms_summary_get: {
         parameters: {
             query?: never;
@@ -51664,6 +51963,178 @@ export interface operations {
             };
         };
     };
+    admin_labs_ai_oauth_request: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthRequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OAuthApproveIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDecisionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_deny: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDecisionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_grants: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthGrantOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_labs_ai_oauth_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grant_id: string;
+            };
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthGrantOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     admin_labs_engines: {
         parameters: {
             query?: never;
@@ -51746,7 +52217,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["app__modules__labs__presentation__schemas__OverviewOut"];
+                    "application/json": components["schemas"]["LabsOverviewOut"];
                 };
             };
             /** @description Validation Error */
@@ -61993,178 +62464,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdvisorHealthResponse"];
-                };
-            };
-        };
-    };
-    admin_labs_ai_oauth_request: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                request_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OAuthRequestOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    admin_labs_ai_oauth_approve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                request_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OAuthApproveIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OAuthDecisionOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    admin_labs_ai_oauth_deny: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                request_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OAuthDecisionOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    admin_labs_ai_oauth_grants: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OAuthGrantOut"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    admin_labs_ai_oauth_revoke: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                grant_id: string;
-            };
-            cookie?: {
-                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
-                b2c_admin_access_token?: string | null;
-            };
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OAuthGrantOut"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -8,7 +9,10 @@ import {
   restoreProduct,
   runLegacySweep,
   setProductStatus,
+  setProductsStatusBulk,
   type Product,
+  type ProductAvailability,
+  type ProductStatus,
   type ProductOrigin,
   type ProductSort,
   type ProductSource,
@@ -19,7 +23,8 @@ import { useLang, useT } from "@/lib/i18n";
 import { badgeLabel, dateValue } from "@/lib/export/columns";
 import { AppLink } from "@/components/ui/app-link";
 import { toast } from "@/components/ui/toast";
-import { Avatar, Badge, Button, ErrorAlert, PageHead } from "@/components/ui/kit";
+import { Alert, Avatar, Badge, Button, ErrorAlert, PageHead } from "@/components/ui/kit";
+import { Modal } from "@/components/ui/modal";
 import { type Column } from "@/components/ui/data-table";
 import { PagedList, type ListFilter } from "@/components/ui/paged-list";
 import { initialsOf, productStatusBadge } from "@/lib/status";
@@ -180,18 +185,110 @@ const STATUSES: { value: ProductListStatus; ar: string; en: string }[] = [
   { value: "deleted", ar: "محذوف", en: "Deleted" },
 ];
 
+/** Why a course/diploma/package can't really be sold (`availability_issue` from the backend). */
+const AVAILABILITY_REASONS: Record<string, { ar: string; en: string }> = {
+  lms_unlinked: { ar: "غير مرتبط بـ LMS", en: "Not linked to the LMS" },
+  lms_missing: { ar: "غير موجود في LMS", en: "Missing from the LMS" },
+  lms_inactive: { ar: "معطّل في LMS", en: "Inactive in the LMS" },
+  no_price: { ar: "بلا سعر", en: "No price" },
+  zero_price: { ar: "سعر صفري غير صالح", en: "Zero price that isn't a free USD price" },
+};
+
+const refOf = (product: Product) => product.ref ?? `b2c:${product.product_id}`;
+/** Bulk status changes accept at most this many refs per call. */
+const BULK_CHUNK = 200;
+
+type BulkPlan = { status: ProductStatus; products: Product[]; title: string };
+
 function CatalogList({ types }: { types: string }) {
   const t = useT();
   const lang = useLang();
   const queryClient = useQueryClient();
+  const reasonLabel = (issue: string) => {
+    const reason = AVAILABILITY_REASONS[issue];
+    return reason ? t(reason.ar, reason.en) : issue;
+  };
 
   const toggle = useMutation({
     mutationFn: (product: Product) =>
       setProductStatus(
-        product.ref ?? `b2c:${product.product_id}`,
+        refOf(product),
         product.status === "published" ? (product.source === "legacy" ? "draft" : "unpublished") : "published",
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+  // Publishing a product flagged unavailable waits for a confirmation.
+  const [confirmPublish, setConfirmPublish] = useState<Product | null>(null);
+  const togglePublish = (product: Product) => {
+    if (product.status !== "published" && product.availability_issue) setConfirmPublish(product);
+    else toggle.mutate(product);
+  };
+
+  // Row selection (B2C products only) and bulk status changes.
+  const [selected, setSelected] = useState<Map<string, Product>>(new Map());
+  const toggleSelected = (product: Product) =>
+    setSelected((previous) => {
+      const next = new Map(previous);
+      if (next.has(refOf(product))) next.delete(refOf(product));
+      else next.set(refOf(product), product);
+      return next;
+    });
+  const [bulkPlan, setBulkPlan] = useState<BulkPlan | null>(null);
+  const bulk = useMutation({
+    mutationFn: async (plan: BulkPlan) => {
+      const refs = plan.products.map(refOf);
+      let changed = 0;
+      const failures: string[] = [];
+      for (let start = 0; start < refs.length; start += BULK_CHUNK) {
+        const result = await setProductsStatusBulk(refs.slice(start, start + BULK_CHUNK), plan.status);
+        changed += result.changed;
+        failures.push(...result.results.filter((row) => !row.ok).map((row) => `${row.ref}: ${row.error ?? ""}`));
+      }
+      return { changed, failures };
+    },
+    onSuccess: ({ changed, failures }) => {
+      setBulkPlan(null);
+      setSelected(new Map());
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+      if (failures.length) {
+        toast.error(t(`تغيّر ${changed}، وتعذّر ${failures.length}`, `${changed} changed, ${failures.length} failed`));
+        console.warn("bulk status failures", failures);
+      } else {
+        toast.success(t(`تم تغيير حالة ${changed} منتج`, `Changed the status of ${changed} products`));
+      }
+    },
+  });
+
+  // Every published product the availability rule flags, across all pages.
+  const findUnavailable = useMutation({
+    mutationFn: async () => {
+      const products: Product[] = [];
+      for (let offset = 0; ; offset += BULK_CHUNK) {
+        const page = await listProducts({
+          product_type: types || "course,diploma,package",
+          status: "published",
+          source: "b2c",
+          availability: "unavailable",
+          limit: BULK_CHUNK,
+          offset,
+        });
+        products.push(...page.items);
+        if (page.items.length < BULK_CHUNK || products.length >= page.total) break;
+      }
+      return products;
+    },
+    onSuccess: (products) => {
+      if (!products.length) {
+        toast.success(t("لا منتجات منشورة غير متاحة", "No published product is unavailable"));
+        return;
+      }
+      setBulkPlan({
+        status: "unpublished",
+        products,
+        title: t("إلغاء نشر كل المنتجات غير المتاحة", "Unpublish every unavailable product"),
+      });
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : t("تعذّر التحميل", "Couldn't load")),
   });
 
   const restore = useMutation({
@@ -205,6 +302,21 @@ function CatalogList({ types }: { types: string }) {
   });
 
   const columns: Column<Product>[] = [
+    {
+      key: "select",
+      header: "",
+      width: "2.5rem",
+      cell: (row) =>
+        row.source === "b2c" && row.status !== "deleted" ? (
+          <input
+            type="checkbox"
+            aria-label={t(`تحديد ${row.title ?? row.slug}`, `Select ${row.title ?? row.slug}`)}
+            checked={selected.has(refOf(row))}
+            onChange={() => toggleSelected(row)}
+            data-testid="catalog-select"
+          />
+        ) : null,
+    },
     {
       key: "title",
       header: t("العنوان", "Title"),
@@ -314,11 +426,23 @@ function CatalogList({ types }: { types: string }) {
     {
       key: "status",
       header: t("الحالة", "Status"),
-      exportValue: (row) => [badgeLabel(productStatusBadge(row.status), lang), row.source].filter(Boolean).join(" · "),
+      exportValue: (row) =>
+        [
+          badgeLabel(productStatusBadge(row.status), lang),
+          row.source,
+          row.availability_issue ? reasonLabel(row.availability_issue) : null,
+        ]
+          .filter(Boolean)
+          .join(" · "),
       cell: (row) => (
         <span className="ma-cell-flex">
           <Badge def={productStatusBadge(row.status)} />
           <SourceBadge source={row.source} />
+          {row.availability_issue ? (
+            <span title={reasonLabel(row.availability_issue)} data-testid="catalog-unavailable">
+              <Badge def={{ label: { ar: "غير متاح", en: "Unavailable" }, tone: "danger" }} />
+            </span>
+          ) : null}
         </span>
       ),
     },
@@ -349,7 +473,7 @@ function CatalogList({ types }: { types: string }) {
             sm
             disabled={toggle.isPending}
             label={row.status === "published" ? t("إلغاء النشر", "Unpublish") : t("نشر", "Publish")}
-            onClick={() => toggle.mutate(row)}
+            onClick={() => togglePublish(row)}
           />
         ),
     },
@@ -378,6 +502,14 @@ function CatalogList({ types }: { types: string }) {
       options: [
         { value: "migrated", label: t("منقول من المنصة القديمة", "Migrated from legacy") },
         { value: "native", label: t("المتجر الجديد", "Native") },
+      ],
+    },
+    {
+      key: "availability",
+      label: t("الإتاحة: الكل", "Availability: all"),
+      options: [
+        { value: "unavailable", label: t("غير متاح للبيع", "Unavailable") },
+        { value: "available", label: t("متاح", "Available") },
       ],
     },
     {
@@ -433,18 +565,49 @@ function CatalogList({ types }: { types: string }) {
     <>
       <CatalogInsightsPanel productType={types || ALL_PRODUCT_TYPES} />
       <ErrorAlert error={toggle.error} title={t("تعذّر تغيير حالة النشر", "Couldn't change the publishing state")} />
+      <ErrorAlert error={bulk.error} title={t("تعذّر تغيير حالة النشر", "Couldn't change the publishing state")} />
+      {selected.size ? (
+        <div className="ma-cell-flex" style={{ marginBlock: "var(--space-2)", flexWrap: "wrap" }} data-testid="catalog-bulk-bar">
+          <strong>{t(`${formatNumber(selected.size)} محدد`, `${formatNumber(selected.size)} selected`)}</strong>
+          <Button
+            sm
+            kind="danger"
+            label={t("إلغاء نشر المحدد", "Unpublish selected")}
+            onClick={() =>
+              setBulkPlan({
+                status: "unpublished",
+                products: [...selected.values()],
+                title: t("إلغاء نشر المنتجات المحددة", "Unpublish the selected products"),
+              })
+            }
+          />
+          <Button
+            sm
+            label={t("نشر المحدد", "Publish selected")}
+            onClick={() =>
+              setBulkPlan({
+                status: "published",
+                products: [...selected.values()],
+                title: t("نشر المنتجات المحددة", "Publish the selected products"),
+              })
+            }
+          />
+          <Button sm kind="ghost" icon="x" label={t("إلغاء التحديد", "Clear")} onClick={() => setSelected(new Map())} />
+        </div>
+      ) : null}
       <PagedList
         key={types || "all"}
         queryKeyBase={productKeys.list({ product_type: types })}
-        fetchPage={({ query, offset, limit, filters: selected, multi, sort }) =>
+        fetchPage={({ query, offset, limit, filters: chosen, multi, sort }) =>
           listProducts({
             product_type: multi?.product_type?.length ? multi.product_type.join(",") : types || undefined,
-            status: (selected.status || undefined) as ProductListStatus | undefined,
+            status: (chosen.status || undefined) as ProductListStatus | undefined,
             category: multi?.category?.length ? multi.category.join(",") : undefined,
             tag: multi?.tag?.length ? multi.tag.join(",") : undefined,
-            source: (selected.source || undefined) as ProductSource | undefined,
-            origin: (selected.origin || undefined) as ProductOrigin | undefined,
-            purchased: selected.purchased ? selected.purchased === "true" : undefined,
+            source: (chosen.source || undefined) as ProductSource | undefined,
+            origin: (chosen.origin || undefined) as ProductOrigin | undefined,
+            purchased: chosen.purchased ? chosen.purchased === "true" : undefined,
+            availability: (chosen.availability || undefined) as ProductAvailability | undefined,
             sort: sort?.key as ProductSort | undefined,
             order: sort?.dir,
             query,
@@ -455,6 +618,16 @@ function CatalogList({ types }: { types: string }) {
         sort={{ options: sortOptions, initial: { key: "updated", dir: "desc" } }}
         columns={columns}
         searchPlaceholder={t("ابحث بالعنوان أو الرابط…", "Search title or slug…")}
+        toolbar={
+          <Button
+            sm
+            kind="soft"
+            label={t("إلغاء نشر غير المتاح", "Unpublish unavailable")}
+            disabled={findUnavailable.isPending || bulk.isPending}
+            onClick={() => findUnavailable.mutate()}
+            data-testid="catalog-unpublish-unavailable"
+          />
+        }
         filters={filters}
         multiFilters={multiFilters}
         empty={t("لا عناصر.", "No items.")}
@@ -469,6 +642,77 @@ function CatalogList({ types }: { types: string }) {
           ],
         }}
       />
+      <Modal
+        open={bulkPlan !== null}
+        onOpenChange={(open) => !open && !bulk.isPending && setBulkPlan(null)}
+        title={bulkPlan?.title}
+        footer={
+          <>
+            <Button kind="ghost" label={t("إلغاء", "Cancel")} disabled={bulk.isPending} onClick={() => setBulkPlan(null)} />
+            <Button
+              kind={bulkPlan?.status === "published" ? "primary" : "danger"}
+              label={t(`تأكيد (${bulkPlan?.products.length ?? 0})`, `Confirm (${bulkPlan?.products.length ?? 0})`)}
+              disabled={bulk.isPending}
+              onClick={() => bulkPlan && bulk.mutate(bulkPlan)}
+              data-testid="catalog-bulk-confirm"
+            />
+          </>
+        }
+      >
+        {bulkPlan?.status === "published" && bulkPlan.products.some((item) => item.availability_issue) ? (
+          <Alert kind="warning" title={t("بعضها غير متاح للبيع", "Some of these can't really be sold")}>
+            {t(
+              "المنتجات المعلّمة «غير متاح» ستظهر في المتجر لكن التسجيل فيها سيفشل.",
+              "Products flagged unavailable will show on the storefront, but enrolling in them fails.",
+            )}
+          </Alert>
+        ) : null}
+        <p>
+          {bulkPlan?.status === "published"
+            ? t("ستظهر هذه المنتجات في المتجر والبحث.", "These products will show on the storefront and in search.")
+            : t(
+                "ستختفي هذه المنتجات من المتجر والبحث والتوصيات. المشتركون الحاليون يحتفظون بوصولهم.",
+                "These products leave the storefront, search and recommendations. Existing learners keep their access.",
+              )}
+        </p>
+        <ul style={{ maxHeight: "16rem", overflow: "auto", paddingInlineStart: "1.25rem" }}>
+          {bulkPlan?.products.map((item) => (
+            <li key={refOf(item)}>
+              {item.title ?? item.slug}
+              {item.availability_issue ? <span className="ma-cell-sub"> · {reasonLabel(item.availability_issue)}</span> : null}
+            </li>
+          ))}
+        </ul>
+      </Modal>
+      <Modal
+        open={confirmPublish !== null}
+        onOpenChange={(open) => !open && setConfirmPublish(null)}
+        title={t("نشر منتج غير متاح؟", "Publish an unavailable product?")}
+        footer={
+          <>
+            <Button kind="ghost" label={t("إلغاء", "Cancel")} onClick={() => setConfirmPublish(null)} />
+            <Button
+              kind="primary"
+              label={t("نشر على أي حال", "Publish anyway")}
+              onClick={() => {
+                if (confirmPublish) toggle.mutate(confirmPublish);
+                setConfirmPublish(null);
+              }}
+            />
+          </>
+        }
+      >
+        <p>
+          {confirmPublish?.title ?? confirmPublish?.slug}:{" "}
+          <strong>{confirmPublish?.availability_issue ? reasonLabel(confirmPublish.availability_issue) : ""}</strong>
+        </p>
+        <p>
+          {t(
+            "سيظهر في المتجر لكن التسجيل أو الشراء قد يفشل حتى يُصلَح في LMS أو يُضاف سعر.",
+            "It will show on the storefront, but enrolling or buying may fail until it is fixed in the LMS or priced.",
+          )}
+        </p>
+      </Modal>
     </>
   );
 }

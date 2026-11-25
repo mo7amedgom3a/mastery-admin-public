@@ -5474,6 +5474,28 @@
             }
           },
           {
+            "name": "availability",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "available",
+                    "unavailable"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`unavailable`: courses, diplomas and packages that can't really be sold (LMS course missing or inactive, no price, or a 0 price that isn't a USD free price); `availability_issue` says why. `available`: the rest. B2C products only.",
+              "title": "Availability"
+            },
+            "description": "`unavailable`: courses, diplomas and packages that can't really be sold (LMS course missing or inactive, no price, or a 0 price that isn't a USD free price); `availability_issue` says why. `available`: the rest. B2C products only."
+          },
+          {
             "name": "sort",
             "in": "query",
             "required": false,
@@ -6599,6 +6621,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CatalogProductView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/catalog/products/bulk-status": {
+      "post": {
+        "tags": [
+          "Admin catalog"
+        ],
+        "summary": "Change the status of several products",
+        "description": "Sets one status on up to 200 products, e.g. unpublishing every course the `availability=unavailable` filter lists. Each product is changed on its own (one failure doesn't stop the rest) and gets the same audit entry, vector-index sync and legacy sync as the single status route; the storefront is revalidated once for the batch. Requires `admin:catalog:write`.",
+        "operationId": "set_products_status_bulk_api_v1_admin_catalog_products_bulk_status_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkProductStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkProductStatusResponse"
                 }
               }
             }
@@ -24609,7 +24698,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/app__modules__b2b__presentation__schemas__OverviewOut"
+                  "$ref": "#/components/schemas/OverviewOut"
                 }
               }
             }
@@ -24632,16 +24721,55 @@
             "schema": {
               "anyOf": [
                 {
-                  "type": "integer"
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "maxItems": 13
                 },
                 {
                   "type": "null"
                 }
               ],
-              "description": "Legacy category id (`/b2b/categories`).",
+              "description": "Legacy category id (`/b2b/categories`). Repeat to combine: `?category_id=3&category_id=27`.",
               "title": "Category Id"
             },
-            "description": "Legacy category id (`/b2b/categories`)."
+            "description": "Legacy category id (`/b2b/categories`). Repeat to combine: `?category_id=3&category_id=27`."
+          },
+          {
+            "name": "track",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z-]{2,40}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Curated category group from `/b2b/tracks`, e.g. `sales-growth`.",
+              "title": "Track"
+            },
+            "description": "Curated category group from `/b2b/tracks`, e.g. `sales-growth`."
+          },
+          {
+            "name": "match",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "any",
+                "all"
+              ],
+              "type": "string",
+              "description": "`any`: in at least one of the categories; `all`: in every one of them.",
+              "default": "any",
+              "title": "Match"
+            },
+            "description": "`any`: in at least one of the categories; `all`: in every one of them."
           },
           {
             "name": "sub_library_id",
@@ -24832,6 +24960,28 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TrainingAreaListOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/b2b/tracks": {
+      "get": {
+        "tags": [
+          "B2B"
+        ],
+        "summary": "Curated groups of training fields",
+        "description": "Named category combinations (e.g. sales + marketing + personal effectiveness) the landing\ncan filter by with `/b2b/courses?track=<key>`, with the fields and live program counts.",
+        "operationId": "list_tracks_api_v1_b2b_tracks_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackListOut"
                 }
               }
             }
@@ -35412,6 +35562,61 @@
         }
       }
     },
+    "/api/v1/me/lms/enrollments": {
+      "get": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Lms Enrollments",
+        "description": "Active courses the LMS has enrolled the student in, read from the LMS database (no LMS\nsession needed), so students whose enrollments predate B2C can see and open them.",
+        "operationId": "lms_enrollments_api_v1_me_lms_enrollments_get",
+        "security": [
+          {
+            "B2C JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "B2C Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LmsEnrollmentListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/lms/summary": {
       "get": {
         "tags": [
@@ -40352,6 +40557,340 @@
         }
       }
     },
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}": {
+      "get": {
+        "tags": [
+          "Admin Labs AI"
+        ],
+        "summary": "A pending connection request from an AI app (the consent screen)",
+        "operationId": "admin_labs_ai_oauth_request",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthRequestOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/approve": {
+      "post": {
+        "tags": [
+          "Admin Labs AI"
+        ],
+        "summary": "Connect the AI app with the chosen scopes; returns where to send the browser",
+        "operationId": "admin_labs_ai_oauth_approve",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthApproveIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthDecisionOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/deny": {
+      "post": {
+        "tags": [
+          "Admin Labs AI"
+        ],
+        "summary": "Decline the connection; returns where to send the browser",
+        "operationId": "admin_labs_ai_oauth_deny",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthDecisionOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/labs/ai/oauth/grants": {
+      "get": {
+        "tags": [
+          "Admin Labs AI"
+        ],
+        "summary": "Your connected AI apps (claude.ai, ChatGPT, …)",
+        "operationId": "admin_labs_ai_oauth_grants",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OAuthGrantOut"
+                  },
+                  "title": "Response Admin Labs Ai Oauth Grants"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/labs/ai/oauth/grants/{grant_id}": {
+      "delete": {
+        "tags": [
+          "Admin Labs AI"
+        ],
+        "summary": "Disconnect an AI app (its tokens stop working on the next request)",
+        "operationId": "admin_labs_ai_oauth_revoke",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "grant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Grant Id"
+            }
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthGrantOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/labs/engines": {
       "get": {
         "tags": [
@@ -40502,7 +41041,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/app__modules__labs__presentation__schemas__OverviewOut"
+                  "$ref": "#/components/schemas/LabsOverviewOut"
                 }
               }
             }
@@ -62571,340 +63110,6 @@
           }
         }
       }
-    },
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}": {
-      "get": {
-        "tags": [
-          "Admin Labs AI"
-        ],
-        "summary": "A pending connection request from an AI app (the consent screen)",
-        "operationId": "admin_labs_ai_oauth_request",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "request_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Request Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuthRequestOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/approve": {
-      "post": {
-        "tags": [
-          "Admin Labs AI"
-        ],
-        "summary": "Connect the AI app with the chosen scopes; returns where to send the browser",
-        "operationId": "admin_labs_ai_oauth_approve",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "request_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Request Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OAuthApproveIn"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuthDecisionOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/labs/ai/oauth/requests/{request_id}/deny": {
-      "post": {
-        "tags": [
-          "Admin Labs AI"
-        ],
-        "summary": "Decline the connection; returns where to send the browser",
-        "operationId": "admin_labs_ai_oauth_deny",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "request_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Request Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuthDecisionOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/labs/ai/oauth/grants": {
-      "get": {
-        "tags": [
-          "Admin Labs AI"
-        ],
-        "summary": "Your connected AI apps (claude.ai, ChatGPT, …)",
-        "operationId": "admin_labs_ai_oauth_grants",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/OAuthGrantOut"
-                  },
-                  "title": "Response Admin Labs Ai Oauth Grants"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/admin/labs/ai/oauth/grants/{grant_id}": {
-      "delete": {
-        "tags": [
-          "Admin Labs AI"
-        ],
-        "summary": "Disconnect an AI app (its tokens stop working on the next request)",
-        "operationId": "admin_labs_ai_oauth_revoke",
-        "security": [
-          {
-            "B2C Admin JWT": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "grant_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Grant Id"
-            }
-          },
-          {
-            "name": "b2c_admin_access_token",
-            "in": "cookie",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
-              "title": "B2C Admin Access Token"
-            },
-            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuthGrantOut"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -77697,6 +77902,125 @@
         ],
         "title": "BulkPriceRow"
       },
+      "BulkProductStatusRequest": {
+        "properties": {
+          "refs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Refs",
+            "description": "Products to change. Product ref: `b2c:<product_id>` (a bare UUID also works), `legacy:course:<id>` or `legacy:package:<id>`."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "unpublished",
+              "archived"
+            ],
+            "title": "Status",
+            "description": "New status for every product; only `published` products are sold."
+          }
+        },
+        "type": "object",
+        "required": [
+          "refs",
+          "status"
+        ],
+        "title": "BulkProductStatusRequest"
+      },
+      "BulkProductStatusResponse": {
+        "properties": {
+          "changed": {
+            "type": "integer",
+            "title": "Changed"
+          },
+          "failed": {
+            "type": "integer",
+            "title": "Failed"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/BulkProductStatusResult"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "changed",
+          "failed",
+          "results"
+        ],
+        "title": "BulkProductStatusResponse"
+      },
+      "BulkProductStatusResult": {
+        "properties": {
+          "ref": {
+            "type": "string",
+            "title": "Ref"
+          },
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          },
+          "previous_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Status"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ref",
+          "ok"
+        ],
+        "title": "BulkProductStatusResult"
+      },
       "BulkSelector": {
         "properties": {
           "product_ids": {
@@ -78951,6 +79275,17 @@
               }
             ],
             "title": "Deleted Reason"
+          },
+          "availability_issue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Availability Issue"
           }
         },
         "type": "object",
@@ -95167,6 +95502,56 @@
         "type": "object",
         "title": "LabUpdateIn"
       },
+      "LabsOverviewOut": {
+        "properties": {
+          "labs": {
+            "type": "integer",
+            "title": "Labs"
+          },
+          "published": {
+            "type": "integer",
+            "title": "Published"
+          },
+          "drafts": {
+            "type": "integer",
+            "title": "Drafts"
+          },
+          "attempts": {
+            "type": "integer",
+            "title": "Attempts"
+          },
+          "completion_rate": {
+            "type": "number",
+            "title": "Completion Rate"
+          },
+          "avg_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Score"
+          },
+          "engines": {
+            "type": "integer",
+            "title": "Engines"
+          }
+        },
+        "type": "object",
+        "required": [
+          "labs",
+          "published",
+          "drafts",
+          "attempts",
+          "completion_rate",
+          "avg_score",
+          "engines"
+        ],
+        "title": "LabsOverviewOut"
+      },
       "LandingBannerResponse": {
         "properties": {
           "text": {
@@ -96761,19 +97146,169 @@
         ],
         "title": "LmsCoursePageResponse"
       },
-      "LmsLaunchRequest": {
+      "LmsEnrollmentListResponse": {
         "properties": {
-          "entitlement_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Entitlement Id"
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LmsEnrollmentOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
           }
         },
         "type": "object",
         "required": [
-          "entitlement_id"
+          "items",
+          "total"
         ],
-        "title": "LmsLaunchRequest"
+        "title": "LmsEnrollmentListResponse"
+      },
+      "LmsEnrollmentOut": {
+        "properties": {
+          "lms_course_id": {
+            "type": "integer",
+            "title": "Lms Course Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "trainer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trainer"
+          },
+          "is_diploma": {
+            "type": "boolean",
+            "title": "Is Diploma",
+            "default": false
+          },
+          "enrolled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enrolled At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "entitlement_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entitlement Id"
+          },
+          "product_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Slug"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lms_course_id"
+        ],
+        "title": "LmsEnrollmentOut"
+      },
+      "LmsLaunchRequest": {
+        "properties": {
+          "entitlement_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entitlement Id"
+          },
+          "lms_course_id": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lms Course Id"
+          },
+          "browser_refresh_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4096,
+                "format": "password",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Browser Refresh Token"
+          }
+        },
+        "type": "object",
+        "title": "LmsLaunchRequest",
+        "description": "Exactly one of `entitlement_id` (a B2C purchase) or `lms_course_id` (an enrollment the LMS\nholds, e.g. from before B2C; checked against the LMS database)."
       },
       "LmsLaunchResponse": {
         "properties": {
@@ -96786,7 +97321,14 @@
             "title": "Mode"
           },
           "redirect_url": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Redirect Url"
           },
           "refresh_token": {
@@ -96815,11 +97357,10 @@
         },
         "type": "object",
         "required": [
-          "mode",
-          "redirect_url"
+          "mode"
         ],
         "title": "LmsLaunchResponse",
-        "description": "`cookie`: set the legacy `refreshToken` cookie on the shared parent domain, then redirect.\n`login`: redirect to the LMS sign-in page."
+        "description": "`cookie`: set `refresh_token` (when present) as the legacy `refreshToken` cookie on the shared\nparent domain, then open `redirect_url`. `login`: no usable LMS session; sign in to the site again."
       },
       "LmsQuizListResponse": {
         "properties": {
@@ -97087,6 +97628,20 @@
               }
             ],
             "title": "Refresh Token"
+          },
+          "legacy_refresh_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4096,
+                "format": "password",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Refresh Token"
           }
         },
         "type": "object",
@@ -98919,6 +99474,212 @@
         ],
         "title": "NotificationEmail"
       },
+      "OAuthApproveIn": {
+        "properties": {
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Scopes",
+            "description": "Subset of admin:labs:read, admin:labs:write, admin:labs:analytics you hold"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scopes"
+        ],
+        "title": "OAuthApproveIn"
+      },
+      "OAuthDecisionOut": {
+        "properties": {
+          "redirect_to": {
+            "type": "string",
+            "title": "Redirect To",
+            "description": "Send the browser here to return to the AI app"
+          }
+        },
+        "type": "object",
+        "required": [
+          "redirect_to"
+        ],
+        "title": "OAuthDecisionOut"
+      },
+      "OAuthGrantOut": {
+        "properties": {
+          "grant_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Grant Id"
+          },
+          "client_id": {
+            "type": "string",
+            "title": "Client Id"
+          },
+          "client_name": {
+            "type": "string",
+            "title": "Client Name"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "revoked"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "last_used_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Used At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "revoked_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "grant_id",
+          "client_id",
+          "client_name",
+          "scopes",
+          "status",
+          "created_at"
+        ],
+        "title": "OAuthGrantOut"
+      },
+      "OAuthRequestOut": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Request Id"
+          },
+          "client_id": {
+            "type": "string",
+            "title": "Client Id"
+          },
+          "client_name": {
+            "type": "string",
+            "title": "Client Name"
+          },
+          "client_uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Uri"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "dcr",
+              "cimd"
+            ],
+            "title": "Source"
+          },
+          "redirect_host": {
+            "type": "string",
+            "title": "Redirect Host"
+          },
+          "redirect_kind": {
+            "type": "string",
+            "enum": [
+              "web",
+              "loopback",
+              "app",
+              "unknown"
+            ],
+            "title": "Redirect Kind"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified"
+          },
+          "requested_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Requested Scopes"
+          },
+          "offered_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Offered Scopes"
+          },
+          "already_connected": {
+            "type": "boolean",
+            "title": "Already Connected"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "client_id",
+          "client_name",
+          "source",
+          "redirect_host",
+          "redirect_kind",
+          "verified",
+          "requested_scopes",
+          "offered_scopes",
+          "already_connected",
+          "expires_at"
+        ],
+        "title": "OAuthRequestOut"
+      },
       "Offer": {
         "properties": {
           "legacy_offer_id": {
@@ -100087,6 +100848,70 @@
           "reason"
         ],
         "title": "OverrideIn"
+      },
+      "OverviewOut": {
+        "properties": {
+          "library_ready": {
+            "type": "boolean",
+            "title": "Library Ready",
+            "description": "False until the B2B catalog mirror tables exist; catalog sections are then empty."
+          },
+          "content_ready": {
+            "type": "boolean",
+            "title": "Content Ready",
+            "description": "False until `migrations/20261212_b2b_showcase.sql` has been applied."
+          },
+          "stats": {
+            "items": {
+              "$ref": "#/components/schemas/StatOut"
+            },
+            "type": "array",
+            "title": "Stats"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/TrainingAreaOut"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "courses": {
+            "items": {
+              "$ref": "#/components/schemas/ProgramOut"
+            },
+            "type": "array",
+            "title": "Courses"
+          },
+          "companies": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyOut"
+            },
+            "type": "array",
+            "title": "Companies"
+          },
+          "stories": {
+            "items": {
+              "$ref": "#/components/schemas/StoryOut"
+            },
+            "type": "array",
+            "title": "Stories"
+          },
+          "services": {
+            "$ref": "#/components/schemas/ServicesOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "library_ready",
+          "content_ready",
+          "stats",
+          "categories",
+          "courses",
+          "companies",
+          "stories",
+          "services"
+        ],
+        "title": "OverviewOut"
       },
       "OwnedProductPageResponse": {
         "properties": {
@@ -106999,7 +107824,26 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Primary category (first by display order)."
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryRefOut"
+            },
+            "type": "array",
+            "title": "Categories",
+            "description": "Every category the program belongs to.",
+            "default": []
+          },
+          "trainers": {
+            "items": {
+              "$ref": "#/components/schemas/TrainerRefOut"
+            },
+            "type": "array",
+            "title": "Trainers",
+            "description": "Up to 3 trainers (name + avatar).",
+            "default": []
           },
           "sub_libraries": {
             "items": {
@@ -107154,7 +107998,26 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Primary category (first by display order)."
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryRefOut"
+            },
+            "type": "array",
+            "title": "Categories",
+            "description": "Every category the program belongs to.",
+            "default": []
+          },
+          "trainers": {
+            "items": {
+              "$ref": "#/components/schemas/TrainerRefOut"
+            },
+            "type": "array",
+            "title": "Trainers",
+            "description": "Up to 3 trainers (name + avatar).",
+            "default": []
           },
           "sub_libraries": {
             "items": {
@@ -118763,6 +119626,68 @@
         ],
         "title": "TokenResponse"
       },
+      "TrackListOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TrackOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "TrackListOut"
+      },
+      "TrackOut": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "Pass as `/b2b/courses?track=<key>`."
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "category_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Category Ids"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryRefOut"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "program_count": {
+            "type": "integer",
+            "title": "Program Count",
+            "description": "Distinct programs in at least one of the track's categories."
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "description",
+          "category_ids",
+          "categories",
+          "program_count"
+        ],
+        "title": "TrackOut"
+      },
       "TrackingTag": {
         "properties": {
           "legacy_id": {
@@ -119071,6 +119996,48 @@
           "skillIds"
         ],
         "title": "TrainerApplicationRequest"
+      },
+      "TrainerRefOut": {
+        "properties": {
+          "trainer_id": {
+            "type": "integer",
+            "title": "Trainer Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "expert_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expert Key",
+            "description": "Key for `/catalog/experts/{key}` when the trainer has a B2C profile."
+          }
+        },
+        "type": "object",
+        "required": [
+          "trainer_id",
+          "name",
+          "avatar_url"
+        ],
+        "title": "TrainerRefOut"
       },
       "TrainingAreaListOut": {
         "properties": {
@@ -121598,70 +122565,6 @@
         ],
         "title": "AnalyticsOut"
       },
-      "app__modules__b2b__presentation__schemas__OverviewOut": {
-        "properties": {
-          "library_ready": {
-            "type": "boolean",
-            "title": "Library Ready",
-            "description": "False until the B2B catalog mirror tables exist; catalog sections are then empty."
-          },
-          "content_ready": {
-            "type": "boolean",
-            "title": "Content Ready",
-            "description": "False until `migrations/20261212_b2b_showcase.sql` has been applied."
-          },
-          "stats": {
-            "items": {
-              "$ref": "#/components/schemas/StatOut"
-            },
-            "type": "array",
-            "title": "Stats"
-          },
-          "categories": {
-            "items": {
-              "$ref": "#/components/schemas/TrainingAreaOut"
-            },
-            "type": "array",
-            "title": "Categories"
-          },
-          "courses": {
-            "items": {
-              "$ref": "#/components/schemas/ProgramOut"
-            },
-            "type": "array",
-            "title": "Courses"
-          },
-          "companies": {
-            "items": {
-              "$ref": "#/components/schemas/CompanyOut"
-            },
-            "type": "array",
-            "title": "Companies"
-          },
-          "stories": {
-            "items": {
-              "$ref": "#/components/schemas/StoryOut"
-            },
-            "type": "array",
-            "title": "Stories"
-          },
-          "services": {
-            "$ref": "#/components/schemas/ServicesOut"
-          }
-        },
-        "type": "object",
-        "required": [
-          "library_ready",
-          "content_ready",
-          "stats",
-          "categories",
-          "courses",
-          "companies",
-          "stories",
-          "services"
-        ],
-        "title": "OverviewOut"
-      },
       "app__modules__catalog__presentation__browse_router__ExpertSummaryResponse": {
         "properties": {
           "key": {
@@ -122248,56 +123151,6 @@
         ],
         "title": "AnalyticsOut"
       },
-      "app__modules__labs__presentation__schemas__OverviewOut": {
-        "properties": {
-          "labs": {
-            "type": "integer",
-            "title": "Labs"
-          },
-          "published": {
-            "type": "integer",
-            "title": "Published"
-          },
-          "drafts": {
-            "type": "integer",
-            "title": "Drafts"
-          },
-          "attempts": {
-            "type": "integer",
-            "title": "Attempts"
-          },
-          "completion_rate": {
-            "type": "number",
-            "title": "Completion Rate"
-          },
-          "avg_score": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Avg Score"
-          },
-          "engines": {
-            "type": "integer",
-            "title": "Engines"
-          }
-        },
-        "type": "object",
-        "required": [
-          "labs",
-          "published",
-          "drafts",
-          "attempts",
-          "completion_rate",
-          "avg_score",
-          "engines"
-        ],
-        "title": "OverviewOut"
-      },
       "app__modules__pricing__presentation__admin_router__ProductPriceResponse": {
         "properties": {
           "amount": {
@@ -122517,212 +123370,6 @@
           "created_at"
         ],
         "title": "MessageResponse"
-      },
-      "OAuthApproveIn": {
-        "properties": {
-          "scopes": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "minItems": 1,
-            "title": "Scopes",
-            "description": "Subset of admin:labs:read, admin:labs:write, admin:labs:analytics you hold"
-          }
-        },
-        "type": "object",
-        "required": [
-          "scopes"
-        ],
-        "title": "OAuthApproveIn"
-      },
-      "OAuthGrantOut": {
-        "properties": {
-          "grant_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Grant Id"
-          },
-          "client_id": {
-            "type": "string",
-            "title": "Client Id"
-          },
-          "client_name": {
-            "type": "string",
-            "title": "Client Name"
-          },
-          "scopes": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Scopes"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "active",
-              "revoked"
-            ],
-            "title": "Status"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          },
-          "last_used_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Used At"
-          },
-          "revoked_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Revoked At"
-          },
-          "revoked_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Revoked Reason"
-          }
-        },
-        "type": "object",
-        "required": [
-          "grant_id",
-          "client_id",
-          "client_name",
-          "scopes",
-          "status",
-          "created_at"
-        ],
-        "title": "OAuthGrantOut"
-      },
-      "OAuthDecisionOut": {
-        "properties": {
-          "redirect_to": {
-            "type": "string",
-            "title": "Redirect To",
-            "description": "Send the browser here to return to the AI app"
-          }
-        },
-        "type": "object",
-        "required": [
-          "redirect_to"
-        ],
-        "title": "OAuthDecisionOut"
-      },
-      "OAuthRequestOut": {
-        "properties": {
-          "request_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Request Id"
-          },
-          "client_id": {
-            "type": "string",
-            "title": "Client Id"
-          },
-          "client_name": {
-            "type": "string",
-            "title": "Client Name"
-          },
-          "client_uri": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Client Uri"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "dcr",
-              "cimd"
-            ],
-            "title": "Source"
-          },
-          "redirect_host": {
-            "type": "string",
-            "title": "Redirect Host"
-          },
-          "redirect_kind": {
-            "type": "string",
-            "enum": [
-              "web",
-              "loopback",
-              "app",
-              "unknown"
-            ],
-            "title": "Redirect Kind"
-          },
-          "verified": {
-            "type": "boolean",
-            "title": "Verified"
-          },
-          "requested_scopes": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Requested Scopes"
-          },
-          "offered_scopes": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Offered Scopes"
-          },
-          "already_connected": {
-            "type": "boolean",
-            "title": "Already Connected"
-          },
-          "expires_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Expires At"
-          }
-        },
-        "type": "object",
-        "required": [
-          "request_id",
-          "client_id",
-          "client_name",
-          "source",
-          "redirect_host",
-          "redirect_kind",
-          "verified",
-          "requested_scopes",
-          "offered_scopes",
-          "already_connected",
-          "expires_at"
-        ],
-        "title": "OAuthRequestOut"
       }
     },
     "securitySchemes": {
