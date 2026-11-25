@@ -6,6 +6,7 @@ import type { QueryParams, RequestBody, SuccessResponse } from "@/lib/api/operat
 type ListVouchersOp = "list_vouchers_api_v1_admin_vouchers_get";
 type IssueVoucherOp = "issue_voucher_api_v1_admin_vouchers_post";
 type PreviewBulkOp = "preview_bulk_api_v1_admin_vouchers_bulk_preview_post";
+type AudienceOp = "list_audience_api_v1_admin_vouchers_audience_post";
 type IssueBulkOp = "issue_bulk_api_v1_admin_vouchers_bulk_post";
 type GetVoucherOp = "get_voucher_api_v1_admin_vouchers__voucher_id__get";
 type RevokeVoucherOp = "revoke_voucher_api_v1_admin_vouchers__voucher_id__revoke_post";
@@ -18,11 +19,14 @@ export type VoucherTransaction = NonNullable<Voucher["transactions"]>[number];
 export type IssueVoucherRequest = RequestBody<IssueVoucherOp>;
 export type VoucherSegment = RequestBody<PreviewBulkOp>;
 export type VoucherSegmentPreview = SuccessResponse<PreviewBulkOp>;
+export type VoucherAudiencePage = SuccessResponse<AudienceOp>;
+export type VoucherAudienceCustomer = VoucherAudiencePage["items"][number];
 export type BulkIssueRequest = RequestBody<IssueBulkOp>;
 export type BulkIssueResult = SuccessResponse<IssueBulkOp>;
 
 export const vouchersPaths = {
   vouchers: "admin/vouchers",
+  audience: "admin/vouchers/audience",
   bulkPreview: "admin/vouchers/bulk/preview",
   bulk: "admin/vouchers/bulk",
   voucher: "admin/vouchers/{voucher_id}",
@@ -34,6 +38,8 @@ export const vouchersKeys = {
   all: ["marketing", "vouchers"] as const,
   list: (params?: VouchersParams) => [...vouchersKeys.all, "list", params ?? {}] as const,
   detail: (voucherId: string) => [...vouchersKeys.all, "detail", voucherId] as const,
+  audience: (segment: VoucherSegment, offset: number, limit: number) =>
+    [...vouchersKeys.all, "audience", segment, offset, limit] as const,
 };
 
 /** `GET /admin/vouchers` — vouchers (store credit) with balance, usage and status. */
@@ -46,12 +52,20 @@ export function issueVoucher(body: IssueVoucherRequest): Promise<Voucher> {
   return apiPost(vouchersPaths.vouchers, { body });
 }
 
+/**
+ * `POST /admin/vouchers/audience` — a page of the customers a segment matches (search, spend, course or
+ * diploma enrollment, picked ids), biggest spenders first. Read-only.
+ */
+export function listVoucherAudience(segment: VoucherSegment, page: { limit: number; offset: number }): Promise<VoucherAudiencePage> {
+  return apiPost(vouchersPaths.audience, { body: segment, query: page });
+}
+
 /** `POST /admin/vouchers/bulk/preview` — who a spend segment matches, before issuing. */
 export function previewVoucherSegment(body: VoucherSegment): Promise<VoucherSegmentPreview> {
   return apiPost(vouchersPaths.bulkPreview, { body });
 }
 
-/** `POST /admin/vouchers/bulk` — one voucher per customer of the segment. Audited. */
+/** `POST /admin/vouchers/bulk` — one voucher per customer of the segment (or of the picked `customer_ids`). Audited. */
 export function issueBulkVouchers(body: BulkIssueRequest): Promise<BulkIssueResult> {
   return apiPost(vouchersPaths.bulk, { body });
 }

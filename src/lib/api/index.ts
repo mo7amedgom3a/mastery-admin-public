@@ -72,5 +72,6 @@ export * from "@/lib/api/search/search";
 // Settings & system
 export * from "@/lib/api/settings/settings";
 export * from "@/lib/api/settings/integrations";
+export * from "@/lib/api/settings/retention";
 export * from "@/lib/api/system/health";
 export * from "@/lib/api/system/fx";

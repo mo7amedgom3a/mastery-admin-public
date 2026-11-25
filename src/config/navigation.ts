@@ -380,7 +380,7 @@ export const navigation: NavModule[] = [
     id: "settings",
     title: { ar: "الإعدادات", en: "Settings" },
     icon: "settings",
-    scopes: ["admin:operations:read", "admin:operations:manage"],
+    scopes: ["admin:operations:read", "admin:operations:manage", "admin:retention:read", "admin:retention:manage"],
     sections: [
       {
         title: { ar: "مساحة العمل", en: "Workspace" },
@@ -391,6 +391,7 @@ export const navigation: NavModule[] = [
           // for secrets and configuration (backend routes answer 404).
           { title: { ar: "الإشعارات", en: "Notifications" }, href: "/settings/notifications", permission: "settings.read" },
           { title: { ar: "سجل التدقيق", en: "Audit log" }, href: "/settings/audit", permission: "audit.read" },
+          { title: { ar: "الاحتفاظ بالبيانات", en: "Data retention" }, href: "/settings/retention", permission: "retention.read" },
         ],
       },
     ],

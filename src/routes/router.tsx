@@ -31,6 +31,7 @@ import PricingPage from "@/features/pricing/pages/pricing-page";
 import TicketsPage from "@/features/customers/pages/tickets-page";
 import TicketDetailPage from "@/features/customers/pages/ticket-detail-page";
 import AuditPage from "@/features/settings/pages/audit-page";
+import RetentionPage from "@/features/settings/pages/retention-page";
 import GeneralSettingsPage from "@/features/settings/pages/general-settings-page";
 import PartnersPage from "@/features/marketing/pages/partners-page";
 import PartnerNewPage from "@/features/marketing/pages/partner-new-page";
@@ -317,6 +318,7 @@ export const ROUTER = createBrowserRouter([
       { path: "settings/integrations", element: <Navigate to="/settings/general" replace /> },
       { path: "settings/notifications", element: <NotificationsPage /> },
       { path: "settings/audit", element: <AuditPage /> },
+      { path: "settings/retention", element: <RequireScope permission="retention.read"><RetentionPage /></RequireScope> },
 
       // Unknown paths stay in the shell and say so, instead of silently bouncing to the dashboard.
       { path: "*", element: <NotFoundPage /> },

@@ -50,6 +50,7 @@ const AREA_SCOPE: Record<string, string | string[]> = {
   reports: ["admin:operations:read", "admin:analytics:read", "admin:marketing:read"],
   settings: "admin:operations:read",
   audit: ["admin:audit:read", "admin:operations:read"],
+  retention: "admin:retention:read",
   // Access management (groups, policies, audit traces).
   iam: ["admin:iam:read", "admin:iam:manage"],
   access: ["admin:iam:read", "admin:iam:manage"],
@@ -76,6 +77,7 @@ const ACTION_SCOPE: Record<string, string[]> = {
   "marketing.write": ["admin:marketing:write", "admin:catalog:write"],
   "operations.manage": ["admin:operations:manage"],
   "settings.write": ["admin:operations:manage"],
+  "retention.write": ["admin:retention:manage"],
   "iam.manage": ["admin:iam:manage"],
   "labs.write": ["admin:labs:write"],
   "labs.publish": ["admin:labs:publish"],

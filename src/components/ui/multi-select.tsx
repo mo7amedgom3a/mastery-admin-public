@@ -17,12 +17,18 @@ export function MultiSelect({
   selected,
   onChange,
   searchPlaceholder,
+  onSearch,
 }: {
   label: string;
   options: MultiOption[];
   selected: string[];
   onChange: (values: string[]) => void;
   searchPlaceholder?: string;
+  /**
+   * Remote search: the caller fetches `options` for the typed text, so the list isn't filtered here and
+   * the search box always shows. Keep selected options in `options` so their labels stay known.
+   */
+  onSearch?: (query: string) => void;
 }) {
   const t = useT();
   const [open, setOpen] = useState(false);
@@ -31,9 +37,9 @@ export function MultiSelect({
   const selectedSet = useMemo(() => new Set(selected), [selected]);
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return options;
+    if (!needle || onSearch) return options;
     return options.filter((option) => option.label.toLowerCase().includes(needle));
-  }, [options, query]);
+  }, [options, query, onSearch]);
 
   const summary =
     selected.length === 0
@@ -60,13 +66,16 @@ export function MultiSelect({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className="ma-multiselect" sideOffset={8} align="start" collisionPadding={8}>
-          {options.length > 8 ? (
+          {onSearch || options.length > 8 ? (
             <input
               className="ma-input ma-picker__search"
               type="search"
               value={query}
               placeholder={searchPlaceholder ?? t("ابحث…", "Search…")}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                onSearch?.(event.target.value);
+              }}
             />
           ) : null}
           <div className="ma-picker__list" role="group" aria-label={label}>

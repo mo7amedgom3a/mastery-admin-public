@@ -13117,6 +13117,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/vouchers/audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * List Audience
+         * @description Customers to pick from: search by name/email/phone, filter by spend or by course/diploma enrollment.
+         */
+        post: operations["list_audience_api_v1_admin_vouchers_audience_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -30145,13 +30165,32 @@ export interface components {
             min_spend_minor: number;
             /**
              * Min Orders
-             * @default 1
+             * @description Paid orders at least; 0 includes customers who never paid.
+             * @default 0
              */
             min_orders: number;
             /** Paid Since */
             paid_since?: string | null;
-            /** Product Id */
+            /**
+             * Product Id
+             * @description Only count paid orders that contain this product.
+             */
             product_id?: string | null;
+            /**
+             * Query
+             * @description Customer email, name or phone.
+             */
+            query?: string | null;
+            /**
+             * Enrolled Product Ids
+             * @description Has current access (active entitlement or paid cohort seat) to any of these courses/diplomas.
+             */
+            enrolled_product_ids?: string[];
+            /**
+             * Customer Ids
+             * @description Only these customers (hand-picked).
+             */
+            customer_ids?: string[];
         };
         /** SegmentPreviewOut */
         SegmentPreviewOut: {
@@ -33441,6 +33480,17 @@ export interface components {
             created_at: string;
             /** Attachments */
             attachments?: components["schemas"]["AttachmentResponse"][];
+        };
+        /** AudiencePage */
+        AudiencePage: {
+            /** Items */
+            items: components["schemas"]["SegmentCustomerOut"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
         };
     };
     responses: never;
@@ -62464,6 +62514,47 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdvisorHealthResponse"];
+                };
+            };
+        };
+    };
+    list_audience_api_v1_admin_vouchers_audience_post: {
+        parameters: {
+            query?: {
+                /** @description Page size (max items returned). */
+                limit?: number;
+                /** @description Number of items to skip (for paging). */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                /** @description Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent. */
+                b2c_admin_access_token?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SegmentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AudiencePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

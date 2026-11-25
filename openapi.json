@@ -63110,6 +63110,100 @@
           }
         }
       }
+    },
+    "/api/v1/admin/vouchers/audience": {
+      "post": {
+        "tags": [
+          "Admin Vouchers"
+        ],
+        "summary": "List Audience",
+        "description": "Customers to pick from: search by name/email/phone, filter by spend or by course/diploma enrollment.",
+        "operationId": "list_audience_api_v1_admin_vouchers_audience_post",
+        "security": [
+          {
+            "B2C Admin JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "Page size (max items returned).",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Page size (max items returned)."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip (for paging).",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip (for paging)."
+          },
+          {
+            "name": "b2c_admin_access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent.",
+              "title": "B2C Admin Access Token"
+            },
+            "description": "Admin access token cookie set by `POST /admin/auth/login`; used when no Bearer header is sent."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AudiencePage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -113300,9 +113394,10 @@
           },
           "min_orders": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 0.0,
             "title": "Min Orders",
-            "default": 1
+            "description": "Paid orders at least; 0 includes customers who never paid.",
+            "default": 0
           },
           "paid_since": {
             "anyOf": [
@@ -113326,7 +113421,41 @@
                 "type": "null"
               }
             ],
-            "title": "Product Id"
+            "title": "Product Id",
+            "description": "Only count paid orders that contain this product."
+          },
+          "query": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query",
+            "description": "Customer email, name or phone."
+          },
+          "enrolled_product_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Enrolled Product Ids",
+            "description": "Has current access (active entitlement or paid cohort seat) to any of these courses/diplomas."
+          },
+          "customer_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 5000,
+            "title": "Customer Ids",
+            "description": "Only these customers (hand-picked)."
           }
         },
         "additionalProperties": false,
@@ -123370,6 +123499,37 @@
           "created_at"
         ],
         "title": "MessageResponse"
+      },
+      "AudiencePage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SegmentCustomerOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "AudiencePage"
       }
     },
     "securitySchemes": {
