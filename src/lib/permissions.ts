@@ -51,6 +51,8 @@ const AREA_SCOPE: Record<string, string | string[]> = {
   settings: "admin:operations:read",
   audit: ["admin:audit:read", "admin:operations:read"],
   retention: "admin:retention:read",
+  // Content indexing console (vector index behind smart search and the advisor).
+  searchIndex: ["admin:catalog:read", "admin:catalog:write"],
   // Access management (groups, policies, audit traces).
   iam: ["admin:iam:read", "admin:iam:manage"],
   access: ["admin:iam:read", "admin:iam:manage"],
@@ -78,6 +80,7 @@ const ACTION_SCOPE: Record<string, string[]> = {
   "operations.manage": ["admin:operations:manage"],
   "settings.write": ["admin:operations:manage"],
   "retention.write": ["admin:retention:manage"],
+  "searchIndex.write": ["admin:catalog:write"],
   "iam.manage": ["admin:iam:manage"],
   "labs.write": ["admin:labs:write"],
   "labs.publish": ["admin:labs:publish"],

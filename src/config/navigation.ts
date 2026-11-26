@@ -380,7 +380,7 @@ export const navigation: NavModule[] = [
     id: "settings",
     title: { ar: "الإعدادات", en: "Settings" },
     icon: "settings",
-    scopes: ["admin:operations:read", "admin:operations:manage", "admin:retention:read", "admin:retention:manage"],
+    scopes: ["admin:operations:read", "admin:operations:manage", "admin:retention:read", "admin:retention:manage", "admin:catalog:read", "admin:catalog:write"],
     sections: [
       {
         title: { ar: "مساحة العمل", en: "Workspace" },
@@ -392,6 +392,7 @@ export const navigation: NavModule[] = [
           { title: { ar: "الإشعارات", en: "Notifications" }, href: "/settings/notifications", permission: "settings.read" },
           { title: { ar: "سجل التدقيق", en: "Audit log" }, href: "/settings/audit", permission: "audit.read" },
           { title: { ar: "الاحتفاظ بالبيانات", en: "Data retention" }, href: "/settings/retention", permission: "retention.read" },
+          { title: { ar: "فهرسة المحتوى", en: "Content indexing" }, href: "/settings/search-index", permission: "searchIndex.read" },
         ],
       },
     ],
